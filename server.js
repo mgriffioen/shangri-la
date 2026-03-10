@@ -133,7 +133,7 @@ const GROUP_ACHIEVEMENTS = [
     key: 'shangri_la',
     name: 'Shangri-La Achieved!',
     description: 'The island is complete — 100% progress reached!',
-    icon: '🏔️',
+    icon: '🌞',
   },
 ];
 
