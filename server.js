@@ -420,6 +420,30 @@ app.get('/api/recent', (req, res) => {
   res.json(recent);
 });
 
+/**
+ * POST /api/reset
+ * Body: { secret: string }
+ *
+ * Wipes all data and resets the island to its initial state.
+ * Requires the RESET_SECRET environment variable to be set and matched.
+ */
+app.post('/api/reset', (req, res) => {
+  const secret = process.env.RESET_SECRET;
+  if (!secret || req.body.secret !== secret) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  db.exec(`
+    DELETE FROM pixels;
+    DELETE FROM users;
+    DELETE FROM user_achievements;
+    DELETE FROM group_achievements;
+    UPDATE global_stats SET value = 0 WHERE key = 'progress';
+  `);
+
+  res.json({ success: true, message: 'Island reset.' });
+});
+
 // ─── Start ─────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
