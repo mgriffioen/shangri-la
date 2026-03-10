@@ -67,22 +67,22 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🌅',
   },
   {
-    key: 'loyal_visitor',
-    name: 'Loyal Visitor',
+    key: 'tgif',
+    name: 'TGIF',
     description: 'Visit the island 5 times',
     icon: '⭐',
   },
   {
-    key: 'dedicated_builder',
-    name: 'Dedicated Builder',
+    key: 'perfect_spiral',
+    name: 'Perfect Spiral',
     description: 'Visit the island 15 times',
-    icon: '🏗️',
+    icon: '🏈',
   },
   {
     key: 'gets_it',
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
-    icon: '🛝',
+    icon: '🤙',
   },
   {
     key: 'nice',
@@ -91,10 +91,10 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🖌️',
   },
   {
-    key: 'master_creator',
-    name: 'Master Creator',
+    key: 'omp',
+    name: 'Old Man Paul',
     description: 'Place 200 pixels on the island',
-    icon: '👑',
+    icon: '👴',
   },
 ];
 
@@ -106,22 +106,22 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🚢',
   },
   {
-    key: 'foundation_laid',
-    name: 'Foundation Laid',
+    key: 'slide_raft',
+    name: 'The Slide is on the Raft',
     description: '100 pixels have been placed on the island',
-    icon: '🏛️',
+    icon: '🛝',
   },
   {
-    key: 'island_growing',
-    name: 'Island Growing',
+    key: 'home_invasion',
+    name: 'Home Invasion!!',
     description: '500 pixels have been placed on the island',
-    icon: '🌿',
+    icon: '🏚️',
   },
   {
-    key: 'paradise_rising',
-    name: 'Paradise Rising',
+    key: 'coming_going',
+    name: 'It is Really Coming and Going',
     description: 'Island progress has reached 50%',
-    icon: '🌅',
+    icon: '🌦️',
   },
   {
     key: 'shangri_la',
@@ -167,12 +167,12 @@ function checkIndividualAchievements(userName) {
 
   const checks = [
     { key: 'lake_livin',        condition: user.pixels_placed >= 1   },
-    { key: 'loyal_visitor',      condition: user.total_visits  >= 5   },
-    { key: 'dedicated_builder',  condition: user.total_visits  >= 15  },
+    { key: 'tgif',      condition: user.total_visits  >= 5   },
+    { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
-    { key: 'master_creator',     condition: user.pixels_placed >= 200 },
-  ];
+    { key: 'omp',     condition: user.pixels_placed >= 200 },
+  Old Man Paul
 
   const insertStmt = db.prepare(
     'INSERT OR IGNORE INTO user_achievements (user_name, achievement_key) VALUES (?, ?)'
@@ -202,9 +202,9 @@ function checkGroupAchievements() {
 
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
-    { key: 'foundation_laid',  condition: totalPixels    >= 100            },
-    { key: 'island_growing',   condition: totalPixels    >= 500            },
-    { key: 'paradise_rising',  condition: progress       >= 50             },
+    { key: 'slide_raft',  condition: totalPixels    >= 100            },
+    { key: 'home_invasion',   condition: totalPixels    >= 500            },
+    { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
   ];
 
