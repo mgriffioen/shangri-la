@@ -1,0 +1,162 @@
+markgriffioen@markMiniM4 shangri-la % npm install
+npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+npm error code 1
+npm error path /Users/markgriffioen/Documents/GitHub/shangri-la/node_modules/better-sqlite3
+npm error command failed
+npm error command sh -c prebuild-install || node-gyp rebuild --release
+npm error TOUCH 4292fa9a667d77b27488aa109b010a85bce8e4e7a1c7aa0370cea902395c3866.intermediate
+npm error   ACTION deps_sqlite3_gyp_locate_sqlite3_target_copy_builtin_sqlite3 4292fa9a667d77b27488aa109b010a85bce8e4e7a1c7aa0370cea902395c3866.intermediate
+npm error   TOUCH Release/obj.target/deps/locate_sqlite3.stamp
+npm error   CC(target) Release/obj.target/sqlite3/gen/sqlite3/sqlite3.o
+npm error   LIBTOOL-STATIC Release/sqlite3.a
+npm error   CXX(target) Release/obj.target/better_sqlite3/src/better_sqlite3.o
+npm error rm 4292fa9a667d77b27488aa109b010a85bce8e4e7a1c7aa0370cea902395c3866.intermediate
+npm error prebuild-install warn install No prebuilt binaries found (target=25.6.1 runtime=node arch=arm64 libc= platform=darwin)
+npm error gyp info it worked if it ends with ok
+npm error gyp info using node-gyp@12.2.0
+npm error gyp info using node@25.6.1 | darwin | arm64
+npm error (node:21117) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+npm error (Use `node --trace-deprecation ...` to show where the warning was created)
+npm error gyp info find Python using Python version 3.9.6 found at "/Library/Developer/CommandLineTools/usr/bin/python3"
+npm error gyp info spawn /Library/Developer/CommandLineTools/usr/bin/python3
+npm error gyp info spawn args [
+npm error gyp info spawn args '/opt/homebrew/lib/node_modules/npm/node_modules/node-gyp/gyp/gyp_main.py',
+npm error gyp info spawn args 'binding.gyp',
+npm error gyp info spawn args '-f',
+npm error gyp info spawn args 'make',
+npm error gyp info spawn args '-I',
+npm error gyp info spawn args '/Users/markgriffioen/Documents/GitHub/shangri-la/node_modules/better-sqlite3/build/config.gypi',
+npm error gyp info spawn args '-I',
+npm error gyp info spawn args '/opt/homebrew/lib/node_modules/npm/node_modules/node-gyp/addon.gypi',
+npm error gyp info spawn args '-I',
+npm error gyp info spawn args '/Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/common.gypi',
+npm error gyp info spawn args '-Dlibrary=shared_library',
+npm error gyp info spawn args '-Dvisibility=default',
+npm error gyp info spawn args '-Dnode_root_dir=/Users/markgriffioen/Library/Caches/node-gyp/25.6.1',
+npm error gyp info spawn args '-Dnode_gyp_dir=/opt/homebrew/lib/node_modules/npm/node_modules/node-gyp',
+npm error gyp info spawn args '-Dnode_lib_file=/Users/markgriffioen/Library/Caches/node-gyp/25.6.1/<(target_arch)/node.lib',
+npm error gyp info spawn args '-Dmodule_root_dir=/Users/markgriffioen/Documents/GitHub/shangri-la/node_modules/better-sqlite3',
+npm error gyp info spawn args '-Dnode_engine=v8',
+npm error gyp info spawn args '--depth=.',
+npm error gyp info spawn args '--no-parallel',
+npm error gyp info spawn args '--generator-output',
+npm error gyp info spawn args 'build',
+npm error gyp info spawn args '-Goutput_dir=.'
+npm error gyp info spawn args ]
+npm error gyp info spawn make
+npm error gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:23:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/cppgc/common.h:8:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8config.h:13:2: error: "C++20 or later required."
+npm error    13 | #error "C++20 or later required."
+npm error       |  ^
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:24:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-array-buffer.h:12:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:13:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-handle-base.h:8:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-internal.h:1356:37: error: a non-type template parameter cannot have type 'ExternalPointerTagRange' (aka 'TagRange<ExternalPointerTag>') before C++20
+npm error  1356 |   template <ExternalPointerTagRange tag_range>
+npm error       |                                     ^
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:24:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-array-buffer.h:12:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:379:5: error: unknown type name 'requires'
+npm error   379 |     requires std::is_base_of_v<T, S>
+npm error       |     ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:379:19: error: non-friend class member 'is_base_of_v' cannot have a qualified name
+npm error   379 |     requires std::is_base_of_v<T, S>
+npm error       |              ~~~~~^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:379:19: error: member 'is_base_of_v' declared as a template
+npm error   378 |   template <class S>
+npm error       |   ~~~~~~~~~~~~~~~~~~
+npm error   379 |     requires std::is_base_of_v<T, S>
+npm error       |                   ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:379:19: error: variable template partial specialization of 'is_base_of_v' not in a namespace enclosing '__1'
+npm error /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_base_of.h:27:50: note: explicitly specialized declaration is here
+npm error    27 | _LIBCPP_NO_SPECIALIZATIONS inline constexpr bool is_base_of_v = __is_base_of(_Bp, _Dp);
+npm error       |                                                  ^
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:24:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-array-buffer.h:12:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:379:37: error: expected ';' at end of declaration list
+npm error   379 |     requires std::is_base_of_v<T, S>
+npm error       |                                     ^
+npm error       |                                     ;
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:744:5: error: unknown type name 'requires'
+npm error   744 |     requires std::is_base_of_v<T, S>
+npm error       |     ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:744:19: error: non-friend class member 'is_base_of_v' cannot have a qualified name
+npm error   744 |     requires std::is_base_of_v<T, S>
+npm error       |              ~~~~~^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:744:19: error: member 'is_base_of_v' declared as a template
+npm error   743 |   template <class S>
+npm error       |   ~~~~~~~~~~~~~~~~~~
+npm error   744 |     requires std::is_base_of_v<T, S>
+npm error       |                   ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:744:19: error: variable template partial specialization of 'is_base_of_v' not in a namespace enclosing '__1'
+npm error /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_base_of.h:27:50: note: explicitly specialized declaration is here
+npm error    27 | _LIBCPP_NO_SPECIALIZATIONS inline constexpr bool is_base_of_v = __is_base_of(_Bp, _Dp);
+npm error       |                                                  ^
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:24:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-array-buffer.h:12:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-local-handle.h:744:37: error: expected ';' at end of declaration list
+npm error   744 |     requires std::is_base_of_v<T, S>
+npm error       |                                     ^
+npm error       |                                     ;
+npm error In file included from ../src/better_sqlite3.cpp:4:
+npm error In file included from ./src/better_sqlite3.lzz:11:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/node.h:74:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8.h:24:
+npm error In file included from /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-array-buffer.h:13:
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:45:28: error: no member named 'ranges' in namespace 'std'
+npm error    45 | inline constexpr bool std::ranges::enable_view<v8::MemorySpan<T>> = true;
+npm error       |                       ~~~~~^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:47:28: error: no member named 'ranges' in namespace 'std'
+npm error    47 | inline constexpr bool std::ranges::enable_borrowed_range<v8::MemorySpan<T>> =
+npm error       |                       ~~~~~^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:93:14: error: expected parameter declarator
+npm error    93 |     requires(!std::is_function_v<U>)
+npm error       |              ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:93:14: error: expected ')'
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:93:13: note: to match this '('
+npm error    93 |     requires(!std::is_function_v<U>)
+npm error       |             ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:93:5: error: a type specifier is required for all declarations
+npm error    93 |     requires(!std::is_function_v<U>)
+npm error       |     ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:94:5: error: 'nodiscard' attribute cannot be applied to types
+npm error    94 |   [[nodiscard]] static constexpr U* to_address(U* p) noexcept {
+npm error       |     ^
+npm error /Users/markgriffioen/Library/Caches/node-gyp/25.6.1/include/node/v8-memory-span.h:94:16: error: expected ';' at end of declaration list
+npm error    94 |   [[nodiscard]] static constexpr U* to_address(U* p) noexcept {
+npm error       |                ^
+npm error       |                ;
+npm error fatal error: too many errors emitted, stopping now [-ferror-limit=]
+npm error 20 errors generated.
+npm error make: *** [Release/obj.target/better_sqlite3/src/better_sqlite3.o] Error 1
+npm error gyp ERR! build error 
+npm error gyp ERR! stack Error: `make` failed with exit code: 2
+npm error gyp ERR! stack at ChildProcess.<anonymous> (/opt/homebrew/lib/node_modules/npm/node_modules/node-gyp/lib/build.js:219:23)
+npm error gyp ERR! System Darwin 25.3.0
+npm error gyp ERR! command "/opt/homebrew/Cellar/node/25.6.1/bin/node" "/opt/homebrew/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" "rebuild" "--release"
+npm error gyp ERR! cwd /Users/markgriffioen/Documents/GitHub/shangri-la/node_modules/better-sqlite3
+npm error gyp ERR! node -v v25.6.1
+npm error gyp ERR! node-gyp -v v12.2.0
+npm error gyp ERR! $npm_package_name better-sqlite3
+npm error gyp ERR! $npm_package_version 9.6.0
+npm error gyp ERR! not ok
+npm error A complete log of this run can be found in: /Users/markgriffioen/.npm/_logs/2026-03-10T22_45_49_288Z-debug-0.log
+.
