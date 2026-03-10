@@ -61,10 +61,10 @@ db.exec(`
 
 const INDIVIDUAL_ACHIEVEMENTS = [
   {
-    key: 'first_pixel',
-    name: 'First Brushstroke',
-    description: 'Place your very first pixel on the island',
-    icon: '🎨',
+    key: 'lake_livin',
+    name: 'Lake Living',
+    description: 'You have begun the journey to Shangri-La',
+    icon: '🌅',
   },
   {
     key: 'loyal_visitor',
@@ -79,9 +79,15 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🏗️',
   },
   {
-    key: 'pixel_artist',
-    name: 'Pixel Artist',
-    description: 'Place 50 pixels on the island',
+    key: 'gets_it',
+    name: 'This guy gets it',
+    description: 'Visit the island 25 times',
+    icon: '🏗️',
+  },
+  {
+    key: 'nice',
+    name: 'Nice',
+    description: 'Place 69 pixels on the island',
     icon: '🖌️',
   },
   {
@@ -160,10 +166,11 @@ function checkIndividualAchievements(userName) {
   );
 
   const checks = [
-    { key: 'first_pixel',        condition: user.pixels_placed >= 1   },
+    { key: 'lake_livin',        condition: user.pixels_placed >= 1   },
     { key: 'loyal_visitor',      condition: user.total_visits  >= 5   },
     { key: 'dedicated_builder',  condition: user.total_visits  >= 15  },
-    { key: 'pixel_artist',       condition: user.pixels_placed >= 50  },
+    { key: 'gets_it',  condition: user.total_visits  >= 25  },
+    { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'master_creator',     condition: user.pixels_placed >= 200 },
   ];
 
