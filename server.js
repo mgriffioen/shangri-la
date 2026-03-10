@@ -82,13 +82,13 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     key: 'gets_it',
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
-    icon: '🤙',
+    icon: '👏',
   },
   {
     key: 'nice',
     name: 'Nice',
     description: 'Place 69 pixels on the island',
-    icon: '🖌️',
+    icon: '👀',
   },
   {
     key: 'omp',
@@ -110,6 +110,12 @@ const GROUP_ACHIEVEMENTS = [
     name: 'The Slide is on the Raft',
     description: '100 pixels have been placed on the island',
     icon: '🛝',
+  },
+  {
+    key: 'nice_nice',
+    name: 'NICE',
+    description: '420 pixels have been placed on the island',
+    icon: '🤙',
   },
   {
     key: 'home_invasion',
@@ -203,6 +209,7 @@ function checkGroupAchievements() {
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
+    { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'home_invasion',   condition: totalPixels    >= 500            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
