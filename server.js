@@ -82,7 +82,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     key: 'gets_it',
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
-    icon: '🏗️',
+    icon: '🛝',
   },
   {
     key: 'nice',
