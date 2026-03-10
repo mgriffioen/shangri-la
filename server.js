@@ -238,6 +238,13 @@ app.post('/api/login', (req, res) => {
   const name = raw.trim().slice(0, 30);
   const now  = Date.now();
 
+  const allowedNames = process.env.ALLOWED_NAMES
+    ? process.env.ALLOWED_NAMES.split(',').map(n => n.trim().toLowerCase()).filter(Boolean)
+    : null;
+  if (allowedNames && !allowedNames.includes(name.toLowerCase())) {
+    return res.status(403).json({ error: 'This island is by invitation only. Your name is not on the guest list.' });
+  }
+
   let user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
   if (!user) {
     db.prepare(
@@ -418,6 +425,36 @@ app.get('/api/recent', (req, res) => {
     LIMIT 12
   `).all();
   res.json(recent);
+});
+
+/**
+ * GET /api/members
+ * Returns all 8 crew members (from ALLOWED_NAMES env var) with their stats
+ * and earned individual achievements. Unjoined members are included as stubs.
+ */
+app.get('/api/members', (req, res) => {
+  const allowedNames = process.env.ALLOWED_NAMES
+    ? process.env.ALLOWED_NAMES.split(',').map(n => n.trim()).filter(Boolean)
+    : db.prepare('SELECT name FROM users ORDER BY pixels_placed DESC').all().map(u => u.name);
+
+  const members = allowedNames.map(allowedName => {
+    const user = db.prepare('SELECT * FROM users WHERE lower(name) = lower(?)').get(allowedName);
+    if (!user || user.total_visits === 0) {
+      return { name: allowedName, joined: false, total_visits: 0, pixels_placed: 0, achievements: [] };
+    }
+    const achievements = db.prepare('SELECT achievement_key FROM user_achievements WHERE user_name = ?')
+      .all(user.name)
+      .map(a => a.achievement_key);
+    return {
+      name:          user.name,
+      joined:        true,
+      total_visits:  user.total_visits,
+      pixels_placed: user.pixels_placed,
+      achievements,
+    };
+  });
+
+  res.json(members);
 });
 
 /**
