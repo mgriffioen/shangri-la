@@ -100,8 +100,8 @@ const INDIVIDUAL_ACHIEVEMENTS = [
 
 const GROUP_ACHIEVEMENTS = [
   {
-    key: 'all_aboard',
-    name: 'All Aboard!',
+    key: 'we_did_it',
+    name: 'We Did It!',
     description: `All ${MAX_GROUP_SIZE} builders have visited Shangri-La`,
     icon: '🚢',
   },
@@ -201,7 +201,7 @@ function checkGroupAchievements() {
   );
 
   const checks = [
-    { key: 'all_aboard',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
+    { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'foundation_laid',  condition: totalPixels    >= 100            },
     { key: 'island_growing',   condition: totalPixels    >= 500            },
     { key: 'paradise_rising',  condition: progress       >= 50             },
