@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build Shangri-La</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Header ─────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <h1>🏔️ Build Shangri-La</h1>
+      <p class="tagline">A secret island, built together — one pixel at a time</p>
+    </div>
+  </header>
+
+  <!-- ─── Main Layout ─────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- LEFT PANEL: identity + visit + palette -->
+    <aside class="panel panel-left">
+
+      <!-- Name entry (shown before login) -->
+      <section id="section-login" class="card">
+        <h2>Who are you?</h2>
+        <p class="hint">Your name is how the island remembers you.</p>
+        <div class="name-row">
+          <input id="name-input" type="text" maxlength="30" placeholder="Your name…" autocomplete="off" />
+          <button id="name-btn" class="btn-primary">Enter</button>
+        </div>
+        <div id="login-error" class="error-msg" style="display:none"></div>
+      </section>
+
+      <!-- User info (shown after login) -->
+      <section id="section-user" class="card" style="display:none">
+        <div class="user-header">
+          <div class="user-avatar" id="user-avatar"></div>
+          <div>
+            <div class="user-name" id="user-name-display"></div>
+            <div class="user-meta" id="user-meta"></div>
+          </div>
+          <button id="switch-user-btn" class="btn-ghost" title="Switch user">✦ Switch</button>
+        </div>
+
+        <!-- Visit status -->
+        <div id="visit-status" class="visit-status"></div>
+
+        <!-- Countdown timer (shown when on cooldown) -->
+        <div id="cooldown-box" class="cooldown-box" style="display:none">
+          <div class="cooldown-label">Next visit in</div>
+          <div class="cooldown-timer" id="cooldown-timer">—</div>
+        </div>
+
+        <!-- Pixels remaining dots (shown during active visit) -->
+        <div id="pixels-box" class="pixels-box" style="display:none">
+          <div class="pixels-label">Pixels remaining this visit</div>
+          <div class="pixels-dots" id="pixels-dots"></div>
+        </div>
+      </section>
+
+      <!-- Color palette (shown after login) -->
+      <section id="section-palette" class="card" style="display:none">
+        <h3>Palette</h3>
+        <div class="palette-grid" id="palette-grid"></div>
+        <div class="selected-row">
+          <span class="selected-label">Selected:</span>
+          <div class="selected-swatch" id="selected-swatch"></div>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="grid-toggle" checked />
+          <span>Show grid</span>
+        </label>
+      </section>
+
+    </aside>
+
+    <!-- CENTER: canvas -->
+    <section class="canvas-area">
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <canvas id="island-canvas"></canvas>
+      </div>
+      <div class="canvas-footer">
+        <span id="canvas-size-label" class="dim-label"></span>
+        <span id="hover-coords" class="dim-label"></span>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: progress + stats + achievements + leaderboard -->
+    <aside class="panel panel-right">
+
+      <!-- Progress -->
+      <section class="card">
+        <h3>Island Progress</h3>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progress-pct">0%</span>
+          <span id="canvas-stage-label" class="dim-label"></span>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="card">
+        <h3>Community Stats</h3>
+        <div class="stats-grid" id="stats-grid"></div>
+      </section>
+
+      <!-- Achievements -->
+      <section class="card">
+        <h3>Achievements</h3>
+        <div class="achievements-list" id="achievements-list"></div>
+      </section>
+
+      <!-- Leaderboard -->
+      <section class="card">
+        <h3>Builders</h3>
+        <div class="leaderboard" id="leaderboard"></div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <!-- ─── Achievement Popup ────────────────────────────────────────────────── -->
+  <div id="achievement-popup" class="achievement-popup" aria-hidden="true">
+    <div class="popup-inner">
+      <div class="popup-icon" id="popup-icon"></div>
+      <div class="popup-body">
+        <div class="popup-type" id="popup-type"></div>
+        <div class="popup-name" id="popup-name"></div>
+        <div class="popup-desc" id="popup-desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Toast ────────────────────────────────────────────────────────────── -->
+  <div id="toast" class="toast" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+node_modules/
+shangri-la.db
+*.db-shm
+*.db-wal

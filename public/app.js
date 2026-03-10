@@ -1,0 +1,635 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Build Shangri-La — Frontend
+   ───────────────────────────────────────────────────────────────────────────── */
+
+// ─── Palette ──────────────────────────────────────────────────────────────────
+const PALETTE = [
+  // Row 1: Ocean
+  '#0d3b52', '#1a6691', '#5dade2', '#aed6f1', '#e8f4f8',
+  // Row 2: Sand / Earth
+  '#5d4037', '#8b6914', '#c19a6b', '#deb887', '#fff8dc',
+  // Row 3: Vegetation
+  '#1b5e20', '#2e7d32', '#43a047', '#81c784', '#c8e6c9',
+  // Row 4: Rock / Stone
+  '#37474f', '#607d8b', '#90a4ae', '#cfd8dc', '#ffffff',
+  // Row 5: Accent
+  '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
+];
+
+const CELL_SIZE     = 10;
+const OCEAN_COLOR   = '#0d3b52';
+const GRID_COLOR    = 'rgba(255,255,255,0.06)';
+const POLL_INTERVAL = 30_000; // ms between background state refreshes
+
+// ─── App State ────────────────────────────────────────────────────────────────
+const state = {
+  userName:        null,
+  user:            null,          // { name, total_visits, pixels_remaining, pixels_placed, last_visit }
+  pixels:          new Map(),     // key: "x,y" → { x, y, color, user_name }
+  progress:        0,
+  canvasSize:      32,
+  showGrid:        true,
+  selectedColor:   PALETTE[8],   // default: burlywood sand
+  hoverCell:       null,         // { x, y } | null
+  nextVisitTime:   null,
+  achievements:    { individual: { definitions: [], earned: [] }, group: { definitions: [], earned: [] } },
+  leaderboard:     [],
+  pollTimer:       null,
+  countdownTimer:  null,
+  achievementQueue: [],
+  popupBusy:       false,
+};
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────────
+const canvas          = document.getElementById('island-canvas');
+const ctx             = canvas.getContext('2d');
+const canvasWrapper   = document.getElementById('canvas-wrapper');
+
+// ─── Canvas Rendering ─────────────────────────────────────────────────────────
+
+function resizeCanvas(size) {
+  const px = size * CELL_SIZE;
+  canvas.width  = px;
+  canvas.height = px;
+}
+
+function drawCanvas() {
+  const size = state.canvasSize;
+  ctx.fillStyle = OCEAN_COLOR;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Placed pixels
+  for (const [, pix] of state.pixels) {
+    ctx.fillStyle = pix.color;
+    ctx.fillRect(pix.x * CELL_SIZE, pix.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+  }
+
+  // Grid lines
+  if (state.showGrid) {
+    ctx.strokeStyle = GRID_COLOR;
+    ctx.lineWidth   = 0.5;
+    for (let i = 0; i <= size; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * CELL_SIZE, 0);
+      ctx.lineTo(i * CELL_SIZE, canvas.height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i * CELL_SIZE);
+      ctx.lineTo(canvas.width, i * CELL_SIZE);
+      ctx.stroke();
+    }
+  }
+
+  // Hover highlight
+  if (state.hoverCell) {
+    const { x, y } = state.hoverCell;
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth   = 1.5;
+    ctx.strokeRect(
+      x * CELL_SIZE + 0.75,
+      y * CELL_SIZE + 0.75,
+      CELL_SIZE - 1.5,
+      CELL_SIZE - 1.5
+    );
+    // Ghost pixel with selected color
+    if (canPlacePixel()) {
+      ctx.fillStyle = state.selectedColor + 'aa'; // 67% opacity
+      ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    }
+  }
+}
+
+// ─── Canvas Events ────────────────────────────────────────────────────────────
+
+function cellFromEvent(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const cx = (e.clientX - rect.left)  * scaleX;
+  const cy = (e.clientY - rect.top)   * scaleY;
+  return {
+    x: Math.floor(cx / CELL_SIZE),
+    y: Math.floor(cy / CELL_SIZE),
+  };
+}
+
+canvas.addEventListener('mousemove', (e) => {
+  const cell = cellFromEvent(e);
+  if (cell.x >= 0 && cell.x < state.canvasSize &&
+      cell.y >= 0 && cell.y < state.canvasSize) {
+    state.hoverCell = cell;
+    document.getElementById('hover-coords').textContent = `(${cell.x}, ${cell.y})`;
+  } else {
+    state.hoverCell = null;
+    document.getElementById('hover-coords').textContent = '';
+  }
+  drawCanvas();
+});
+
+canvas.addEventListener('mouseleave', () => {
+  state.hoverCell = null;
+  document.getElementById('hover-coords').textContent = '';
+  drawCanvas();
+});
+
+canvas.addEventListener('click', async (e) => {
+  if (!state.userName) {
+    showToast('Enter your name first!');
+    return;
+  }
+  if (!canPlacePixel()) {
+    showToast(
+      state.user?.pixels_remaining === 0
+        ? 'No pixels left — come back in 12 hours!'
+        : 'Log in to place pixels.'
+    );
+    return;
+  }
+
+  const cell = cellFromEvent(e);
+  if (cell.x < 0 || cell.x >= state.canvasSize ||
+      cell.y < 0 || cell.y >= state.canvasSize) return;
+
+  await placePixel(cell.x, cell.y, state.selectedColor);
+});
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function canPlacePixel() {
+  return state.user && state.user.pixels_remaining > 0;
+}
+
+function userInitial(name) {
+  return (name || '?')[0].toUpperCase();
+}
+
+/** Deterministic avatar color from name */
+function avatarColor(name) {
+  const colors = ['#1a6691','#2e7d32','#6a1b9a','#c62828','#e65100','#00838f'];
+  let hash = 0;
+  for (const ch of (name || '')) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffffffff;
+  return colors[Math.abs(hash) % colors.length];
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return '00:00:00';
+  const h = Math.floor(ms / 3_600_000);
+  const m = Math.floor((ms % 3_600_000) / 60_000);
+  const s = Math.floor((ms % 60_000) / 1_000);
+  return [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('visible'), 2800);
+}
+
+// ─── Achievement Popup ────────────────────────────────────────────────────────
+
+function enqueueAchievements(list) {
+  state.achievementQueue.push(...list);
+  if (!state.popupBusy) showNextAchievement();
+}
+
+function showNextAchievement() {
+  if (state.achievementQueue.length === 0) {
+    state.popupBusy = false;
+    return;
+  }
+  state.popupBusy = true;
+  const ach = state.achievementQueue.shift();
+  const popup = document.getElementById('achievement-popup');
+
+  document.getElementById('popup-icon').textContent = ach.icon;
+  document.getElementById('popup-type').textContent =
+    ach.type === 'group' ? '🌍 Group Achievement Unlocked!' : '✨ Achievement Unlocked!';
+  document.getElementById('popup-name').textContent = ach.name;
+  document.getElementById('popup-desc').textContent = ach.description;
+
+  popup.classList.add('visible');
+  popup.setAttribute('aria-hidden', 'false');
+
+  setTimeout(() => {
+    popup.classList.remove('visible');
+    popup.setAttribute('aria-hidden', 'true');
+    setTimeout(showNextAchievement, 400);
+  }, 3800);
+}
+
+// ─── UI Renderers ─────────────────────────────────────────────────────────────
+
+function renderPixelDots() {
+  const container = document.getElementById('pixels-dots');
+  container.innerHTML = '';
+  const total = 5;
+  const remaining = state.user?.pixels_remaining ?? 0;
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'pixel-dot' + (i >= remaining ? ' spent' : '');
+    container.appendChild(dot);
+  }
+}
+
+function renderVisitStatus(newVisit) {
+  const statusEl   = document.getElementById('visit-status');
+  const cooldownEl = document.getElementById('cooldown-box');
+  const pixelsEl   = document.getElementById('pixels-box');
+
+  if (!state.user) return;
+
+  if (state.user.pixels_remaining > 0) {
+    statusEl.className = 'visit-status ' + (newVisit ? 'new-visit' : 'active');
+    statusEl.textContent = newVisit
+      ? `🎉 Welcome! You have ${state.user.pixels_remaining} pixels to place.`
+      : `🖌️ You have ${state.user.pixels_remaining} pixel${state.user.pixels_remaining !== 1 ? 's' : ''} left this visit.`;
+    cooldownEl.style.display = 'none';
+    pixelsEl.style.display   = 'block';
+    renderPixelDots();
+  } else {
+    statusEl.className   = 'visit-status waiting';
+    statusEl.textContent = '⏳ You\'ve used all your pixels. See you in 12 hours!';
+    cooldownEl.style.display = 'block';
+    pixelsEl.style.display   = 'none';
+    startCountdown();
+  }
+}
+
+function startCountdown() {
+  clearInterval(state.countdownTimer);
+  state.countdownTimer = setInterval(() => {
+    if (!state.nextVisitTime) return;
+    const remaining = state.nextVisitTime - Date.now();
+    if (remaining <= 0) {
+      clearInterval(state.countdownTimer);
+      document.getElementById('cooldown-timer').textContent = '00:00:00';
+      // Prompt refresh
+      document.getElementById('visit-status').textContent = '🌅 A new day on the island awaits — refresh to visit!';
+      return;
+    }
+    document.getElementById('cooldown-timer').textContent = formatCountdown(remaining);
+  }, 1000);
+  // Render immediately
+  const remaining = (state.nextVisitTime || Date.now()) - Date.now();
+  document.getElementById('cooldown-timer').textContent = formatCountdown(Math.max(0, remaining));
+}
+
+function renderProgress() {
+  const pct = Math.min(100, state.progress);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent  = pct.toFixed(1) + '%';
+
+  const stages = [
+    { min: 0,   label: 'Stage 1 — A tiny isle (32×32)' },
+    { min: 25,  label: 'Stage 2 — The isle expands (48×48)' },
+    { min: 50,  label: 'Stage 3 — A growing island (64×64)' },
+    { min: 75,  label: 'Stage 4 — A vast realm (80×80)' },
+    { min: 100, label: 'Stage 5 — Shangri-La Complete (96×96)' },
+  ];
+  const stage = [...stages].reverse().find(s => pct >= s.min) || stages[0];
+  document.getElementById('canvas-stage-label').textContent = stage.label;
+}
+
+function renderStats() {
+  const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-tile">
+      <div class="stat-value">${totalPixels ?? 0}</div>
+      <div class="stat-label">Pixels placed</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">${uniqueVisitors ?? 0} / 8</div>
+      <div class="stat-label">Builders visited</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">${totalVisits ?? 0}</div>
+      <div class="stat-label">Total visits</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">${state.canvasSize}×${state.canvasSize}</div>
+      <div class="stat-label">Canvas size</div>
+    </div>
+  `;
+}
+
+function renderAchievements() {
+  const { individual, group } = state.achievements;
+
+  const earnedIndividualKeys = new Set(individual.earned.map(e => e.achievement_key));
+  const earnedGroupKeys      = new Set(group.earned.map(e => e.achievement_key));
+
+  const items = [
+    ...group.definitions.map(d => ({
+      ...d,
+      type:   'group',
+      earned: earnedGroupKeys.has(d.key),
+    })),
+    ...individual.definitions.map(d => ({
+      ...d,
+      type:   'individual',
+      earned: earnedIndividualKeys.has(d.key),
+    })),
+  ];
+
+  // Sort: earned first, then locked
+  items.sort((a, b) => (b.earned ? 1 : 0) - (a.earned ? 1 : 0));
+
+  document.getElementById('achievements-list').innerHTML = items.map(a => `
+    <div class="achievement-item ${a.earned ? '' : 'locked'} ${a.type === 'group' ? 'group-type' : ''}">
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-text">
+        <div class="ach-name">${a.name}</div>
+        <div class="ach-desc">${a.description}</div>
+      </div>
+      <div class="ach-badge ${a.type}">${a.type}</div>
+    </div>
+  `).join('');
+}
+
+function renderLeaderboard() {
+  const me = state.userName;
+  document.getElementById('leaderboard').innerHTML = state.leaderboard.map((u, i) => `
+    <div class="lb-row ${u.name === me ? 'is-me' : ''}">
+      <div class="lb-rank">${i + 1}</div>
+      <div class="lb-name">${escapeHtml(u.name)}</div>
+      <div class="lb-pixels">${u.pixels_placed}px</div>
+      <div class="lb-visits">${u.total_visits}v</div>
+    </div>
+  `).join('') || '<div style="color:var(--text-muted);font-size:0.82rem">No builders yet.</div>';
+}
+
+function renderPalette() {
+  const grid = document.getElementById('palette-grid');
+  grid.innerHTML = PALETTE.map(color => `
+    <div
+      class="swatch ${color === state.selectedColor ? 'active' : ''}"
+      style="background:${color}"
+      data-color="${color}"
+      title="${color}"
+    ></div>
+  `).join('');
+
+  grid.querySelectorAll('.swatch').forEach(el => {
+    el.addEventListener('click', () => {
+      state.selectedColor = el.dataset.color;
+      renderPalette();
+      document.getElementById('selected-swatch').style.background = state.selectedColor;
+    });
+  });
+
+  document.getElementById('selected-swatch').style.background = state.selectedColor;
+}
+
+function renderCanvasSizeLabel() {
+  document.getElementById('canvas-size-label').textContent =
+    `${state.canvasSize}×${state.canvasSize} grid`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── API Calls ────────────────────────────────────────────────────────────────
+
+async function apiLogin(name) {
+  const res = await fetch('/api/login', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ name }),
+  });
+  if (!res.ok) throw new Error((await res.json()).error || 'Login failed');
+  return res.json();
+}
+
+async function apiFetchState() {
+  const res = await fetch('/api/state');
+  if (!res.ok) throw new Error('Failed to fetch state');
+  return res.json();
+}
+
+async function apiFetchAchievements(name) {
+  const res = await fetch(`/api/achievements?name=${encodeURIComponent(name)}`);
+  if (!res.ok) throw new Error('Failed to fetch achievements');
+  return res.json();
+}
+
+async function apiFetchLeaderboard() {
+  const res = await fetch('/api/leaderboard');
+  if (!res.ok) throw new Error('Failed to fetch leaderboard');
+  return res.json();
+}
+
+async function apiPlacePixel(x, y, color) {
+  const res = await fetch('/api/place', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ name: state.userName, x, y, color }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to place pixel');
+  }
+  return res.json();
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+
+async function placePixel(x, y, color) {
+  // Optimistic update
+  state.pixels.set(`${x},${y}`, { x, y, color, user_name: state.userName });
+  state.user.pixels_remaining--;
+  drawCanvas();
+  renderPixelDots();
+  renderVisitStatus(false);
+
+  try {
+    const data = await apiPlacePixel(x, y, color);
+    state.user.pixels_remaining = data.pixels_remaining;
+
+    if (data.newAchievements?.length) {
+      enqueueAchievements(data.newAchievements);
+      // Refresh achievements panel
+      const achData = await apiFetchAchievements(state.userName);
+      state.achievements = achData;
+      renderAchievements();
+    }
+
+    renderPixelDots();
+    renderVisitStatus(false);
+
+    // Refresh leaderboard
+    state.leaderboard = await apiFetchLeaderboard();
+    renderLeaderboard();
+  } catch (err) {
+    // Roll back
+    state.pixels.delete(`${x},${y}`);
+    state.user.pixels_remaining++;
+    drawCanvas();
+    renderPixelDots();
+    renderVisitStatus(false);
+    showToast(err.message);
+  }
+}
+
+async function loadState() {
+  const [stateData, leaderboard] = await Promise.all([
+    apiFetchState(),
+    apiFetchLeaderboard(),
+  ]);
+
+  const prevSize     = state.canvasSize;
+  state.pixels       = new Map(stateData.pixels.map(p => [`${p.x},${p.y}`, p]));
+  state.progress     = stateData.progress;
+  state.canvasSize   = stateData.canvasSize;
+  state.stats        = stateData.stats;
+  state.leaderboard  = leaderboard;
+
+  // Canvas expand animation
+  if (state.canvasSize !== prevSize) {
+    resizeCanvas(state.canvasSize);
+    canvasWrapper.classList.add('expanding');
+    setTimeout(() => canvasWrapper.classList.remove('expanding'), 900);
+  }
+
+  if (state.userName) {
+    state.achievements = await apiFetchAchievements(state.userName);
+    renderAchievements();
+  }
+
+  drawCanvas();
+  renderProgress();
+  renderStats();
+  renderLeaderboard();
+  renderCanvasSizeLabel();
+}
+
+async function login(name) {
+  const data = await apiLogin(name);
+
+  state.userName     = name;
+  state.user         = data.user;
+  state.nextVisitTime = data.nextVisitTime;
+
+  // Save to localStorage for next time
+  localStorage.setItem('shangri-la-name', name);
+
+  // Show user sections
+  document.getElementById('section-login').style.display   = 'none';
+  document.getElementById('section-user').style.display    = '';
+  document.getElementById('section-palette').style.display = '';
+
+  // Populate user panel
+  const avatarEl = document.getElementById('user-avatar');
+  avatarEl.textContent      = userInitial(name);
+  avatarEl.style.background = avatarColor(name);
+
+  document.getElementById('user-name-display').textContent = name;
+  document.getElementById('user-meta').textContent =
+    `${data.user.total_visits} visit${data.user.total_visits !== 1 ? 's' : ''} · ${data.user.pixels_placed} pixels`;
+
+  renderVisitStatus(data.newVisit);
+  renderPalette();
+
+  // Load achievements for this user
+  state.achievements = await apiFetchAchievements(name);
+  renderAchievements();
+  renderLeaderboard();
+
+  // Show any newly earned achievements
+  if (data.newAchievements?.length) {
+    enqueueAchievements(data.newAchievements);
+  }
+}
+
+// ─── Polling ──────────────────────────────────────────────────────────────────
+
+function startPolling() {
+  if (state.pollTimer) clearInterval(state.pollTimer);
+  state.pollTimer = setInterval(async () => {
+    try {
+      await loadState();
+    } catch (e) {
+      // silent — network hiccup
+    }
+  }, POLL_INTERVAL);
+}
+
+// ─── Event Bindings ───────────────────────────────────────────────────────────
+
+document.getElementById('name-btn').addEventListener('click', async () => {
+  const input = document.getElementById('name-input');
+  const name  = input.value.trim();
+  if (!name) {
+    showError('Please enter your name.');
+    return;
+  }
+  try {
+    await login(name);
+  } catch (err) {
+    showError(err.message);
+  }
+});
+
+document.getElementById('name-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('name-btn').click();
+});
+
+document.getElementById('switch-user-btn').addEventListener('click', () => {
+  clearInterval(state.countdownTimer);
+  clearInterval(state.pollTimer);
+  state.userName = null;
+  state.user     = null;
+  localStorage.removeItem('shangri-la-name');
+
+  document.getElementById('section-login').style.display   = '';
+  document.getElementById('section-user').style.display    = 'none';
+  document.getElementById('section-palette').style.display = 'none';
+  document.getElementById('name-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+});
+
+document.getElementById('grid-toggle').addEventListener('change', (e) => {
+  state.showGrid = e.target.checked;
+  drawCanvas();
+});
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent    = msg;
+  el.style.display  = '';
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+async function init() {
+  resizeCanvas(state.canvasSize);
+  drawCanvas();
+  renderCanvasSizeLabel();
+
+  // Load global state (canvas + stats) immediately, no login required
+  try {
+    await loadState();
+  } catch (e) {
+    showToast('Could not reach the server. Is it running?');
+  }
+
+  startPolling();
+
+  // Auto-login if name saved
+  const savedName = localStorage.getItem('shangri-la-name');
+  if (savedName) {
+    document.getElementById('name-input').value = savedName;
+    try {
+      await login(savedName);
+    } catch (e) {
+      // Name might not exist yet or other error — let user re-enter
+    }
+  }
+}
+
+init();
