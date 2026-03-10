@@ -16,6 +16,14 @@ const PALETTE = [
   '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
 ];
 
+const ACHIEVEMENT_LEVELS = [
+  { key: 'master_creator',    icon: '👑', label: 'Master Creator'   },
+  { key: 'pixel_artist',      icon: '🖌️', label: 'Pixel Artist'     },
+  { key: 'dedicated_builder', icon: '🏗️', label: 'Dedicated Builder'},
+  { key: 'loyal_visitor',     icon: '⭐',  label: 'Loyal Visitor'    },
+  { key: 'first_pixel',       icon: '🎨', label: 'First Brushstroke'},
+];
+
 const CELL_SIZE     = 10;
 const OCEAN_COLOR   = '#0d3b52';
 const GRID_COLOR    = 'rgba(255,255,255,0.06)';
@@ -34,6 +42,7 @@ const state = {
   nextVisitTime:   null,
   achievements:    { individual: { definitions: [], earned: [] }, group: { definitions: [], earned: [] } },
   leaderboard:     [],
+  members:         [],
   pollTimer:       null,
   countdownTimer:  null,
   achievementQueue: [],
@@ -351,16 +360,24 @@ function renderAchievements() {
   `).join('');
 }
 
-function renderLeaderboard() {
-  const me = state.userName;
-  document.getElementById('leaderboard').innerHTML = state.leaderboard.map((u, i) => `
-    <div class="lb-row ${u.name === me ? 'is-me' : ''}">
-      <div class="lb-rank">${i + 1}</div>
-      <div class="lb-name">${escapeHtml(u.name)}</div>
-      <div class="lb-pixels">${u.pixels_placed}px</div>
-      <div class="lb-visits">${u.total_visits}v</div>
-    </div>
-  `).join('') || '<div style="color:var(--text-muted);font-size:0.82rem">No builders yet.</div>';
+function renderMembers() {
+  document.getElementById('members-board').innerHTML = state.members.map(m => {
+    const level = m.joined
+      ? ACHIEVEMENT_LEVELS.find(l => m.achievements.includes(l.key)) || { icon: '🌱', label: 'Explorer' }
+      : null;
+    return `
+      <div class="member-row ${m.joined ? '' : 'not-joined'} ${m.name === state.userName ? 'is-me' : ''}">
+        <div class="member-avatar" style="${m.joined ? `background:${avatarColor(m.name)}` : ''}">
+          ${m.joined ? escapeHtml(userInitial(m.name)) : '?'}
+        </div>
+        <div class="member-info">
+          <div class="member-name">${escapeHtml(m.name)}</div>
+          <div class="member-level">${m.joined ? `${level.icon} ${level.label}` : 'Yet to arrive…'}</div>
+        </div>
+        ${m.joined ? `<div class="member-stats"><span class="member-px">${m.pixels_placed}px</span><span class="member-v">${m.total_visits}v</span></div>` : ''}
+      </div>
+    `;
+  }).join('') || '<div style="color:var(--text-muted);font-size:0.82rem">No crew yet.</div>';
 }
 
 function renderPalette() {
@@ -424,6 +441,12 @@ async function apiFetchLeaderboard() {
   return res.json();
 }
 
+async function apiFetchMembers() {
+  const res = await fetch('/api/members');
+  if (!res.ok) throw new Error('Failed to fetch members');
+  return res.json();
+}
+
 async function apiPlacePixel(x, y, color) {
   const res = await fetch('/api/place', {
     method:  'POST',
@@ -462,9 +485,9 @@ async function placePixel(x, y, color) {
     renderPixelDots();
     renderVisitStatus(false);
 
-    // Refresh leaderboard
-    state.leaderboard = await apiFetchLeaderboard();
-    renderLeaderboard();
+    // Refresh members board
+    state.members = await apiFetchMembers();
+    renderMembers();
   } catch (err) {
     // Roll back
     state.pixels.delete(`${x},${y}`);
@@ -477,9 +500,9 @@ async function placePixel(x, y, color) {
 }
 
 async function loadState() {
-  const [stateData, leaderboard] = await Promise.all([
+  const [stateData, members] = await Promise.all([
     apiFetchState(),
-    apiFetchLeaderboard(),
+    apiFetchMembers(),
   ]);
 
   const prevSize     = state.canvasSize;
@@ -487,7 +510,7 @@ async function loadState() {
   state.progress     = stateData.progress;
   state.canvasSize   = stateData.canvasSize;
   state.stats        = stateData.stats;
-  state.leaderboard  = leaderboard;
+  state.members      = members;
 
   // Canvas expand animation
   if (state.canvasSize !== prevSize) {
@@ -504,7 +527,7 @@ async function loadState() {
   drawCanvas();
   renderProgress();
   renderStats();
-  renderLeaderboard();
+  renderMembers();
   renderCanvasSizeLabel();
 }
 
@@ -538,7 +561,7 @@ async function login(name) {
   // Load achievements for this user
   state.achievements = await apiFetchAchievements(name);
   renderAchievements();
-  renderLeaderboard();
+  renderMembers();
 
   // Show any newly earned achievements
   if (data.newAchievements?.length) {
