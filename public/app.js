@@ -258,6 +258,101 @@ async function shareAchievement() {
   }
 }
 
+// ─── Trivia ───────────────────────────────────────────────────────────────────
+
+function b64decode(str) {
+  return decodeURIComponent(atob(str).split('').map(c =>
+    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  ).join(''));
+}
+
+function showTriviaState(id) {
+  for (const s of ['offer', 'loading', 'question', 'result']) {
+    document.getElementById(`trivia-${s}-state`).hidden = s !== id;
+  }
+}
+
+function showTriviaOffer() {
+  document.getElementById('trivia-overlay').hidden = false;
+  showTriviaState('offer');
+}
+
+function closeTriviaModal() {
+  document.getElementById('trivia-overlay').hidden = true;
+}
+
+async function loadTriviaQuestion() {
+  showTriviaState('loading');
+  try {
+    const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple&encode=base64');
+    const data = await res.json();
+    if (data.response_code !== 0 || !data.results?.length) throw new Error();
+    const q = data.results[0];
+    const correct  = b64decode(q.correct_answer);
+    const answers  = [correct, ...q.incorrect_answers.map(b64decode)]
+      .sort(() => Math.random() - 0.5);
+
+    document.getElementById('trivia-meta').textContent =
+      `${b64decode(q.category)} · ${b64decode(q.difficulty)}`;
+    document.getElementById('trivia-q').textContent = b64decode(q.question);
+
+    const container = document.getElementById('trivia-answers');
+    container.innerHTML = '';
+    for (const answer of answers) {
+      const btn = document.createElement('button');
+      btn.className = 'trivia-answer-btn';
+      btn.textContent = answer;
+      btn.addEventListener('click', () => handleTriviaAnswer(answer, correct, container));
+      container.appendChild(btn);
+    }
+    showTriviaState('question');
+  } catch {
+    closeTriviaModal();
+    showToast('Could not load question — maybe next time!');
+  }
+}
+
+async function handleTriviaAnswer(chosen, correct, container) {
+  container.querySelectorAll('.trivia-answer-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add('correct');
+    else if (b.textContent === chosen) b.classList.add('wrong');
+  });
+
+  if (chosen === correct) {
+    try {
+      const data = await apiTriviaReward();
+      state.user.pixels_remaining = data.pixels_remaining;
+      state.nextVisitTime = null;
+      await new Promise(r => setTimeout(r, 700));
+      closeTriviaModal();
+      renderPixelDots();
+      renderVisitStatus(false);
+      state.members = await apiFetchMembers();
+      renderMembers();
+    } catch (err) {
+      closeTriviaModal();
+      showToast(err.message);
+    }
+  } else {
+    await new Promise(r => setTimeout(r, 1200));
+    document.getElementById('trivia-result-icon').textContent = '😔';
+    document.getElementById('trivia-result-msg').textContent =
+      'Sorry, maybe next time! Your cooldown has started.';
+    showTriviaState('result');
+  }
+}
+
+async function apiTriviaReward() {
+  const res = await fetch('/api/trivia-reward', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ name: state.userName }),
+  });
+  if (!res.ok) throw new Error((await res.json()).error || 'Failed to claim reward');
+  return res.json();
+}
+
 // ─── Avatar Picker ────────────────────────────────────────────────────────────
 
 function buildAvatarPicker() {
@@ -611,6 +706,8 @@ async function placePixel(x, y, color) {
     renderPixelDots();
     renderVisitStatus(false);
 
+    if (data.offerTrivia) showTriviaOffer();
+
     // Refresh members board
     state.members = await apiFetchMembers();
     renderMembers();
@@ -761,6 +858,9 @@ function startPolling() {
 document.getElementById('undo-btn').addEventListener('click', () => performUndo());
 document.getElementById('popup-dismiss-btn').addEventListener('click', () => dismissAchievementPopup());
 document.getElementById('popup-share-btn').addEventListener('click', () => shareAchievement());
+document.getElementById('trivia-yes-btn').addEventListener('click', () => loadTriviaQuestion());
+document.getElementById('trivia-no-btn').addEventListener('click', () => closeTriviaModal());
+document.getElementById('trivia-close-btn').addEventListener('click', () => closeTriviaModal());
 
 document.getElementById('user-avatar').addEventListener('click', (e) => {
   e.stopPropagation();

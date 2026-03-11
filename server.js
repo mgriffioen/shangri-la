@@ -64,6 +64,7 @@ for (const col of [
   'undo_y INTEGER',
   'undo_prev_color TEXT',
   'undo_prev_user TEXT',
+  'trivia_used INTEGER DEFAULT 0',
 ]) {
   try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
 }
@@ -299,7 +300,8 @@ app.post('/api/login', (req, res) => {
           undo_x           = NULL,
           undo_y           = NULL,
           undo_prev_color  = NULL,
-          undo_prev_user   = NULL
+          undo_prev_user   = NULL,
+          trivia_used      = 0
       WHERE name = ?
     `).run(PIXELS_PER_VISIT, name);
 
@@ -436,6 +438,7 @@ app.post('/api/place', (req, res) => {
     undoAvailable: updatedUser.pixels_remaining > 0,
     nextVisitTime,
     newAchievements,
+    offerTrivia: updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0 && Math.random() < 0.34,
   });
 });
 
@@ -481,6 +484,28 @@ app.post('/api/undo', (req, res) => {
     undonePixel: { x: ux, y: uy },
     restoredPixel,
   });
+});
+
+/**
+ * POST /api/trivia-reward
+ * Awards 8 bonus pixels when the user answers trivia correctly.
+ * Can only be claimed once per cooldown cycle.
+ */
+app.post('/api/trivia-reward', (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name required' });
+
+  const user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (user.trivia_used) return res.status(403).json({ error: 'Trivia reward already claimed this cycle' });
+  if (user.pixels_remaining > 0) return res.status(403).json({ error: 'You still have pixels remaining' });
+
+  db.prepare(`
+    UPDATE users SET pixels_remaining = ?, last_visit = 0, trivia_used = 1 WHERE name = ?
+  `).run(PIXELS_PER_VISIT, name);
+
+  const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  res.json({ success: true, pixels_remaining: updatedUser.pixels_remaining });
 });
 
 /**
