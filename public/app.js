@@ -253,8 +253,8 @@ function renderVisitStatus(newVisit) {
   if (state.user.pixels_remaining > 0) {
     statusEl.className = 'visit-status ' + (newVisit ? 'new-visit' : 'active');
     statusEl.textContent = newVisit
-      ? `🎉 Welcome! You have ${state.user.pixels_remaining} pixels to place.`
-      : `🖌️ You have ${state.user.pixels_remaining} pixel${state.user.pixels_remaining !== 1 ? 's' : ''} left this visit.`;
+      ? `Welcome! You have ${state.user.pixels_remaining} pixels to place.`
+      : `You have ${state.user.pixels_remaining} pixel${state.user.pixels_remaining !== 1 ? 's' : ''} left this visit.`;
     cooldownEl.style.display = 'none';
     pixelsEl.style.display   = 'block';
     renderPixelDots();
