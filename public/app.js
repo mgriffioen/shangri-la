@@ -274,7 +274,7 @@ function startCountdown() {
       clearInterval(state.countdownTimer);
       document.getElementById('cooldown-timer').textContent = '00:00:00';
       // Prompt refresh
-      document.getElementById('visit-status').textContent = '🌅 A new day on the island awaits — refresh to visit!';
+      document.getElementById('visit-status').textContent = 'I’ve got 69 problems, but it’s 420 somewhere: refresh to visit!';
       return;
     }
     document.getElementById('cooldown-timer').textContent = formatCountdown(remaining);
@@ -290,11 +290,11 @@ function renderProgress() {
   document.getElementById('progress-pct').textContent  = pct.toFixed(1) + '%';
 
   const stages = [
-    { min: 0,   label: 'Stage 1 — A tiny isle (32×32)' },
-    { min: 25,  label: 'Stage 2 — The isle expands (48×48)' },
-    { min: 50,  label: 'Stage 3 — A growing island (64×64)' },
-    { min: 75,  label: 'Stage 4 — A vast realm (80×80)' },
-    { min: 100, label: 'Stage 5 — Shangri-La Complete (96×96)' },
+    { min: 0,   label: 'Stage 1 — Raft-sized (32×32)' },
+    { min: 25,  label: 'Stage 2 — Getting Paw Paw vibes... (48×48)' },
+    { min: 50,  label: 'Stage 3 — Frog Hollow says what? (64×64)' },
+    { min: 75,  label: 'Stage 4 — Jello Shots on Shavehead Lake (80×80)' },
+    { min: 100, label: 'Stage 5 — Shangri-La (96×96)' },
   ];
   const stage = [...stages].reverse().find(s => pct >= s.min) || stages[0];
   document.getElementById('canvas-stage-label').textContent = stage.label;
