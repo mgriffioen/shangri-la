@@ -434,7 +434,6 @@ main {
   display: block;
   cursor: crosshair;
   image-rendering: pixelated;
-  touch-action: none;
 }
 
 .canvas-footer {
