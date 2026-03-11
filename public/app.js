@@ -11,7 +11,7 @@ const PALETTE = [
   // Row 3: Vegetation
   '#1b5e20', '#2e7d32', '#43a047', '#81c784', '#c8e6c9',
   // Row 4: Rock / Stone
-  '#37474f', '#607d8b', '#90a4ae', '#cfd8dc', '#ffffff',
+  '#37474f', '#607d8b', '#90a4ae', '#cfd8dc', '#fafafa',
   // Row 5: Accent
   '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
 ];
