@@ -485,7 +485,7 @@ main {
 
 .accordion-summary::after {
   content: '▸';
-  font-size: 0.75rem;
+  font-size: 1.75rem;
   transition: transform 0.2s;
 }
 
