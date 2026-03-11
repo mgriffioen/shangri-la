@@ -695,9 +695,9 @@ main {
     grid-template-rows: auto auto auto;
   }
 
-  .panel-left  { order: 2; }
+  .panel-left  { order: 3; }
   .canvas-area { order: 1; }
-  .panel-right { order: 3; }
+  .panel-right { order: 2; }
 
   .canvas-wrapper {
     max-height: 60vw;
