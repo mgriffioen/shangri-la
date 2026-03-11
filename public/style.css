@@ -786,11 +786,20 @@ details:not([open]) > .accordion-summary {
   main {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
   }
 
   /* Dissolve panels so each card is an independent flex child of main */
   .panel-left,
   .panel-right { display: contents; }
+
+  /* Cards from dissolved panels don't inherit flex-stretch automatically —
+     force full width explicitly */
+  .card,
+  details.accordion {
+    width: 100%;
+    box-sizing: border-box;
+  }
 
   /* Progress and stats are replaced by the header info bar on mobile */
   #section-progress,
@@ -805,7 +814,7 @@ details:not([open]) > .accordion-summary {
   #achievements-accordion { order: 5; }
 
   /* Canvas: fill full width, square aspect ratio */
-  .canvas-area   { align-items: stretch; }
+  .canvas-area { align-items: stretch; }
   .canvas-wrapper {
     width: 100%;
     max-height: none;
@@ -814,7 +823,7 @@ details:not([open]) > .accordion-summary {
   }
   #island-canvas { width: 100%; height: 100%; display: block; }
 
-  /* Palette: landscape grid */
+  /* Palette: landscape grid — auto-fill once section is full width */
   .palette-grid {
     grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
   }
