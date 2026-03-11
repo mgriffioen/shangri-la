@@ -27,7 +27,7 @@ body {
   font-family: 'Segoe UI', system-ui, sans-serif;
   background-color: #c9aa70;
   opacity: 0.8;
-  background: radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#6ecce6 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #6ecce6 1.2000000000000002px, #c9aa70 1.2000000000000002px) -0.6000000000000001px 0;
+  background: radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e6cb6e 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e6cb6e 1.2000000000000002px, #c9aa70 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
   color: var(--text);
   min-height: 100vh;
