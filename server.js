@@ -395,8 +395,10 @@ app.post('/api/place', (req, res) => {
 
   const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
 
+  let nextVisitTime = null;
   if (updatedUser.pixels_remaining === 0) {
     db.prepare('UPDATE users SET last_visit = ? WHERE name = ?').run(now, name);
+    nextVisitTime = now + VISIT_COOLDOWN_MS;
   }
 
   const newAchievements = [
@@ -408,6 +410,7 @@ app.post('/api/place', (req, res) => {
     success: true,
     pixel: { x, y, color, user_name: name },
     pixels_remaining: updatedUser.pixels_remaining,
+    nextVisitTime,
     newAchievements,
   });
 });

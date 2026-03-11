@@ -512,6 +512,7 @@ async function placePixel(x, y, color) {
   try {
     const data = await apiPlacePixel(x, y, color);
     state.user.pixels_remaining = data.pixels_remaining;
+    if (data.nextVisitTime) state.nextVisitTime = data.nextVisitTime;
 
     if (data.newAchievements?.length) {
       enqueueAchievements(data.newAchievements);
