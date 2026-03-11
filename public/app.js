@@ -258,7 +258,7 @@ function renderVisitStatus(newVisit) {
     renderPixelDots();
   } else {
     statusEl.className   = 'visit-status waiting';
-    statusEl.textContent = '⏳ You\'ve used all your pixels. See you in 4 hours 20 minutes!';
+    statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20:00! 🤙';
     cooldownEl.style.display = 'block';
     pixelsEl.style.display   = 'none';
     startCountdown();
