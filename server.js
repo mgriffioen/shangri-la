@@ -61,6 +61,12 @@ db.exec(`
 
 const INDIVIDUAL_ACHIEVEMENTS = [
   {
+    key: 'vouch_for',
+    name: 'I Vouch for Him',
+    description: 'Place 5 pixels on the island',
+    icon: '👍',
+  },
+  {
     key: 'lake_livin',
     name: 'Lake Living',
     description: 'You have begun the journey to Shangri-La',
@@ -172,6 +178,7 @@ function checkIndividualAchievements(userName) {
   );
 
   const checks = [
+    { key: 'vouch_for',       condition: user.pixels_placed >= 5  },
     { key: 'lake_livin',        condition: user.pixels_placed >= 1   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
