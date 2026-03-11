@@ -213,7 +213,7 @@ function checkIndividualAchievements(userName) {
   );
 
   const checks = [
-    { key: 'lake_livin',        condition: user.pixels_placed >= 1   },
+    { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
     { key: 'vouch_for',       condition: user.pixels_placed >= 15  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
