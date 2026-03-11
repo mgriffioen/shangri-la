@@ -142,7 +142,7 @@ canvas.addEventListener('click', async (e) => {
   if (!canPlacePixel()) {
     showToast(
       state.user?.pixels_remaining === 0
-        ? 'No pixels left — come back in 12 hours!'
+        ? 'No pixels left — come back in 4 hours 20 minutes!'
         : 'Log in to place pixels.'
     );
     return;
@@ -258,7 +258,7 @@ function renderVisitStatus(newVisit) {
     renderPixelDots();
   } else {
     statusEl.className   = 'visit-status waiting';
-    statusEl.textContent = '⏳ You\'ve used all your pixels. See you in 12 hours!';
+    statusEl.textContent = '⏳ You\'ve used all your pixels. See you in 4 hours 20 minutes!';
     cooldownEl.style.display = 'block';
     pixelsEl.style.display   = 'none';
     startCountdown();
