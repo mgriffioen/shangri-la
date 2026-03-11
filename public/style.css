@@ -420,6 +420,12 @@ main {
   gap: 8px;
 }
 
+/* Palette lives inside canvas-area on desktop — stretch it to full column width */
+.canvas-area #section-palette {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .canvas-wrapper {
   overflow: auto;
   max-width: 100%;
@@ -921,11 +927,10 @@ details:not([open]) > .accordion-summary {
   #section-progress,
   #section-stats  { display: none; }
 
-  /* Section order */
+  /* Section order — palette is inside .canvas-area so it flows naturally after the canvas */
   #section-login          { order: 1; }
   #section-user           { order: 1; }
   .canvas-area            { order: 2; }
-  #section-palette        { order: 3; }
   #section-hunks          { order: 4; }
   #achievements-accordion { order: 5; }
 
