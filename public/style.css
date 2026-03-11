@@ -54,6 +54,34 @@ header h1 {
   margin-top: 2px;
 }
 
+/* ─── Header Info Bar (mobile only — desktop shows sidebar panels instead) ──── */
+.info-bar { display: none; }
+
+@media (max-width: 860px) {
+  .info-bar {
+    display: block;
+    margin-top: 12px;
+  }
+  .info-bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 7px;
+  }
+  .info-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+  .info-bar-stats {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.85);
+  }
+}
+
 /* ─── Main Layout ────────────────────────────────────────────────────────────── */
 main {
   display: grid;
@@ -760,18 +788,34 @@ details:not([open]) > .accordion-summary {
     flex-direction: column;
   }
 
-  /* Dissolve panels so each card becomes a direct flex child */
+  /* Dissolve panels so each card is an independent flex child of main */
   .panel-left,
   .panel-right { display: contents; }
 
+  /* Progress and stats are replaced by the header info bar on mobile */
+  #section-progress,
+  #section-stats  { display: none; }
+
+  /* Section order */
   #section-login          { order: 1; }
   #section-user           { order: 1; }
-  #section-progress       { order: 2; }
-  #section-stats          { order: 3; }
-  .canvas-area            { order: 4; }
-  #section-palette        { order: 5; }
-  #section-hunks          { order: 6; }
-  #achievements-accordion { order: 7; }
+  .canvas-area            { order: 2; }
+  #section-palette        { order: 3; }
+  #section-hunks          { order: 4; }
+  #achievements-accordion { order: 5; }
 
-  .canvas-wrapper { max-height: 60vw; }
+  /* Canvas: fill full width, square aspect ratio */
+  .canvas-area   { align-items: stretch; }
+  .canvas-wrapper {
+    width: 100%;
+    max-height: none;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  #island-canvas { width: 100%; height: 100%; display: block; }
+
+  /* Palette: landscape grid */
+  .palette-grid {
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  }
 }

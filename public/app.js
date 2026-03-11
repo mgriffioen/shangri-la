@@ -304,6 +304,14 @@ function renderProgress() {
   document.getElementById('canvas-stage-label').textContent = stage.label;
 }
 
+function renderInfoBar() {
+  const pct = Math.min(100, state.progress);
+  document.getElementById('info-bar-fill').style.width = pct + '%';
+  const { totalPixels, uniqueVisitors } = state.stats || {};
+  document.getElementById('info-bar-stats').textContent =
+    `${pct.toFixed(1)}% · ${totalPixels ?? 0} px placed · ${uniqueVisitors ?? 0}/8 builders`;
+}
+
 function renderStats() {
   const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
 
@@ -553,6 +561,7 @@ async function loadState() {
   drawCanvas();
   renderProgress();
   renderStats();
+  renderInfoBar();
   renderMembers();
   renderCanvasSizeLabel();
 }
