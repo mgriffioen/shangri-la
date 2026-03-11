@@ -10,8 +10,9 @@ const PORT = process.env.PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 8;
-const VISIT_COOLDOWN_MS = 260 * 60 * 1000; // 4 hours 20 minutes
-const PROGRESS_PER_VISIT = 0.1;                 // 0.1% per visit → 1000 visits = 100%
+const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
+// const VISIT_COOLDOWN_MS = 10 * 1000             // 10 second for testing
+const PROGRESS_PER_VISIT = 0.5;                 // 0.5% per visit → 200 visits = 100%
 const MAX_GROUP_SIZE = 8;
 
 // ─── Database Setup ────────────────────────────────────────────────────────────
@@ -79,10 +80,22 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🌅',
   },
   {
+    key: 'true_friend',
+    name: 'True Friend',
+    description: 'You visited a second time',
+    icon: '🥹',
+  },
+  {
     key: 'tgif',
     name: 'TGIF',
     description: 'Visit the island 5 times',
     icon: '⭐',
+  },
+  {
+    key: 'vouch_for',
+    name: 'I Vouch for Him',
+    description: 'Place 21 pixels on the island',
+    icon: '👍',
   },
   {
     key: 'perfect_spiral',
@@ -93,7 +106,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'ham_point',
     name: 'Ham Point',
-    description: 'Place 22 pixels on the island',
+    description: 'Place 88 pixels on the island',
     icon: '🍖',
   },
   {
@@ -107,6 +120,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     name: 'Nice',
     description: 'Place 69 pixels on the island',
     icon: '👀',
+  },
+  {
+    key: 'kubb_god',
+    name: 'Kubb God',
+    description: 'Place 111 pixels on the island',
+    icon: '👑',
   },
   {
     key: 'omp',
@@ -124,6 +143,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🚢',
   },
   {
+    key: 'hot_dog_house',
+    name: 'Hot Dog House',
+    description: '44 pixels have been placed on the island',
+    icon: '🌭',
+  },
+  {
     key: 'slide_raft',
     name: 'The Slide is on the Raft',
     description: '100 pixels have been placed on the island',
@@ -134,6 +159,12 @@ const GROUP_ACHIEVEMENTS = [
     name: 'NICE',
     description: '420 pixels have been placed on the island',
     icon: '🤙',
+  },
+  {
+    key: 'this_economy',
+    name: 'In This Economy?',
+    description: 'Island progress has reached 33%',
+    icon: '💰',
   },
   {
     key: 'home_invasion',
@@ -191,11 +222,14 @@ function checkIndividualAchievements(userName) {
 
   const checks = [
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
+    { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
+    { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
-    { key: 'ham_point',       condition: user.pixels_placed >= 22  },
+    { key: 'ham_point',       condition: user.pixels_placed >= 88  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
+    { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
   ];
 
@@ -227,8 +261,10 @@ function checkGroupAchievements() {
 
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
+    { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
+    { key: 'this_economy',  condition: progress       >= 33             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
