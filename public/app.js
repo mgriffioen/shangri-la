@@ -315,17 +315,12 @@ function renderInfoBar() {
 function renderStats() {
   const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
 
-  const latestGroup = state.achievements.group.earned
-    .slice().sort((a, b) => b.earned_at - a.earned_at)[0];
-  const latestGroupDef = latestGroup
-    ? state.achievements.group.definitions.find(d => d.key === latestGroup.achievement_key)
-    : null;
-
-  const groupRow = latestGroupDef ? `
-    <div class="stat-group-achievement">
-      <span class="stat-group-icon">${latestGroupDef.icon}</span>
-      <span class="stat-group-name">${latestGroupDef.name}</span>
-    </div>` : '';
+  const earnedGroupKeys = new Set(state.achievements.group.earned.map(e => e.achievement_key));
+  const groupAchievementsHtml = state.achievements.group.definitions.map(d => `
+    <div class="stat-group-achievement ${earnedGroupKeys.has(d.key) ? 'earned' : 'locked'}">
+      <span class="stat-group-icon">${d.icon}</span>
+      <span class="stat-group-name">${d.name}</span>
+    </div>`).join('');
 
   document.getElementById('stats-grid').innerHTML = `
     <div class="stat-tile">
@@ -344,7 +339,7 @@ function renderStats() {
       <div class="stat-value">${state.canvasSize}×${state.canvasSize}</div>
       <div class="stat-label">Canvas size</div>
     </div>
-    ${groupRow}
+    ${groupAchievementsHtml}
   `;
 }
 
@@ -394,10 +389,19 @@ function renderAchievements() {
 }
 
 function renderMembers() {
-  document.getElementById('members-board').innerHTML = state.members.map(m => {
-    const level = m.joined
-      ? ACHIEVEMENT_LEVELS.find(l => m.achievements.includes(l.key)) || { icon: '🌱', label: 'Explorer' }
-      : null;
+  const sorted = [...state.members].sort((a, b) => {
+    if (a.joined && !b.joined) return -1;
+    if (!a.joined && b.joined) return 1;
+    return b.pixels_placed - a.pixels_placed;
+  });
+
+  document.getElementById('members-board').innerHTML = sorted.map(m => {
+    const earnedBadges = m.joined
+      ? state.achievements.individual.definitions
+          .filter(d => m.achievements.includes(d.key))
+          .map(d => `<span class="member-badge">${d.icon} ${d.name}</span>`)
+          .join('')
+      : '';
     return `
       <div class="member-row ${m.joined ? '' : 'not-joined'} ${m.name === state.userName ? 'is-me' : ''}">
         <div class="member-avatar" style="${m.joined ? `background:${avatarColor(m.name)}` : ''}">
@@ -405,7 +409,8 @@ function renderMembers() {
         </div>
         <div class="member-info">
           <div class="member-name">${escapeHtml(m.name)}</div>
-          <div class="member-level">${m.joined ? `${level.icon} ${level.label}` : 'Yet to arrive…'}</div>
+          ${m.joined && earnedBadges ? `<div class="member-badges">${earnedBadges}</div>` : ''}
+          ${!m.joined ? `<div class="member-level">Yet to arrive…</div>` : ''}
         </div>
         ${m.joined ? `<div class="member-stats"><span class="member-px">${m.pixels_placed}px</span><span class="member-v">${m.total_visits}v</span></div>` : ''}
       </div>

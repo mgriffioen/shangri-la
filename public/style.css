@@ -453,6 +453,11 @@ main {
   gap: 8px;
 }
 
+.stat-group-achievement.locked {
+  opacity: 0.4;
+  filter: grayscale(0.5);
+}
+
 .stat-group-icon { font-size: 1.1rem; }
 
 .stat-group-name {
@@ -743,6 +748,28 @@ details:not([open]) > .accordion-summary {
   font-size: 0.72rem;
   color: var(--text-muted);
   margin-top: 1px;
+}
+
+.member-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 3px;
+}
+
+.member-badge {
+  font-size: 0.68rem;
+  background: var(--sand-mid);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--ocean-dark);
+  white-space: nowrap;
+}
+
+.member-row.is-me .member-badge {
+  background: #d0e8fa;
+  border-color: #90caf9;
 }
 
 .member-stats {
