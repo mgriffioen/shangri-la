@@ -137,6 +137,39 @@
 
   </main>
 
+  <!-- ─── Trivia Modal ─────────────────────────────────────────────────────── -->
+  <div id="trivia-overlay" class="trivia-overlay" hidden>
+    <div class="trivia-card">
+      <!-- Offer state -->
+      <div id="trivia-offer-state" class="trivia-state">
+        <div class="trivia-emoji">🎲</div>
+        <h3>Lucky draw!</h3>
+        <p>Answer a trivia question correctly to win 8 bonus pixels.</p>
+        <div class="trivia-btns">
+          <button id="trivia-yes-btn" class="trivia-btn-primary">Let's go!</button>
+          <button id="trivia-no-btn" class="trivia-btn-ghost">No thanks</button>
+        </div>
+      </div>
+      <!-- Loading state -->
+      <div id="trivia-loading-state" class="trivia-state" hidden>
+        <div class="trivia-emoji">⏳</div>
+        <p>Loading question…</p>
+      </div>
+      <!-- Question state -->
+      <div id="trivia-question-state" class="trivia-state" hidden>
+        <div class="trivia-meta" id="trivia-meta"></div>
+        <p class="trivia-q" id="trivia-q"></p>
+        <div class="trivia-answers" id="trivia-answers"></div>
+      </div>
+      <!-- Result state -->
+      <div id="trivia-result-state" class="trivia-state" hidden>
+        <div class="trivia-emoji" id="trivia-result-icon"></div>
+        <p id="trivia-result-msg"></p>
+        <button id="trivia-close-btn" class="trivia-btn-ghost">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ─── Achievement Popup ────────────────────────────────────────────────── -->
   <div id="achievement-popup" class="achievement-popup" aria-hidden="true">
     <div class="popup-inner">
