@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 5;
-const VISIT_COOLDOWN_MS = 12 * 60 * 60 * 1000; // 12 hours
+const VISIT_COOLDOWN_MS = 260 * 60 * 1000; // 4 hours 20 minutes
 const PROGRESS_PER_VISIT = 0.5;                 // 0.5% per visit → 200 visits = 100%
 const MAX_GROUP_SIZE = 8;
 
@@ -251,7 +251,7 @@ function checkGroupAchievements() {
  * Body: { name: string }
  *
  * Creates user if new.
- * If 12 h have elapsed since last_visit, registers a new visit:
+ * If 4h20m have elapsed since last_visit, registers a new visit:
  *   - increments total_visits
  *   - resets pixels_remaining to PIXELS_PER_VISIT
  *   - advances global progress
@@ -368,7 +368,7 @@ app.post('/api/place', (req, res) => {
   }
 
   if (user.pixels_remaining <= 0) {
-    return res.status(403).json({ error: 'No pixels remaining for this visit. Come back in 12 hours!' });
+    return res.status(403).json({ error: 'No pixels remaining for this visit. Come back in 4 hours 20 minutes!' });
   }
 
   if (!/^#[0-9a-fA-F]{6}$/.test(color)) {
