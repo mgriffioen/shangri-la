@@ -306,6 +306,19 @@ function renderProgress() {
 
 function renderStats() {
   const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
+
+  const latestGroup = state.achievements.group.earned
+    .slice().sort((a, b) => b.earned_at - a.earned_at)[0];
+  const latestGroupDef = latestGroup
+    ? state.achievements.group.definitions.find(d => d.key === latestGroup.achievement_key)
+    : null;
+
+  const groupRow = latestGroupDef ? `
+    <div class="stat-group-achievement">
+      <span class="stat-group-icon">${latestGroupDef.icon}</span>
+      <span class="stat-group-name">${latestGroupDef.name}</span>
+    </div>` : '';
+
   document.getElementById('stats-grid').innerHTML = `
     <div class="stat-tile">
       <div class="stat-value">${totalPixels ?? 0}</div>
@@ -323,7 +336,19 @@ function renderStats() {
       <div class="stat-value">${state.canvasSize}×${state.canvasSize}</div>
       <div class="stat-label">Canvas size</div>
     </div>
+    ${groupRow}
   `;
+}
+
+function renderUserAchievement() {
+  const earned = state.achievements.individual.earned;
+  const latest = earned.slice().sort((a, b) => b.earned_at - a.earned_at)[0];
+  const def = latest
+    ? state.achievements.individual.definitions.find(d => d.key === latest.achievement_key)
+    : null;
+  document.getElementById('user-achievement').textContent = def
+    ? `${def.icon} ${def.name}`
+    : '';
 }
 
 function renderAchievements() {
@@ -522,6 +547,7 @@ async function loadState() {
   if (state.userName) {
     state.achievements = await apiFetchAchievements(state.userName);
     renderAchievements();
+    renderUserAchievement();
   }
 
   drawCanvas();
@@ -561,6 +587,8 @@ async function login(name) {
   // Load achievements for this user
   state.achievements = await apiFetchAchievements(name);
   renderAchievements();
+  renderUserAchievement();
+  renderStats();
   renderMembers();
 
   // Show any newly earned achievements
@@ -602,19 +630,6 @@ document.getElementById('name-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') document.getElementById('name-btn').click();
 });
 
-document.getElementById('switch-user-btn').addEventListener('click', () => {
-  clearInterval(state.countdownTimer);
-  clearInterval(state.pollTimer);
-  state.userName = null;
-  state.user     = null;
-  localStorage.removeItem('shangri-la-name');
-
-  document.getElementById('section-login').style.display   = '';
-  document.getElementById('section-user').style.display    = 'none';
-  document.getElementById('section-palette').style.display = 'none';
-  document.getElementById('name-input').value = '';
-  document.getElementById('login-error').style.display = 'none';
-});
 
 document.getElementById('grid-toggle').addEventListener('change', (e) => {
   state.showGrid = e.target.checked;

@@ -193,6 +193,13 @@ main {
   margin-top: 1px;
 }
 
+.user-achievement {
+  font-size: 0.78rem;
+  color: var(--ocean-mid);
+  margin-top: 2px;
+  font-weight: 600;
+}
+
 /* ─── Visit Status ───────────────────────────────────────────────────────────── */
 .visit-status {
   font-size: 0.85rem;
@@ -406,6 +413,24 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.4px;
   margin-top: 1px;
+}
+
+.stat-group-achievement {
+  grid-column: 1 / -1;
+  background: var(--sand-mid);
+  border-radius: 8px;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-group-icon { font-size: 1.1rem; }
+
+.stat-group-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ocean-dark);
 }
 
 /* ─── Accordion ──────────────────────────────────────────────────────────────── */
