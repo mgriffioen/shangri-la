@@ -168,8 +168,11 @@ function canPlacePixel() {
   return state.user && state.user.pixels_remaining > 0;
 }
 
-function userInitial(name) {
-  return (name || '?')[0].toUpperCase();
+function avatarEmoji(name) {
+  const emojis = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🦚','🍉','🌊','🐿️','🦭','🦜','🌵'];
+  let hash = 0;
+  for (const ch of (name || '')) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffffffff;
+  return emojis[Math.abs(hash) % emojis.length];
 }
 
 /** Deterministic avatar color from name */
@@ -407,7 +410,7 @@ function renderMembers() {
     return `
       <div class="member-row ${m.joined ? '' : 'not-joined'} ${m.name === state.userName ? 'is-me' : ''}">
         <div class="member-avatar" style="${m.joined ? `background:${avatarColor(m.name)}` : ''}">
-          ${m.joined ? escapeHtml(userInitial(m.name)) : '?'}
+          ${m.joined ? avatarEmoji(m.name) : '?'}
         </div>
         <div class="member-info">
           <div class="member-name">${escapeHtml(m.name)}</div>
@@ -590,7 +593,7 @@ async function login(name) {
 
   // Populate user panel
   const avatarEl = document.getElementById('user-avatar');
-  avatarEl.textContent      = userInitial(name);
+  avatarEl.textContent      = avatarEmoji(name);
   avatarEl.style.background = avatarColor(name);
 
   document.getElementById('user-name-display').textContent = name;
