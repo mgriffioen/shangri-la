@@ -282,18 +282,17 @@ app.post('/api/login', (req, res) => {
   }
 
   const elapsed  = now - user.last_visit;
-  const canVisit = elapsed >= VISIT_COOLDOWN_MS;
+  const canVisit = user.pixels_remaining === 0 && elapsed >= VISIT_COOLDOWN_MS;
   let newVisit       = false;
   let newAchievements = [];
 
   if (canVisit) {
     db.prepare(`
       UPDATE users
-      SET last_visit       = ?,
-          total_visits     = total_visits + 1,
+      SET total_visits     = total_visits + 1,
           pixels_remaining = ?
       WHERE name = ?
-    `).run(now, PIXELS_PER_VISIT, name);
+    `).run(PIXELS_PER_VISIT, name);
 
     const currentProgress = getProgress();
     const newProgress = Math.min(100, currentProgress + PROGRESS_PER_VISIT);
@@ -395,6 +394,10 @@ app.post('/api/place', (req, res) => {
   `).run(name);
 
   const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+
+  if (updatedUser.pixels_remaining === 0) {
+    db.prepare('UPDATE users SET last_visit = ? WHERE name = ?').run(now, name);
+  }
 
   const newAchievements = [
     ...checkIndividualAchievements(name),
