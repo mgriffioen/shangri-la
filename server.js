@@ -122,6 +122,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '👏',
   },
   {
+    key: 'cmon',
+    name: 'C‘mon',
+    description: 'Visit the island 55 times',
+    icon: '🚬',
+  },
+  {
     key: 'nice',
     name: 'Nice',
     description: 'Place 69 pixels on the island',
@@ -159,6 +165,12 @@ const GROUP_ACHIEVEMENTS = [
     name: 'The Slide is on the Raft',
     description: '100 pixels have been placed on the island',
     icon: '🛝',
+  },
+  {
+    key: 'case_closed',
+    name: 'Case Closed',
+    description: '199 pixels have been placed on the island',
+    icon: '👨‍⚖️',
   },
   {
     key: 'nice_nice',
@@ -247,6 +259,7 @@ function checkIndividualAchievements(userName) {
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
     { key: 'ham_point',       condition: user.pixels_placed >= 88  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
+    { key: 'cmon',  condition: user.total_visits  >= 55  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
@@ -288,6 +301,7 @@ function checkGroupAchievements() {
     { key: 'bring_it_on',     condition: getMembersWithMinVisits(3) >= MAX_GROUP_SIZE },
     { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
+    { key: 'case_closed',  condition: totalPixels    >= 199            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'this_economy',  condition: progress       >= 33             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
