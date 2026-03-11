@@ -16,13 +16,6 @@ const PALETTE = [
   '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
 ];
 
-const ACHIEVEMENT_LEVELS = [
-  { key: 'master_creator',    icon: '👑', label: 'Master Creator'   },
-  { key: 'pixel_artist',      icon: '🖌️', label: 'Pixel Artist'     },
-  { key: 'dedicated_builder', icon: '🏗️', label: 'Dedicated Builder'},
-  { key: 'loyal_visitor',     icon: '⭐',  label: 'Loyal Visitor'    },
-  { key: 'first_pixel',       icon: '🎨', label: 'First Brushstroke'},
-];
 
 const CELL_SIZE     = 10;
 const OCEAN_COLOR   = '#0d3b52';
