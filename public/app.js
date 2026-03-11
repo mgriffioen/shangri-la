@@ -338,7 +338,7 @@ async function handleTriviaAnswer(chosen, correct, container) {
     await new Promise(r => setTimeout(r, 1200));
     document.getElementById('trivia-result-icon').textContent = '😔';
     document.getElementById('trivia-result-msg').textContent =
-      'Sorry, maybe next time! Your cooldown has started.';
+      'Sorry, maybe next time!';
     showTriviaState('result');
   }
 }
