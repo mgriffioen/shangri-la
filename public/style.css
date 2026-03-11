@@ -523,7 +523,7 @@ main {
 
 /* ─── Accordion ──────────────────────────────────────────────────────────────── */
 .accordion {
-  padding-bottom: 0;
+  padding-bottom: 14px;
 }
 
 .accordion-summary {
@@ -544,7 +544,7 @@ main {
 .accordion-summary::-webkit-details-marker { display: none; }
 
 .accordion-summary::after {
-  content: '▸';
+  content: '➕';
   font-size: 1.75rem;
   transition: transform 0.2s;
 }
@@ -558,7 +558,7 @@ details[open] > .accordion-summary {
 }
 
 details:not([open]) > .accordion-summary {
-  padding-bottom: 14px;
+  padding-bottom: 0;
 }
 
 /* ─── Achievements ───────────────────────────────────────────────────────────── */
