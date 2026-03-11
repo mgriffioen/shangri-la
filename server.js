@@ -79,6 +79,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🏈',
   },
   {
+    key: 'ham_point',
+    name: 'Ham Point',
+    description: 'Place 22 pixels on the island',
+    icon: '🍖',
+  },
+  {
     key: 'gets_it',
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
@@ -120,7 +126,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'home_invasion',
     name: 'Home Invasion!!',
-    description: '500 pixels have been placed on the island',
+    description: '666 pixels have been placed on the island',
     icon: '🏚️',
   },
   {
@@ -175,6 +181,7 @@ function checkIndividualAchievements(userName) {
     { key: 'lake_livin',        condition: user.pixels_placed >= 1   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
+    { key: 'ham_point',       condition: user.pixels_placed >= 22  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
@@ -210,7 +217,7 @@ function checkGroupAchievements() {
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
-    { key: 'home_invasion',   condition: totalPixels    >= 500            },
+    { key: 'home_invasion',   condition: totalPixels    >= 666            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
   ];
