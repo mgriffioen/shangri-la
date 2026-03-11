@@ -166,7 +166,7 @@ function canPlacePixel() {
   return state.user && state.user.pixels_remaining > 0;
 }
 
-const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🦚','🍉','🌊','🐿️','🦭','🦁','🌵'];
+const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
 
 function avatarEmoji(name) {
   let hash = 0;
