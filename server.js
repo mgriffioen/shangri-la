@@ -135,6 +135,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🚢',
   },
   {
+    key: 'hot_dog_house',
+    name: 'Hot Dog House',
+    description: '44 pixels have been placed on the island',
+    icon: '🌭',
+  },
+  {
     key: 'slide_raft',
     name: 'The Slide is on the Raft',
     description: '100 pixels have been placed on the island',
@@ -246,6 +252,7 @@ function checkGroupAchievements() {
 
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
+    { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'this_economy',  condition: progress       >= 33             },
