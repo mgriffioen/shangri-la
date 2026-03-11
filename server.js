@@ -87,7 +87,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'vouch_for',
     name: 'I Vouch for Him',
-    description: 'Place 5 pixels on the island',
+    description: 'Place 21 pixels on the island',
     icon: '👍',
   },
   {
@@ -99,7 +99,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'ham_point',
     name: 'Ham Point',
-    description: 'Place 22 pixels on the island',
+    description: 'Place 88 pixels on the island',
     icon: '🍖',
   },
   {
@@ -216,9 +216,9 @@ function checkIndividualAchievements(userName) {
   const checks = [
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
-    { key: 'vouch_for',       condition: user.pixels_placed >= 15  },
+    { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
-    { key: 'ham_point',       condition: user.pixels_placed >= 22  },
+    { key: 'ham_point',       condition: user.pixels_placed >= 88  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
