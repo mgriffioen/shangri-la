@@ -316,8 +316,10 @@ function renderStats() {
   const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
 
   const earnedGroupKeys = new Set(state.achievements.group.earned.map(e => e.achievement_key));
-  const groupAchievementsHtml = state.achievements.group.definitions.map(d => `
-    <div class="stat-group-achievement ${earnedGroupKeys.has(d.key) ? 'earned' : 'locked'}">
+  const groupAchievementsHtml = state.achievements.group.definitions
+    .filter(d => earnedGroupKeys.has(d.key))
+    .map(d => `
+    <div class="stat-group-achievement earned">
       <span class="stat-group-icon">${d.icon}</span>
       <span class="stat-group-name">${d.name}</span>
     </div>`).join('');
