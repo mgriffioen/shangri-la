@@ -33,6 +33,8 @@ const state = {
   selectedColor:   PALETTE[8],   // default: burlywood sand
   hoverCell:       null,         // { x, y } | null
   nextVisitTime:   null,
+  undoAvailable:   false,
+  pendingUndo:     null,  // { x, y, prevColor, prevUser } for optimistic rollback
   achievements:    { individual: { definitions: [], earned: [] }, group: { definitions: [], earned: [] } },
   leaderboard:     [],
   members:         [],
@@ -256,6 +258,7 @@ function renderVisitStatus(newVisit) {
     cooldownEl.style.display = 'none';
     pixelsEl.style.display   = 'block';
     renderPixelDots();
+    document.getElementById('undo-btn').style.display = state.undoAvailable ? 'inline-block' : 'none';
   } else {
     statusEl.className   = 'visit-status waiting';
     statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20:00! 🤙';
@@ -499,12 +502,30 @@ async function apiPlacePixel(x, y, color) {
   return res.json();
 }
 
+async function apiUndoPixel() {
+  const res = await fetch('/api/undo', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ name: state.userName }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to undo');
+  }
+  return res.json();
+}
+
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
 async function placePixel(x, y, color) {
+  // Save undo state before optimistic update
+  const prevPixel = state.pixels.get(`${x},${y}`) ?? null;
+  state.pendingUndo = { x, y, prevColor: prevPixel?.color ?? null, prevUser: prevPixel?.user_name ?? null };
+
   // Optimistic update
   state.pixels.set(`${x},${y}`, { x, y, color, user_name: state.userName });
   state.user.pixels_remaining--;
+  state.undoAvailable = state.user.pixels_remaining > 0;
   drawCanvas();
   renderPixelDots();
   renderVisitStatus(false);
@@ -512,6 +533,7 @@ async function placePixel(x, y, color) {
   try {
     const data = await apiPlacePixel(x, y, color);
     state.user.pixels_remaining = data.pixels_remaining;
+    state.undoAvailable = data.undoAvailable ?? false;
     if (data.nextVisitTime) state.nextVisitTime = data.nextVisitTime;
 
     if (data.newAchievements?.length) {
@@ -532,9 +554,48 @@ async function placePixel(x, y, color) {
     // Roll back
     state.pixels.delete(`${x},${y}`);
     state.user.pixels_remaining++;
+    state.undoAvailable = false;
+    state.pendingUndo = null;
     drawCanvas();
     renderPixelDots();
     renderVisitStatus(false);
+    showToast(err.message);
+  }
+}
+
+async function performUndo() {
+  if (!state.undoAvailable || !state.pendingUndo) return;
+
+  const { x, y, prevColor, prevUser } = state.pendingUndo;
+
+  // Optimistic update
+  state.undoAvailable = false;
+  state.pendingUndo = null;
+  if (prevColor) {
+    state.pixels.set(`${x},${y}`, { x, y, color: prevColor, user_name: prevUser });
+  } else {
+    state.pixels.delete(`${x},${y}`);
+  }
+  state.user.pixels_remaining++;
+  drawCanvas();
+  renderPixelDots();
+  renderVisitStatus(false);
+
+  try {
+    const data = await apiUndoPixel();
+    state.user.pixels_remaining = data.pixels_remaining;
+    // Sync canvas with server truth
+    if (data.restoredPixel) {
+      state.pixels.set(`${data.restoredPixel.x},${data.restoredPixel.y}`, data.restoredPixel);
+    } else if (data.undonePixel) {
+      state.pixels.delete(`${data.undonePixel.x},${data.undonePixel.y}`);
+    }
+    drawCanvas();
+    renderPixelDots();
+    renderVisitStatus(false);
+    state.members = await apiFetchMembers();
+    renderMembers();
+  } catch (err) {
     showToast(err.message);
   }
 }
@@ -576,9 +637,10 @@ async function loadState() {
 async function login(name) {
   const data = await apiLogin(name);
 
-  state.userName     = name;
-  state.user         = data.user;
+  state.userName      = name;
+  state.user          = data.user;
   state.nextVisitTime = data.nextVisitTime;
+  state.undoAvailable = data.undoAvailable ?? false;
 
   // Save to localStorage for next time
   localStorage.setItem('shangri-la-name', name);
@@ -627,6 +689,8 @@ function startPolling() {
 }
 
 // ─── Event Bindings ───────────────────────────────────────────────────────────
+
+document.getElementById('undo-btn').addEventListener('click', () => performUndo());
 
 document.getElementById('name-btn').addEventListener('click', async () => {
   const input = document.getElementById('name-input');

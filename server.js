@@ -57,6 +57,17 @@ db.exec(`
   );
 `);
 
+// Add undo columns if they don't exist yet (safe migration)
+for (const col of [
+  'undo_available INTEGER DEFAULT 0',
+  'undo_x INTEGER',
+  'undo_y INTEGER',
+  'undo_prev_color TEXT',
+  'undo_prev_user TEXT',
+]) {
+  try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
+}
+
 // ─── Achievement Definitions ───────────────────────────────────────────────────
 
 const INDIVIDUAL_ACHIEVEMENTS = [
@@ -304,7 +315,12 @@ app.post('/api/login', (req, res) => {
     db.prepare(`
       UPDATE users
       SET total_visits     = total_visits + 1,
-          pixels_remaining = ?
+          pixels_remaining = ?,
+          undo_available   = 0,
+          undo_x           = NULL,
+          undo_y           = NULL,
+          undo_prev_color  = NULL,
+          undo_prev_user   = NULL
       WHERE name = ?
     `).run(PIXELS_PER_VISIT, name);
 
@@ -333,6 +349,7 @@ app.post('/api/login', (req, res) => {
     newAchievements,
     canVisit,
     nextVisitTime: user.last_visit + VISIT_COOLDOWN_MS,
+    undoAvailable: user.undo_available === 1 && user.pixels_remaining > 0,
   });
 });
 
@@ -395,6 +412,9 @@ app.post('/api/place', (req, res) => {
 
   const now = Date.now();
 
+  // Save current pixel at this position for undo (may be null if empty)
+  const prevPixel = db.prepare('SELECT color, user_name FROM pixels WHERE x = ? AND y = ?').get(x, y);
+
   db.prepare(`
     INSERT OR REPLACE INTO pixels (x, y, color, user_name, placed_at)
     VALUES (?, ?, ?, ?, ?)
@@ -411,8 +431,18 @@ app.post('/api/place', (req, res) => {
 
   let nextVisitTime = null;
   if (updatedUser.pixels_remaining === 0) {
-    db.prepare('UPDATE users SET last_visit = ? WHERE name = ?').run(now, name);
+    // Final pixel — start cooldown, no undo allowed
+    db.prepare(`
+      UPDATE users SET last_visit = ?, undo_available = 0, undo_x = NULL, undo_y = NULL,
+        undo_prev_color = NULL, undo_prev_user = NULL WHERE name = ?
+    `).run(now, name);
     nextVisitTime = now + VISIT_COOLDOWN_MS;
+  } else {
+    // Save undo state
+    db.prepare(`
+      UPDATE users SET undo_available = 1, undo_x = ?, undo_y = ?,
+        undo_prev_color = ?, undo_prev_user = ? WHERE name = ?
+    `).run(x, y, prevPixel?.color ?? null, prevPixel?.user_name ?? null, name);
   }
 
   const newAchievements = [
@@ -424,8 +454,53 @@ app.post('/api/place', (req, res) => {
     success: true,
     pixel: { x, y, color, user_name: name },
     pixels_remaining: updatedUser.pixels_remaining,
+    undoAvailable: updatedUser.pixels_remaining > 0,
     nextVisitTime,
     newAchievements,
+  });
+});
+
+/**
+ * POST /api/undo
+ * Undoes the last pixel placement for the current visit.
+ */
+app.post('/api/undo', (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name required' });
+
+  const user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (!user.undo_available) return res.status(403).json({ error: 'Nothing to undo' });
+
+  const { undo_x: ux, undo_y: uy, undo_prev_color: prevColor, undo_prev_user: prevUser } = user;
+
+  let restoredPixel = null;
+  if (prevColor) {
+    db.prepare('INSERT OR REPLACE INTO pixels (x, y, color, user_name) VALUES (?, ?, ?, ?)').run(ux, uy, prevColor, prevUser);
+    restoredPixel = { x: ux, y: uy, color: prevColor, user_name: prevUser };
+  } else {
+    db.prepare('DELETE FROM pixels WHERE x = ? AND y = ?').run(ux, uy);
+  }
+
+  db.prepare(`
+    UPDATE users SET
+      pixels_remaining = pixels_remaining + 1,
+      pixels_placed    = pixels_placed - 1,
+      undo_available   = 0,
+      undo_x           = NULL,
+      undo_y           = NULL,
+      undo_prev_color  = NULL,
+      undo_prev_user   = NULL
+    WHERE name = ?
+  `).run(name);
+
+  const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+
+  res.json({
+    success: true,
+    pixels_remaining: updatedUser.pixels_remaining,
+    undonePixel: { x: ux, y: uy },
+    restoredPixel,
   });
 });
 
