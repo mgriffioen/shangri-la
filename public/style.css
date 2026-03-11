@@ -408,6 +408,46 @@ main {
   margin-top: 1px;
 }
 
+/* ─── Accordion ──────────────────────────────────────────────────────────────── */
+.accordion {
+  padding-bottom: 0;
+}
+
+.accordion-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  padding-bottom: 10px;
+  user-select: none;
+}
+
+.accordion-summary::-webkit-details-marker { display: none; }
+
+.accordion-summary::after {
+  content: '▸';
+  font-size: 0.75rem;
+  transition: transform 0.2s;
+}
+
+details[open] > .accordion-summary::after {
+  transform: rotate(90deg);
+}
+
+details[open] > .accordion-summary {
+  padding-bottom: 10px;
+}
+
+details:not([open]) > .accordion-summary {
+  padding-bottom: 0;
+}
+
 /* ─── Achievements ───────────────────────────────────────────────────────────── */
 .achievements-list {
   display: flex;
