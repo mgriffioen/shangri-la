@@ -178,6 +178,7 @@ function checkIndividualAchievements(userName) {
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
+  ];
 
   const insertStmt = db.prepare(
     'INSERT OR IGNORE INTO user_achievements (user_name, achievement_key) VALUES (?, ?)'
