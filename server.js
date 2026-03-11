@@ -136,6 +136,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🤙',
   },
   {
+    key: 'this_economy',
+    name: 'In This Economy?',
+    description: 'Island progress has reached 33%',
+    icon: '💰',
+  },
+  {
     key: 'home_invasion',
     name: 'Home Invasion!!',
     description: '666 pixels have been placed on the island',
@@ -231,6 +237,7 @@ function checkGroupAchievements() {
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
+    { key: 'this_economy',  condition: progress       >= 33             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
