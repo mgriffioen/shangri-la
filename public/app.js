@@ -41,8 +41,10 @@ const state = {
   members:         [],
   pollTimer:       null,
   countdownTimer:  null,
-  achievementQueue: [],
-  popupBusy:       false,
+  achievementQueue:    [],
+  popupBusy:           false,
+  popupTimer:          null,
+  currentAchievement:  null,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -217,7 +219,8 @@ function showNextAchievement() {
     return;
   }
   state.popupBusy = true;
-  const ach = state.achievementQueue.shift();
+  state.currentAchievement = state.achievementQueue.shift();
+  const ach = state.currentAchievement;
   const popup = document.getElementById('achievement-popup');
 
   document.getElementById('popup-icon').textContent = ach.icon;
@@ -229,11 +232,30 @@ function showNextAchievement() {
   popup.classList.add('visible');
   popup.setAttribute('aria-hidden', 'false');
 
-  setTimeout(() => {
-    popup.classList.remove('visible');
-    popup.setAttribute('aria-hidden', 'true');
-    setTimeout(showNextAchievement, 400);
-  }, 3800);
+  state.popupTimer = setTimeout(() => dismissAchievementPopup(), 5000);
+}
+
+function dismissAchievementPopup() {
+  clearTimeout(state.popupTimer);
+  state.popupTimer = null;
+  const popup = document.getElementById('achievement-popup');
+  popup.classList.remove('visible');
+  popup.setAttribute('aria-hidden', 'true');
+  setTimeout(showNextAchievement, 400);
+}
+
+async function shareAchievement() {
+  const ach = state.currentAchievement;
+  if (!ach) return;
+  const text = `I just unlocked "${ach.name}" on Building Shangri-La! ${ach.icon}`;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Building Shangri-La', text });
+    } catch {}
+  } else {
+    await navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!');
+  }
 }
 
 // ─── Avatar Picker ────────────────────────────────────────────────────────────
@@ -737,6 +759,8 @@ function startPolling() {
 // ─── Event Bindings ───────────────────────────────────────────────────────────
 
 document.getElementById('undo-btn').addEventListener('click', () => performUndo());
+document.getElementById('popup-dismiss-btn').addEventListener('click', () => dismissAchievementPopup());
+document.getElementById('popup-share-btn').addEventListener('click', () => shareAchievement());
 
 document.getElementById('user-avatar').addEventListener('click', (e) => {
   e.stopPropagation();

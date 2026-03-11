@@ -678,7 +678,7 @@ details:not([open]) > .accordion-summary {
 /* ─── Achievement Popup ──────────────────────────────────────────────────────── */
 .achievement-popup {
   position: fixed;
-  bottom: 24px;
+  top: 24px;
   right: 24px;
   background: var(--ocean-dark);
   color: #fff;
@@ -688,7 +688,7 @@ details:not([open]) > .accordion-summary {
   max-width: 320px;
   z-index: 1000;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(-20px);
   pointer-events: none;
   transition: opacity 0.3s, transform 0.3s;
 }
@@ -724,6 +724,36 @@ details:not([open]) > .accordion-summary {
 .popup-desc {
   font-size: 0.8rem;
   opacity: 0.85;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.popup-share-btn,
+.popup-dismiss-btn {
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.popup-share-btn:hover,
+.popup-dismiss-btn:hover { opacity: 0.85; }
+
+.popup-share-btn {
+  background: #fff;
+  color: var(--ocean-dark);
+}
+
+.popup-dismiss-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
 }
 
 /* ─── Toast ──────────────────────────────────────────────────────────────────── */
