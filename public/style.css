@@ -368,7 +368,7 @@ main {
 /* ─── Palette ────────────────────────────────────────────────────────────────── */
 .palette-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(36px, 50px));
   gap: 5px;
   margin-bottom: 10px;
 }
@@ -927,11 +927,13 @@ details:not([open]) > .accordion-summary {
   #section-progress,
   #section-stats  { display: none; }
 
-  /* Section order — palette is inside .canvas-area so it flows naturally after the canvas */
+  /* Section order — palette is inside .canvas-area so it flows naturally after the canvas;
+     achievements is in panel-left (dissolves) so it needs an explicit order */
   #section-login          { order: 1; }
   #section-user           { order: 1; }
   .canvas-area            { order: 2; }
   #section-hunks          { order: 4; }
+  #achievements-accordion { order: 5; }
   #achievements-accordion { order: 5; }
 
   /* Canvas: fill full width, square aspect ratio */
@@ -944,10 +946,6 @@ details:not([open]) > .accordion-summary {
   }
   #island-canvas { width: 100%; height: 100%; display: block; }
 
-  /* Palette: landscape grid — auto-fill once section is full width */
-  .palette-grid {
-    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
-  }
 }
 
 /* ─── Trivia Modal ───────────────────────────────────────────────────────────── */
