@@ -103,6 +103,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '👀',
   },
   {
+    key: 'kubb_god',
+    name: 'Kubb God',
+    description: 'Place 111 pixels on the island',
+    icon: '👑',
+  },
+  {
     key: 'omp',
     name: 'Old Man Paul',
     description: 'Place 200 pixels on the island',
@@ -191,6 +197,7 @@ function checkIndividualAchievements(userName) {
     { key: 'ham_point',       condition: user.pixels_placed >= 22  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
+    { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
   ];
 
