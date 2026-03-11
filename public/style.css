@@ -368,7 +368,7 @@ main {
 /* ─── Palette ────────────────────────────────────────────────────────────────── */
 .palette-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(36px, 50px));
+  grid-template-columns: repeat(auto-fill, minmax(36px, 36px));
   gap: 5px;
   margin-bottom: 10px;
 }
