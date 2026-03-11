@@ -1,7 +1,7 @@
 {
   "name": "shangri-la",
   "version": "1.0.0",
-  "description": "Build Shangri-La — a collaborative pixel art island for friends",
+  "description": "Building Shangri-La — a collaborative pixel art island for friends",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
