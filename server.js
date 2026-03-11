@@ -479,6 +479,102 @@ app.get('/api/members', (req, res) => {
 });
 
 /**
+ * POST /api/seed-demo
+ * Body: { secret: string }
+ *
+ * Loads a rich mid-game demo state for UI testing.
+ * Requires the RESET_SECRET environment variable to be set and matched.
+ */
+app.post('/api/seed-demo', (req, res) => {
+  const secret = process.env.RESET_SECRET;
+  if (!secret || req.body.secret !== secret) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const now  = Date.now();
+  const hour = 3_600_000;
+
+  db.exec(`
+    DELETE FROM pixels;
+    DELETE FROM users;
+    DELETE FROM user_achievements;
+    DELETE FROM group_achievements;
+    UPDATE global_stats SET value = 0 WHERE key = 'progress';
+  `);
+
+  const members = [
+    { name: 'Mark',     visits: 27, pixels: 215, lastVisit: now - 2  * hour },
+    { name: 'Sean',     visits: 18, pixels: 88,  lastVisit: now - 5  * hour },
+    { name: 'Carl',     visits: 12, pixels: 55,  lastVisit: now - 14 * hour },
+    { name: 'Benedict', visits: 7,  pixels: 31,  lastVisit: now - 20 * hour },
+    { name: 'Dusty',    visits: 5,  pixels: 22,  lastVisit: now - 30 * hour },
+    { name: 'Paul',     visits: 3,  pixels: 12,  lastVisit: now - 48 * hour },
+    { name: 'Erik',     visits: 1,  pixels: 5,   lastVisit: now - 60 * hour },
+    { name: 'Brandon',  visits: 1,  pixels: 5,   lastVisit: now - 72 * hour },
+    { name: 'Zach',     visits: 1,  pixels: 5,   lastVisit: now - 84 * hour },
+  ];
+
+  const insertUser = db.prepare(`
+    INSERT INTO users (name, last_visit, total_visits, pixels_placed, pixels_remaining)
+    VALUES (@name, @lastVisit, @visits, @pixels, 3)
+  `);
+  for (const m of members) insertUser.run(m);
+
+  const insertAch = db.prepare(`
+    INSERT OR IGNORE INTO user_achievements (user_name, achievement_key, earned_at)
+    VALUES (?, ?, ?)
+  `);
+  for (const m of members) {
+    insertAch.run(m.name, 'lake_livin',      now - m.visits * hour);
+    if (m.visits >= 5)  insertAch.run(m.name, 'tgif',           now - (m.visits - 5)  * hour);
+    if (m.visits >= 15) insertAch.run(m.name, 'perfect_spiral', now - (m.visits - 15) * hour);
+    if (m.visits >= 25) insertAch.run(m.name, 'gets_it',        now - (m.visits - 25) * hour);
+    if (m.pixels >= 69)  insertAch.run(m.name, 'nice', now - 2 * hour);
+    if (m.pixels >= 200) insertAch.run(m.name, 'omp',  now - 1 * hour);
+  }
+
+  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('we_did_it',  now - 50 * hour);
+  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('slide_raft', now - 30 * hour);
+  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('nice_nice',  now - 10 * hour);
+
+  // Island shape on the 32×32 canvas
+  const PALETTE = { ocean: '#1a6691', sand: '#deb887', grass: '#2e7d32', tree: '#1b5e20', rock: '#607d8b', flower: '#e91e63', path: '#c19a6b' };
+  const paintedPixels = [];
+  const rect = (x0, y0, x1, y1, color, user) => {
+    for (let y = y0; y <= y1; y++)
+      for (let x = x0; x <= x1; x++)
+        paintedPixels.push({ x, y, color, user });
+  };
+
+  rect(8, 8, 23, 23, PALETTE.sand,  'Mark');
+  rect(10, 10, 21, 21, PALETTE.grass, 'Mark');
+  rect(11, 11, 13, 13, PALETTE.tree,  'Sean');
+  rect(18, 11, 20, 13, PALETTE.tree,  'Carl');
+  rect(11, 18, 13, 20, PALETTE.tree,  'Benedict');
+  rect(18, 18, 20, 20, PALETTE.tree,  'Dusty');
+  [[8,8],[8,23],[23,8],[23,23],[9,9],[9,22],[22,9],[22,22]].forEach(([x,y]) =>
+    paintedPixels.push({ x, y, color: PALETTE.rock, user: 'Paul' }));
+  rect(15, 10, 16, 21, PALETTE.path, 'Mark');
+  rect(10, 15, 21, 16, PALETTE.path, 'Mark');
+  [[14,12],[17,12],[14,19],[17,19],[12,15],[19,15]].forEach(([x,y]) =>
+    paintedPixels.push({ x, y, color: PALETTE.flower, user: 'Erik' }));
+  [[7,15],[7,16],[24,15],[24,16],[15,7],[16,7],[15,24],[16,24]].forEach(([x,y]) =>
+    paintedPixels.push({ x, y, color: PALETTE.ocean, user: 'Brandon' }));
+
+  const insertPixel = db.prepare(`INSERT OR REPLACE INTO pixels (x, y, color, user_name, placed_at) VALUES (?, ?, ?, ?, ?)`);
+  const insertAll = db.transaction(() => {
+    paintedPixels.forEach((p, i) => insertPixel.run(p.x, p.y, p.color, p.user, now - i * 60_000));
+  });
+  insertAll();
+
+  const totalPixels = members.reduce((s, m) => s + m.pixels, 0);
+  const progress    = parseFloat(((totalPixels / (32 * 32)) * 100).toFixed(2));
+  db.prepare("UPDATE global_stats SET value = ? WHERE key = 'progress'").run(progress);
+
+  res.json({ success: true, message: `Demo state loaded. ${members.length} members, ${paintedPixels.length} pixels, ${progress}% progress.` });
+});
+
+/**
  * POST /api/reset
  * Body: { secret: string }
  *
