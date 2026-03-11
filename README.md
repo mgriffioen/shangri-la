@@ -29,23 +29,25 @@ Server listens on `http://localhost:3000` by default.
 
 ## API
 
-| Method | Endpoint           | Description                                              |
-|--------|--------------------|----------------------------------------------------------|
-| POST   | `/api/login`       | Register or log in by name; issues pixels if off cooldown |
-| GET    | `/api/state`       | Current pixel grid, progress %, canvas size, stats       |
-| POST   | `/api/place`       | Place a pixel at `(x, y)` with a hex color               |
-| GET    | `/api/leaderboard` | All users sorted by pixels placed                        |
-| GET    | `/api/members`     | Crew roster with per-user stats and achievements         |
-| GET    | `/api/achievements`| Achievement definitions and earned status                |
-| GET    | `/api/recent`      | 12 most recently placed pixels                           |
-| POST   | `/api/seed-demo`   | Load demo state (requires `RESET_SECRET`)                |
-| POST   | `/api/reset`       | Wipe all data and reset to initial state (requires `RESET_SECRET`) |
+| Method | Endpoint             | Description                                              |
+|--------|----------------------|----------------------------------------------------------|
+| POST   | `/api/login`         | Register or log in by name; issues pixels if off cooldown |
+| GET    | `/api/state`         | Current pixel grid, progress %, canvas size, stats       |
+| POST   | `/api/place`         | Place a pixel at `(x, y)` with a hex color               |
+| POST   | `/api/undo`          | Undo the last placed pixel (once per visit)              |
+| POST   | `/api/trivia-reward` | Grant bonus pixels after a correct trivia answer         |
+| GET    | `/api/leaderboard`   | All users sorted by pixels placed                        |
+| GET    | `/api/members`       | Crew roster with per-user stats and achievements         |
+| GET    | `/api/achievements`  | Achievement definitions and earned status                |
+| GET    | `/api/recent`        | 12 most recently placed pixels                           |
+| POST   | `/api/seed-demo`     | Load demo state (requires `RESET_SECRET`)                |
+| POST   | `/api/reset`         | Wipe all data and reset to initial state (requires `RESET_SECRET`) |
 
 ## Game Mechanics
 
 - **Pixels per visit**: 8
 - **Cooldown**: 4 hours 20 minutes between visits
-- **Progress per visit**: +0.5%
+- **Progress per visit**: +0.1%
 
 ### Canvas expansion
 
