@@ -756,15 +756,22 @@ details:not([open]) > .accordion-summary {
 
 @media (max-width: 860px) {
   main {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    display: flex;
+    flex-direction: column;
   }
 
-  .panel-left  { order: 3; }
-  .canvas-area { order: 1; }
-  .panel-right { order: 2; }
+  /* Dissolve panels so each card becomes a direct flex child */
+  .panel-left,
+  .panel-right { display: contents; }
 
-  .canvas-wrapper {
-    max-height: 60vw;
-  }
+  #section-login          { order: 1; }
+  #section-user           { order: 1; }
+  #section-progress       { order: 2; }
+  #section-stats          { order: 3; }
+  .canvas-area            { order: 4; }
+  #section-palette        { order: 5; }
+  #section-hunks          { order: 6; }
+  #achievements-accordion { order: 7; }
+
+  .canvas-wrapper { max-height: 60vw; }
 }
