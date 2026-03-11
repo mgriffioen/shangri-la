@@ -398,7 +398,6 @@ function renderMembers() {
         <div class="member-info">
           <div class="member-name">${escapeHtml(m.name)}</div>
           <div class="member-level">${m.joined ? `${level.icon} ${level.label}` : 'Yet to arrive…'}</div>
-            <div class="user-achievement" id="user-achievement"></div>
         </div>
         ${m.joined ? `<div class="member-stats"><span class="member-px">${m.pixels_placed}px</span><span class="member-v">${m.total_visits}v</span></div>` : ''}
       </div>
