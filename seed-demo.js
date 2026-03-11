@@ -36,11 +36,11 @@ const members = [
   { name: 'Mark',     visits: 27, pixels: 215, lastVisit: now - 2 * hour  },
   { name: 'Sean',     visits: 18, pixels: 88,  lastVisit: now - 5 * hour  },
   { name: 'Carl',     visits: 12, pixels: 55,  lastVisit: now - 14 * hour },
-  { name: 'Benedict', visits: 7,  pixels: 31,  lastVisit: now - 20 * hour },
-  { name: 'Dusty',    visits: 5,  pixels: 22,  lastVisit: now - 30 * hour },
-  { name: 'Paul',     visits: 3,  pixels: 12,  lastVisit: now - 48 * hour },
-  { name: 'Erik',     visits: 1,  pixels: 5,   lastVisit: now - 60 * hour },
-  { name: 'Brandon',  visits: 1,  pixels: 5,   lastVisit: now - 72 * hour },
+  { name: 'Benedict', visits: 37,  pixels: 131,  lastVisit: now - 20 * hour },
+  { name: 'Dusty',    visits: 50,  pixels: 22,  lastVisit: now - 30 * hour },
+  { name: 'Paul',     visits: 103,  pixels: 102,  lastVisit: now - 48 * hour },
+  { name: 'Erik',     visits: 14,  pixels: 55,   lastVisit: now - 60 * hour },
+  { name: 'Brandon',  visits: 81,  pixels: 153,   lastVisit: now - 72 * hour },
 ];
 
 const insertUser = db.prepare(`
