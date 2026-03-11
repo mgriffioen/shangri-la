@@ -28,7 +28,7 @@
   <!-- ─── Main Layout ─────────────────────────────────────────────────────── -->
   <main>
 
-    <!-- LEFT PANEL: identity + visit + palette -->
+    <!-- LEFT PANEL: identity + visit + progress -->
     <aside class="panel panel-left">
 
       <!-- Name entry (shown before login) -->
@@ -73,6 +73,30 @@
         </div>
       </section>
 
+      <!-- Progress -->
+      <section class="card" id="section-progress">
+        <h3>Island Progress</h3>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progress-pct">0%</span>
+          <span id="canvas-stage-label" class="dim-label"></span>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- CENTER: canvas + terrain palette -->
+    <section class="canvas-area">
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <canvas id="island-canvas"></canvas>
+      </div>
+      <div class="canvas-footer">
+        <span id="canvas-size-label" class="dim-label"></span>
+        <span id="hover-coords" class="dim-label"></span>
+      </div>
+
       <!-- Color palette (shown after login) -->
       <section id="section-palette" class="card" style="display:none">
         <h3>Terrain</h3>
@@ -87,33 +111,10 @@
         </label>
       </section>
 
-    </aside>
-
-    <!-- CENTER: canvas -->
-    <section class="canvas-area">
-      <div class="canvas-wrapper" id="canvas-wrapper">
-        <canvas id="island-canvas"></canvas>
-      </div>
-      <div class="canvas-footer">
-        <span id="canvas-size-label" class="dim-label"></span>
-        <span id="hover-coords" class="dim-label"></span>
-      </div>
     </section>
 
-    <!-- RIGHT PANEL: progress + stats + achievements + leaderboard -->
+    <!-- RIGHT PANEL: stats + achievements + leaderboard -->
     <aside class="panel panel-right">
-
-      <!-- Progress -->
-      <section class="card" id="section-progress">
-        <h3>Island Progress</h3>
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
-        <div class="progress-meta">
-          <span id="progress-pct">0%</span>
-          <span id="canvas-stage-label" class="dim-label"></span>
-        </div>
-      </section>
 
       <!-- Stats -->
       <section class="card" id="section-stats">
