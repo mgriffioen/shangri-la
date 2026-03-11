@@ -196,6 +196,11 @@ main {
   margin-bottom: 10px;
 }
 
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .user-avatar {
   width: 36px;
   height: 36px;
@@ -207,8 +212,42 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
 }
+.user-avatar:hover { opacity: 0.85; }
+
+.avatar-picker {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.avatar-picker[hidden] { display: none; }
+
+.avatar-option {
+  width: 34px;
+  height: 34px;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: none;
+  transition: background 0.1s, border-color 0.1s;
+}
+.avatar-option:hover    { background: var(--bg); }
+.avatar-option.selected { border-color: var(--ocean); }
 
 .user-name {
   font-weight: 700;

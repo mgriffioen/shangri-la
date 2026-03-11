@@ -42,7 +42,10 @@
       <!-- User info (shown after login) -->
       <section id="section-user" class="card" style="display:none">
         <div class="user-header">
-          <div class="user-avatar" id="user-avatar"></div>
+          <div class="avatar-wrap">
+            <div class="user-avatar" id="user-avatar" title="Change avatar" role="button" aria-label="Change avatar"></div>
+            <div class="avatar-picker" id="avatar-picker" hidden></div>
+          </div>
           <div>
             <div class="user-name" id="user-name-display"></div>
             <div class="user-meta" id="user-meta"></div>
