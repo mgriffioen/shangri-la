@@ -33,6 +33,7 @@ const state = {
   selectedColor:   PALETTE[8],   // default: burlywood sand
   hoverCell:       null,         // { x, y } | null
   nextVisitTime:   null,
+  chosenEmoji:     null,
   undoAvailable:   false,
   pendingUndo:     null,  // { x, y, prevColor, prevUser } for optimistic rollback
   achievements:    { individual: { definitions: [], earned: [] }, group: { definitions: [], earned: [] } },
@@ -163,11 +164,17 @@ function canPlacePixel() {
   return state.user && state.user.pixels_remaining > 0;
 }
 
+const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🦚','🍉','🌊','🐿️','🦭','🦁','🌵'];
+
 function avatarEmoji(name) {
-  const emojis = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🦚','🍉','🌊','🐿️','🦭','🦜','🌵'];
   let hash = 0;
   for (const ch of (name || '')) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffffffff;
-  return emojis[Math.abs(hash) % emojis.length];
+  return AVATAR_EMOJIS[Math.abs(hash) % AVATAR_EMOJIS.length];
+}
+
+function getAvatarEmoji(name) {
+  if (name === state.userName && state.chosenEmoji) return state.chosenEmoji;
+  return avatarEmoji(name);
 }
 
 /** Deterministic avatar color from name */
@@ -227,6 +234,41 @@ function showNextAchievement() {
     popup.setAttribute('aria-hidden', 'true');
     setTimeout(showNextAchievement, 400);
   }, 3800);
+}
+
+// ─── Avatar Picker ────────────────────────────────────────────────────────────
+
+function buildAvatarPicker() {
+  const picker = document.getElementById('avatar-picker');
+  picker.innerHTML = '';
+  const current = getAvatarEmoji(state.userName);
+  for (const emoji of AVATAR_EMOJIS) {
+    const btn = document.createElement('button');
+    btn.className = 'avatar-option' + (emoji === current ? ' selected' : '');
+    btn.textContent = emoji;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.chosenEmoji = emoji;
+      localStorage.setItem(`shangri-la-emoji:${state.userName}`, emoji);
+      document.getElementById('user-avatar').textContent = emoji;
+      // Refresh picker selection state
+      picker.querySelectorAll('.avatar-option').forEach(b =>
+        b.classList.toggle('selected', b.textContent === emoji)
+      );
+      // Refresh members board (updates the current user's row)
+      renderMembers();
+      closAvatarPicker();
+    });
+    picker.appendChild(btn);
+  }
+}
+
+function openAvatarPicker() {
+  document.getElementById('avatar-picker').hidden = false;
+}
+
+function closAvatarPicker() {
+  document.getElementById('avatar-picker').hidden = true;
 }
 
 // ─── UI Renderers ─────────────────────────────────────────────────────────────
@@ -409,7 +451,7 @@ function renderMembers() {
     return `
       <div class="member-row ${m.joined ? '' : 'not-joined'} ${m.name === state.userName ? 'is-me' : ''}">
         <div class="member-avatar" style="${m.joined ? `background:${avatarColor(m.name)}` : ''}">
-          ${m.joined ? avatarEmoji(m.name) : '?'}
+          ${m.joined ? getAvatarEmoji(m.name) : '?'}
         </div>
         <div class="member-info">
           <div class="member-name">${escapeHtml(m.name)}</div>
@@ -645,6 +687,9 @@ async function login(name) {
   // Save to localStorage for next time
   localStorage.setItem('shangri-la-name', name);
 
+  // Load persisted emoji choice for this user
+  state.chosenEmoji = localStorage.getItem(`shangri-la-emoji:${name}`) || null;
+
   // Show user sections
   document.getElementById('section-login').style.display   = 'none';
   document.getElementById('section-user').style.display    = '';
@@ -652,8 +697,9 @@ async function login(name) {
 
   // Populate user panel
   const avatarEl = document.getElementById('user-avatar');
-  avatarEl.textContent      = avatarEmoji(name);
+  avatarEl.textContent      = getAvatarEmoji(name);
   avatarEl.style.background = avatarColor(name);
+  buildAvatarPicker();
 
   document.getElementById('user-name-display').textContent = name;
   document.getElementById('user-meta').textContent =
@@ -691,6 +737,14 @@ function startPolling() {
 // ─── Event Bindings ───────────────────────────────────────────────────────────
 
 document.getElementById('undo-btn').addEventListener('click', () => performUndo());
+
+document.getElementById('user-avatar').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const picker = document.getElementById('avatar-picker');
+  picker.hidden ? openAvatarPicker() : closAvatarPicker();
+});
+
+document.addEventListener('click', () => closAvatarPicker());
 
 document.getElementById('name-btn').addEventListener('click', async () => {
   const input = document.getElementById('name-input');
