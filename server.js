@@ -179,6 +179,18 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🌦️',
   },
   {
+    key: 'backflip',
+    name: 'Teach You to Backflip',
+    description: `Every builder has visited Shangri-La at least twice`,
+    icon: '🤸‍♀️',
+  },
+  {
+    key: 'bring_it_on',
+    name: 'BRING IT ON',
+    description: `Every builder has visited Shangri-La at least three times`,
+    icon: '❄️',
+  },
+  {
     key: 'shangri_la',
     name: 'Shangri-La Achieved!',
     description: 'The island is complete — 100% progress reached!',
@@ -248,6 +260,10 @@ function checkIndividualAchievements(userName) {
   return newAchievements;
 }
 
+function getMembersWithMinVisits(minVisits) {
+  return db.prepare('SELECT COUNT(*) AS cnt FROM users WHERE total_visits >= ?').get(minVisits).cnt;
+}
+
 function checkGroupAchievements() {
   const progress       = getProgress();
   const totalPixels    = getTotalPixels();
@@ -261,6 +277,8 @@ function checkGroupAchievements() {
 
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
+    { key: 'backflip',        condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
+    { key: 'bring_it_on',     condition: getMembersWithMinVisits(3) >= MAX_GROUP_SIZE },
     { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
