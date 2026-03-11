@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   Build Shangri-La — Frontend
+   Building Shangri-La — Frontend
    ───────────────────────────────────────────────────────────────────────────── */
 
 // ─── Palette ──────────────────────────────────────────────────────────────────
@@ -338,7 +338,7 @@ async function handleTriviaAnswer(chosen, correct, container) {
     await new Promise(r => setTimeout(r, 1200));
     document.getElementById('trivia-result-icon').textContent = '😔';
     document.getElementById('trivia-result-msg').textContent =
-      'Sorry, maybe next time! Your cooldown has started.';
+      'Sorry, maybe next time!';
     showTriviaState('result');
   }
 }
@@ -420,7 +420,7 @@ function renderVisitStatus(newVisit) {
     document.getElementById('undo-btn').style.display = state.undoAvailable ? 'inline-block' : 'none';
   } else {
     statusEl.className   = 'visit-status waiting';
-    statusEl.textContent = '⏳ You\'ve used all your pixels. See you in 4 hours 20 minutes!';
+    statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20:00! 🤙';
     cooldownEl.style.display = 'block';
     pixelsEl.style.display   = 'none';
     startCountdown();
