@@ -80,6 +80,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🌅',
   },
   {
+    key: 'true_friend',
+    name: 'True Friend',
+    description: 'You visited a second time',
+    icon: '🥹',
+  },
+  {
     key: 'tgif',
     name: 'TGIF',
     description: 'Visit the island 5 times',
@@ -216,6 +222,7 @@ function checkIndividualAchievements(userName) {
 
   const checks = [
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
+    { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
     { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
