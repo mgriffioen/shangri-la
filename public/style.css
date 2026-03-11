@@ -306,6 +306,22 @@ main {
   transform: scale(0.85);
 }
 
+.undo-btn {
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.undo-btn:hover {
+  color: var(--ocean);
+  border-color: var(--ocean);
+}
+
 /* ─── Palette ────────────────────────────────────────────────────────────────── */
 .palette-grid {
   display: grid;
