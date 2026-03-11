@@ -232,7 +232,7 @@ function showNextAchievement() {
 function renderPixelDots() {
   const container = document.getElementById('pixels-dots');
   container.innerHTML = '';
-  const total = 5;
+  const total = 8;
   const remaining = state.user?.pixels_remaining ?? 0;
   for (let i = 0; i < total; i++) {
     const dot = document.createElement('div');
