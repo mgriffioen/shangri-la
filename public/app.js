@@ -366,20 +366,23 @@ function renderAchievements() {
   const earnedGroupKeys      = new Set(group.earned.map(e => e.achievement_key));
 
   const items = [
-    ...group.definitions.map(d => ({
-      ...d,
-      type:   'group',
-      earned: earnedGroupKeys.has(d.key),
-    })),
     ...individual.definitions.map(d => ({
       ...d,
       type:   'individual',
       earned: earnedIndividualKeys.has(d.key),
     })),
+    ...group.definitions.map(d => ({
+      ...d,
+      type:   'group',
+      earned: earnedGroupKeys.has(d.key),
+    })),
   ];
 
-  // Sort: earned first, then locked
-  items.sort((a, b) => (b.earned ? 1 : 0) - (a.earned ? 1 : 0));
+  // Sort: individual first, then group; within each type earned first then locked
+  items.sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'individual' ? -1 : 1;
+    return (b.earned ? 1 : 0) - (a.earned ? 1 : 0);
+  });
 
   document.getElementById('achievements-list').innerHTML = items.map(a => `
     <div class="achievement-item ${a.earned ? '' : 'locked'} ${a.type === 'group' ? 'group-type' : ''}">
