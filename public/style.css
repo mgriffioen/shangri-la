@@ -445,7 +445,7 @@ details[open] > .accordion-summary {
 }
 
 details:not([open]) > .accordion-summary {
-  padding-bottom: 0;
+  padding-bottom: 14px;
 }
 
 /* ─── Achievements ───────────────────────────────────────────────────────────── */
