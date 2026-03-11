@@ -1,4 +1,4 @@
-# Shangri-La
+# Building Shangri-La
 
 A collaborative pixel-placement web app for a fixed group of users. Users visit periodically, place pixels on a shared canvas, and collectively expand the canvas over time.
 
