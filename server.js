@@ -145,7 +145,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'we_did_it',
     name: 'We Did It!',
-    description: `All ${MAX_GROUP_SIZE} builders have visited Shangri-La`,
+    description: `All ${MAX_GROUP_SIZE} hunks have visited Shangri-La`,
     icon: '🚢',
   },
   {
