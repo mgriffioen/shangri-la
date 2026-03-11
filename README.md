@@ -43,7 +43,7 @@ Server listens on `http://localhost:3000` by default.
 
 ## Game Mechanics
 
-- **Pixels per visit**: 5
+- **Pixels per visit**: 8
 - **Cooldown**: 4 hours 20 minutes between visits
 - **Progress per visit**: +0.5%
 
