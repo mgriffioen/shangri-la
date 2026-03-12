@@ -489,7 +489,7 @@ function renderStats() {
     </div>
     <div class="stat-tile">
       <div class="stat-value">${uniqueVisitors ?? 0} / 8</div>
-      <div class="stat-label">Builders visited</div>
+      <div class="stat-label">Hunks visited</div>
     </div>
     <div class="stat-tile">
       <div class="stat-value">${totalVisits ?? 0}</div>
