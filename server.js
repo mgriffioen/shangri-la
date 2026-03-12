@@ -200,7 +200,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   // ── Visit 45 ─────────────────────────────────────────────────────────────────
   {
     key: 'vw_golf',
-    name: 'Sean‘s VW Golf,'
+    name: 'Sean‘s VW Golf',
     description: 'Visit the island 45 times',
     icon: '🚗',
   },
