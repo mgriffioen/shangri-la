@@ -569,7 +569,7 @@ main {
 
 .accordion-summary::after {
   content: '👉';
-  font-size: 1.0rem;
+  font-size: 1.50rem;
   transition: transform 0.2s;
 }
 
