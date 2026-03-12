@@ -1174,3 +1174,12 @@ details[open] > .accordion-summary-nested {
   background: #a8d8ea;
   color: #16213e;
 }
+.dev-btn-close {
+  margin-left: auto;
+  color: #e94560;
+  border-color: #e9456044;
+}
+.dev-btn-close:hover {
+  background: #e94560;
+  color: #fff;
+}
