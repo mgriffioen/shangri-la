@@ -873,6 +873,16 @@ function startPolling() {
 document.getElementById('undo-btn').addEventListener('click', () => performUndo());
 document.getElementById('popup-dismiss-btn').addEventListener('click', () => dismissAchievementPopup());
 document.getElementById('popup-share-btn').addEventListener('click', () => shareAchievement());
+document.getElementById('cooldown-share-btn').addEventListener('click', async () => {
+  const text = 'Check out my progress on the island';
+  const url  = location.href;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Building Shangri-La', text, url }); } catch {}
+  } else {
+    await navigator.clipboard.writeText(`${text} ${url}`);
+    showToast('Copied to clipboard!');
+  }
+});
 document.getElementById('trivia-yes-btn').addEventListener('click', () => loadTriviaQuestion());
 document.getElementById('trivia-no-btn').addEventListener('click', () => closeTriviaModal());
 document.getElementById('trivia-close-btn').addEventListener('click', () => closeTriviaModal());
