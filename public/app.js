@@ -524,7 +524,7 @@ function renderStats() {
     </div>
     <div class="stat-tile">
       <div class="stat-value">${state.canvasSize}×${state.canvasSize}</div>
-      <div class="stat-label">Canvas size</div>
+      <div class="stat-label">Map size</div>
     </div>
     ${groupAchievementsHtml}
   `;
