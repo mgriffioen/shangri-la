@@ -132,18 +132,6 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '⭐',
   },
   {
-    key: 'hotel_eggs',
-    name: 'Hotel Eggs',
-    description: 'Visit the island 10 times',
-    icon: '🍳',
-  },
-  {
-    key: 'vouch_for',
-    name: 'I Vouch for Him',
-    description: 'Place 21 pixels on the island',
-    icon: '👍',
-  },
-  {
     key: 'perfect_spiral',
     name: 'Perfect Spiral',
     description: 'Visit the island 15 times',
@@ -160,6 +148,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
     icon: '👏',
+  },
+  {
+    key: 'hotel_eggs',
+    name: 'Hotel Eggs',
+    description: 'Visit the island 30 times',
+    icon: '🍳',
   },
   {
     key: 'cmon',
@@ -190,6 +184,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     name: 'Old Man Paul',
     description: 'Place 200 pixels on the island',
     icon: '👴',
+  },
+  {
+    key: 'vouch_for',
+    name: 'I Vouch for Him',
+    description: 'Place 222 pixels on the island',
+    icon: '👍',
   },
   {
     key: 'party_bot',
@@ -312,16 +312,16 @@ function checkIndividualAchievements(userName) {
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
     { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
-    { key: 'hotel_eggs',      condition: user.total_visits  >= 10   },
-    { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
     { key: 'ham_point',       condition: user.pixels_placed >= 88  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
+    { key: 'hotel_eggs',      condition: user.total_visits  >= 30   },
     { key: 'cmon',  condition: user.total_visits  >= 55  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'lake_101',  condition: user.total_visits  >= 101  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
+    { key: 'vouch_for',       condition: user.pixels_placed >= 222  },
     { key: 'party_bot',     condition: user.pixels_placed >= 333 },
   ];
 
