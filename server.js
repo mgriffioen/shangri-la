@@ -140,7 +140,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'ham_point',
     name: 'Ham Point',
-    description: 'Place 88 pixels on the island',
+    description: 'Place 288 pixels on the island',
     icon: '🍖',
   },
   {
@@ -186,6 +186,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '👴',
   },
   {
+    key: 'midnight_run',
+    name: 'Watched Midnight Run (1988)',
+    description: 'Visit the island 88 times',
+    icon: '🎬',
+  },
+  {
     key: 'vouch_for',
     name: 'I Vouch for Him',
     description: 'Place 222 pixels on the island',
@@ -196,6 +202,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     name: 'Friend of Party Bot Micro',
     description: 'Place 333 pixels on the island',
     icon: '🤖',
+  },
+  {
+    key: 'bought_sl',
+    name: 'You Bought Shangri-La',
+    description: 'Place 1,000 pixels on the island',
+    icon: '💰',
   },
 ];
 
@@ -247,6 +259,12 @@ const GROUP_ACHIEVEMENTS = [
     name: 'Home Invasion!!',
     description: '666 pixels have been placed on the island',
     icon: '🏚️',
+  },
+  {
+    key: 'dustys_by',
+    name: 'Dusty‘s Backyard',
+    description: '1,000 pixels have been placed on the island',
+    icon: '🌱',
   },
   {
     key: 'coming_going',
@@ -313,16 +331,18 @@ function checkIndividualAchievements(userName) {
     { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
-    { key: 'ham_point',       condition: user.pixels_placed >= 88  },
+    { key: 'ham_point',       condition: user.pixels_placed >= 288  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'hotel_eggs',      condition: user.total_visits  >= 30   },
     { key: 'cmon',  condition: user.total_visits  >= 55  },
+    { key: 'midnight_run',  condition: user.total_visits  >= 88  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'lake_101',  condition: user.total_visits  >= 101  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
     { key: 'vouch_for',       condition: user.pixels_placed >= 222  },
     { key: 'party_bot',     condition: user.pixels_placed >= 333 },
+    { key: 'bought_sl',     condition: user.pixels_placed >= 1000 },
   ];
 
   const insertStmt = db.prepare(
@@ -366,6 +386,7 @@ function checkGroupAchievements() {
     { key: 'this_economy',  condition: progress       >= 33             },
     { key: 'people_forget',  condition: progress       >= 88             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
+    { key: 'dustys_by',   condition: totalPixels    >= 1000            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
   ];
