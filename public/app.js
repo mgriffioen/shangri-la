@@ -17,6 +17,8 @@ const PALETTE_NAMES = {
   '#deb887': 'Burlywood',
   '#fff8dc': 'Cornsilk',
   // Row 3: Vegetation
+  '#004d40': 'Deep Jungle',
+  '#33691e': 'Swamp',
   '#1b5e20': 'Dark Forest',
   '#2e7d32': 'Forest Green',
   '#43a047': 'Grass',
@@ -27,19 +29,17 @@ const PALETTE_NAMES = {
   '#607d8b': 'Blue Grey',
   '#90a4ae': 'Stone',
   '#cfd8dc': 'Pale Stone',
+  '#eceff1': 'Snow',
   '#fafafa': 'White',
   // Row 5: Accent
   '#b71c1c': 'Crimson',
   '#e65100': 'Burnt Orange',
+  '#ff6f00': 'Lava',
   '#f9a825': 'Amber',
   '#7b1fa2': 'Purple',
-  '#e91e63': 'Pink',
   // Row 6: Terrain extras
-  '#eceff1': 'Snow',
-  '#ff6f00': 'Lava',
-  '#33691e': 'Swamp',
+  '#e91e63': 'Pink',
   '#f4e09a': 'Desert Sand',
-  '#004d40': 'Deep Jungle',
 };
 const PALETTE = Object.keys(PALETTE_NAMES);
 
