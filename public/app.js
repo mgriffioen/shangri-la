@@ -520,35 +520,23 @@ function renderAchievements() {
   const earnedIndividualKeys = new Set(individual.earned.map(e => e.achievement_key));
   const earnedGroupKeys      = new Set(group.earned.map(e => e.achievement_key));
 
-  const items = [
-    ...individual.definitions.map(d => ({
-      ...d,
-      type:   'individual',
-      earned: earnedIndividualKeys.has(d.key),
-    })),
-    ...group.definitions.map(d => ({
-      ...d,
-      type:   'group',
-      earned: earnedGroupKeys.has(d.key),
-    })),
-  ];
-
-  // Sort: individual first, then group; within each type earned first then locked
-  items.sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'individual' ? -1 : 1;
-    return (b.earned ? 1 : 0) - (a.earned ? 1 : 0);
-  });
-
-  document.getElementById('achievements-list').innerHTML = items.map(a => `
-    <div class="achievement-item ${a.earned ? '' : 'locked'} ${a.type === 'group' ? 'group-type' : ''}">
-      <div class="ach-icon">${a.icon}</div>
+  const toHtml = (d, earned) => `
+    <div class="achievement-item ${earned ? '' : 'locked'}">
+      <div class="ach-icon">${d.icon}</div>
       <div class="ach-text">
-        <div class="ach-name">${a.name}</div>
-        <div class="ach-desc">${a.description}</div>
+        <div class="ach-name">${d.name}</div>
+        <div class="ach-desc">${d.description}</div>
       </div>
-      <div class="ach-badge ${a.type}">${a.type}</div>
     </div>
-  `).join('');
+  `;
+
+  const sorted = arr => [...arr].sort((a, b) => (b.earned ? 1 : 0) - (a.earned ? 1 : 0));
+
+  const indItems = individual.definitions.map(d => ({ ...d, earned: earnedIndividualKeys.has(d.key) }));
+  const grpItems = group.definitions.map(d =>       ({ ...d, earned: earnedGroupKeys.has(d.key) }));
+
+  document.getElementById('achievements-list-individual').innerHTML = sorted(indItems).map(a => toHtml(a, a.earned)).join('');
+  document.getElementById('achievements-list-group').innerHTML      = sorted(grpItems).map(a => toHtml(a, a.earned)).join('');
 }
 
 function renderMembers() {

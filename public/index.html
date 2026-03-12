@@ -88,7 +88,14 @@
       <!-- Achievements accordion -->
       <details class="card accordion" id="achievements-accordion" open>
         <summary class="accordion-summary">Achievements</summary>
-        <div class="achievements-list" id="achievements-list"></div>
+        <details class="accordion accordion-nested" id="achievements-individual" open>
+          <summary class="accordion-summary accordion-summary-nested">Individual</summary>
+          <div class="achievements-list" id="achievements-list-individual"></div>
+        </details>
+        <details class="accordion accordion-nested" id="achievements-group" open>
+          <summary class="accordion-summary accordion-summary-nested">Group</summary>
+          <div class="achievements-list" id="achievements-list-group"></div>
+        </details>
       </details>
 
     </aside>
