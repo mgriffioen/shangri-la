@@ -50,8 +50,8 @@ const PORT = process.env.PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 8;
-// const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
-const VISIT_COOLDOWN_MS = 2 * 1000             // 10 second for testing
+const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
+// const VISIT_COOLDOWN_MS = 2 * 1000             // 10 second for testing
 const PROGRESS_PER_VISIT = 0.1;             // 0.1% each visit
 const MAX_GROUP_SIZE = 8;
 
@@ -113,140 +113,120 @@ for (const col of [
 // ─── Achievement Definitions ───────────────────────────────────────────────────
 
 const INDIVIDUAL_ACHIEVEMENTS = [
-  // ── Visit 1 ──────────────────────────────────────────────────────────────────
   {
     key: 'lake_livin',
     name: 'Lake Living',
     description: 'You have begun the journey to Shangri-La',
     icon: '🌅',
   },
-  // ── Visit 2 ──────────────────────────────────────────────────────────────────
   {
     key: 'true_friend',
     name: 'True Friend',
     description: 'You visited a second time',
     icon: '🥹',
   },
-  // ── Visit 5 ──────────────────────────────────────────────────────────────────
   {
     key: 'tgif',
     name: 'TGIF',
     description: 'Visit the island 5 times',
     icon: '⭐',
   },
-  // ── Visit ~9 (69 px) ─────────────────────────────────────────────────────────
   {
     key: 'nice',
     name: 'Nice',
     description: 'Place 69 pixels on the island',
     icon: '👀',
   },
-  // ── Visit ~14 (111 px) ───────────────────────────────────────────────────────
   {
     key: 'kubb_god',
     name: 'Kubb God',
     description: 'Place 111 pixels on the island',
     icon: '👑',
   },
-  // ── Visit 15 ─────────────────────────────────────────────────────────────────
   {
     key: 'perfect_spiral',
     name: 'Perfect Spiral',
     description: 'Visit the island 15 times',
     icon: '🏈',
   },
-  // ── Visit 25 ─────────────────────────────────────────────────────────────────
   {
     key: 'gets_it',
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
     icon: '👏',
   },
-  // ── Visit 25 (200 px) ────────────────────────────────────────────────────────
   {
     key: 'omp',
     name: 'Old Man Paul',
     description: 'Place 200 pixels on the island',
     icon: '👴',
   },
-  // ── Visit ~28 (222 px) ───────────────────────────────────────────────────────
   {
     key: 'vouch_for',
     name: 'I Vouch for Him',
     description: 'Place 222 pixels on the island',
     icon: '👍',
   },
-  // ── Visit 30 ─────────────────────────────────────────────────────────────────
   {
     key: 'hotel_eggs',
     name: 'Hotel Eggs',
     description: 'Visit the island 30 times',
     icon: '🍳',
   },
-  // ── Visit ~36 (288 px) ───────────────────────────────────────────────────────
   {
     key: 'ham_point',
     name: 'Ham Point',
     description: 'Place 288 pixels on the island',
     icon: '🍖',
   },
-  // ── Visit ~42 (333 px) ───────────────────────────────────────────────────────
   {
     key: 'party_bot',
     name: 'Friend of Party Bot Micro',
     description: 'Place 333 pixels on the island',
     icon: '🤖',
   },
-  // ── Visit 45 ─────────────────────────────────────────────────────────────────
   {
     key: 'vw_golf',
     name: 'Sean‘s VW Golf',
     description: 'Visit the island 45 times',
     icon: '🚗',
   },
-  // ── Visit 55 ─────────────────────────────────────────────────────────────────
   {
     key: 'cmon',
     name: 'C‘mon',
     description: 'Visit the island 55 times',
     icon: '🚬',
   },
-  // ── Visit ~63 (500 px) ───────────────────────────────────────────────────────
   {
     key: 'cherry_bbq',
     name: 'Great Lakes Potato Chip Co. Michigan Cherry BBQ Potato Chips',
     description: 'Place 500 pixels on the island',
     icon: '🍒',
   },
-  // ── Visit 75 ─────────────────────────────────────────────────────────────────
   {
     key: 'bless_maker',
     name: 'Bless the Maker and His water',
     description: 'Visit the island 75 times',
     icon: '💦',
   },
-  // ── Visit 88 ─────────────────────────────────────────────────────────────────
   {
     key: 'midnight_run',
     name: 'Watched Midnight Run (1988)',
     description: 'Visit the island 88 times',
     icon: '🎬',
   },
-  // ── Visit 101 ────────────────────────────────────────────────────────────────
   {
     key: 'lake_101',
     name: 'LAKE 101!!!',
     description: 'Visit the island 101 times',
     icon: '🚤',
   },
-  // ── Visit 115 ────────────────────────────────────────────────────────────────
   {
     key: 'euchre',
     name: 'Euchre: Our Favorite Card Game',
     description: 'Visit the island 115 times',
     icon: '♣️',
   },
-  // ── Visit ~125 (1000 px) — capstone ──────────────────────────────────────────
   {
     key: 'bought_sl',
     name: 'You Bought Shangri-La',
@@ -256,7 +236,6 @@ const INDIVIDUAL_ACHIEVEMENTS = [
 ];
 
 const GROUP_ACHIEVEMENTS = [
-  // ── Day 1 ─────────────────────────────────────────────────────────────────────
   {
     key: 'slide_raft',
     name: 'The Slide is on the Raft',
@@ -269,7 +248,6 @@ const GROUP_ACHIEVEMENTS = [
     description: `All ${MAX_GROUP_SIZE} hunks have visited Shangri-La`,
     icon: '🚢',
   },
-  // ── Day 2 ─────────────────────────────────────────────────────────────────────
   {
     key: 'nice_nice',
     name: 'NICE',
@@ -282,7 +260,6 @@ const GROUP_ACHIEVEMENTS = [
     description: `Every builder has visited Shangri-La at least twice`,
     icon: '🤸‍♀️',
   },
-  // ── Day 3 ─────────────────────────────────────────────────────────────────────
   {
     key: 'home_invasion',
     name: 'Home Invasion!!',
@@ -295,14 +272,12 @@ const GROUP_ACHIEVEMENTS = [
     description: `Every builder has visited Shangri-La at least ten times`,
     icon: '❄️',
   },
-  // ── Day ~4 ────────────────────────────────────────────────────────────────────
   {
     key: 'dustys_by',
     name: 'Dusty‘s Backyard',
     description: '1,000 pixels have been placed on the island',
     icon: '🌱',
   },
-  // ── Day ~6 ────────────────────────────────────────────────────────────────────
   {
     key: 'case_closed',
     name: 'Case Closed',
@@ -315,49 +290,42 @@ const GROUP_ACHIEVEMENTS = [
     description: '2,222 pixels have been placed on the island',
     icon: '🌭',
   },
-  // ── Day ~8 ────────────────────────────────────────────────────────────────────
   {
     key: 'this_economy',
     name: 'In This Economy?',
     description: 'Island progress has reached 33%',
     icon: '💰',
   },
-  // ── Day ~12 ───────────────────────────────────────────────────────────────────
   {
     key: 'coming_going',
     name: 'It is Really Coming and Going',
     description: 'Island progress has reached 50%',
     icon: '🌦️',
   },
-  // ── Day ~15 ───────────────────────────────────────────────────────────────────
   {
     key: 'flossmore',
     name: 'Flossmore, IL',
     description: 'Island progress has reached 66%',
     icon: '🪥',
   },
-  // ── Day ~17 (canvas grows to final size) ──────────────────────────────────────
   {
     key: 'worms',
     name: 'Worms',
     description: 'Island progress has reached 75%',
     icon: '🪱',
   },
-  // ── Day ~20 ───────────────────────────────────────────────────────────────────
   {
     key: 'people_forget',
     name: 'People Forget, But They Shouldn‘t',
     description: 'Island progress has reached 88%',
     icon: '🤔',
   },
-  // ── Day ~21 ───────────────────────────────────────────────────────────────────
   {
     key: 'shavehead_lake',
     name: 'Shavehead Lake',
     description: 'Island progress has reached 90%',
     icon: '🏖',
   },
-  // ── Day 23 ────────────────────────────────────────────────────────────────────
   {
     key: 'shangri_la',
     name: 'Shangri-La Achieved!',
