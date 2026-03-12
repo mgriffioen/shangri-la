@@ -603,7 +603,7 @@ function renderPalette() {
       class="swatch ${color === state.selectedColor ? 'active' : ''}"
       style="background:${color}"
       data-color="${color}"
-      title="${PALETTE_NAMES[color]} (${color})"
+      title="${PALETTE_NAMES[color]}"
     ></div>
   `).join('');
 
