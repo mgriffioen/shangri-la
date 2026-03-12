@@ -974,7 +974,6 @@ details[open] > .accordion-summary-nested {
   .canvas-area            { order: 2; }
   #section-hunks          { order: 4; }
   #achievements-accordion { order: 5; }
-  #achievements-accordion { order: 5; }
 
   /* Canvas: fill full width, square aspect ratio */
   .canvas-area { align-items: stretch; }
