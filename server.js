@@ -199,10 +199,10 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   },
   // ── Visit 45 ─────────────────────────────────────────────────────────────────
   {
-    key: 'gap_45v',
-    name: '[Name Me]',
+    key: 'vw_golf',
+    name: 'Sean\u2019s VW Golf,'
     description: 'Visit the island 45 times',
-    icon: '❓',
+    icon: '🚗',
   },
   // ── Visit 55 ─────────────────────────────────────────────────────────────────
   {
@@ -213,17 +213,17 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   },
   // ── Visit ~63 (500 px) ───────────────────────────────────────────────────────
   {
-    key: 'gap_500px',
-    name: '[Name Me]',
+    key: 'cherry_bbq',
+    name: 'Great Lakes Potato Chip Co. Michigan Cherry BBQ Potato Chips',
     description: 'Place 500 pixels on the island',
-    icon: '❓',
+    icon: '🍒',
   },
   // ── Visit 75 ─────────────────────────────────────────────────────────────────
   {
-    key: 'gap_75v',
-    name: '[Name Me]',
+    key: 'bless_maker',
+    name: 'Bless the Maker and His water',
     description: 'Visit the island 75 times',
-    icon: '❓',
+    icon: '💦',
   },
   // ── Visit 88 ─────────────────────────────────────────────────────────────────
   {
@@ -241,10 +241,10 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   },
   // ── Visit 115 ────────────────────────────────────────────────────────────────
   {
-    key: 'gap_115v',
-    name: '[Name Me]',
+    key: 'euchre',
+    name: 'Euchre: Our Favorite Card Game',
     description: 'Visit the island 115 times',
-    icon: '❓',
+    icon: '♣️',
   },
   // ── Visit ~125 (1000 px) — capstone ──────────────────────────────────────────
   {
@@ -331,17 +331,17 @@ const GROUP_ACHIEVEMENTS = [
   },
   // ── Day ~15 ───────────────────────────────────────────────────────────────────
   {
-    key: 'gap_grp_66pct',
-    name: '[Name Me]',
+    key: 'flossmore',
+    name: 'Flossmore, IL',
     description: 'Island progress has reached 66%',
-    icon: '❓',
+    icon: '🪥',
   },
   // ── Day ~17 (canvas grows to final size) ──────────────────────────────────────
   {
-    key: 'gap_grp_75pct',
-    name: '[Name Me]',
+    key: 'worms',
+    name: 'Worms',
     description: 'Island progress has reached 75%',
-    icon: '❓',
+    icon: '🪱',
   },
   // ── Day ~20 ───────────────────────────────────────────────────────────────────
   {
@@ -352,10 +352,10 @@ const GROUP_ACHIEVEMENTS = [
   },
   // ── Day ~21 ───────────────────────────────────────────────────────────────────
   {
-    key: 'gap_grp_90pct',
-    name: '[Name Me]',
+    key: 'shavehead_lake',
+    name: 'Shavehead Lake',
     description: 'Island progress has reached 90%',
-    icon: '❓',
+    icon: '🏖',
   },
   // ── Day 23 ────────────────────────────────────────────────────────────────────
   {
@@ -413,13 +413,13 @@ function checkIndividualAchievements(userName) {
     { key: 'hotel_eggs',     condition: user.total_visits  >= 30   },
     { key: 'ham_point',      condition: user.pixels_placed >= 288  },
     { key: 'party_bot',      condition: user.pixels_placed >= 333  },
-    { key: 'gap_45v',        condition: user.total_visits  >= 45   },
+    { key: 'vw_golf',        condition: user.total_visits  >= 45   },
     { key: 'cmon',           condition: user.total_visits  >= 55   },
-    { key: 'gap_500px',      condition: user.pixels_placed >= 500  },
-    { key: 'gap_75v',        condition: user.total_visits  >= 75   },
+    { key: 'cherry_bbq',     condition: user.pixels_placed >= 500  },
+    { key: 'bless_maker',    condition: user.total_visits  >= 75   },
     { key: 'midnight_run',   condition: user.total_visits  >= 88   },
     { key: 'lake_101',       condition: user.total_visits  >= 101  },
-    { key: 'gap_115v',       condition: user.total_visits  >= 115  },
+    { key: 'euchre',         condition: user.total_visits  >= 115  },
     { key: 'bought_sl',      condition: user.pixels_placed >= 1000 },
   ];
 
@@ -465,10 +465,10 @@ function checkGroupAchievements() {
     { key: 'hot_dog_house',    condition: totalPixels    >= 2222            },
     { key: 'this_economy',     condition: progress       >= 33              },
     { key: 'coming_going',     condition: progress       >= 50              },
-    { key: 'gap_grp_66pct',    condition: progress       >= 66              },
-    { key: 'gap_grp_75pct',    condition: progress       >= 75              },
+    { key: 'flossmore',        condition: progress       >= 66              },
+    { key: 'worms',            condition: progress       >= 75              },
     { key: 'people_forget',    condition: progress       >= 88              },
-    { key: 'gap_grp_90pct',    condition: progress       >= 90              },
+    { key: 'shavehead_lake',    condition: progress       >= 90              },
     { key: 'shangri_la',       condition: progress       >= 100             },
   ];
 
