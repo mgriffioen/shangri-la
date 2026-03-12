@@ -191,6 +191,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '💰',
   },
   {
+    key: 'people_forget',
+    name: 'People Forget, But They Shouldn’t',
+    description: 'Island progress has reached 88%',
+    icon: '🤔',
+  },
+  {
     key: 'home_invasion',
     name: 'Home Invasion!!',
     description: '666 pixels have been placed on the island',
@@ -311,6 +317,7 @@ function checkGroupAchievements() {
     { key: 'case_closed',  condition: totalPixels    >= 199            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'this_economy',  condition: progress       >= 33             },
+    { key: 'people_forget',  condition: progress       >= 88             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
