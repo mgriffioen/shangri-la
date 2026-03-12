@@ -92,6 +92,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '⭐',
   },
   {
+    key: 'hotel_eggs',
+    name: 'Hotel Eggs',
+    description: 'Visit the island 10 times',
+    icon: '🍳',
+  },
+  {
     key: 'vouch_for',
     name: 'I Vouch for Him',
     description: 'Place 21 pixels on the island',
@@ -248,6 +254,7 @@ function checkIndividualAchievements(userName) {
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
     { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
+    { key: 'hotel_eggs',      condition: user.total_visits  >= 10   },
     { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
     { key: 'ham_point',       condition: user.pixels_placed >= 88  },
