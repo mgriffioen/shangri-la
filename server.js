@@ -50,8 +50,8 @@ const PORT = process.env.PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 8;
-const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
-// const VISIT_COOLDOWN_MS = 10 * 1000             // 10 second for testing
+// const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
+const VISIT_COOLDOWN_MS = 2 * 1000             // 10 second for testing
 const PROGRESS_PER_VISIT = 0.1;             // 0.1% each visit
 const MAX_GROUP_SIZE = 8;
 
@@ -132,18 +132,6 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '⭐',
   },
   {
-    key: 'hotel_eggs',
-    name: 'Hotel Eggs',
-    description: 'Visit the island 10 times',
-    icon: '🍳',
-  },
-  {
-    key: 'vouch_for',
-    name: 'I Vouch for Him',
-    description: 'Place 21 pixels on the island',
-    icon: '👍',
-  },
-  {
     key: 'perfect_spiral',
     name: 'Perfect Spiral',
     description: 'Visit the island 15 times',
@@ -152,7 +140,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'ham_point',
     name: 'Ham Point',
-    description: 'Place 88 pixels on the island',
+    description: 'Place 288 pixels on the island',
     icon: '🍖',
   },
   {
@@ -160,6 +148,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     name: 'This guy gets it',
     description: 'Visit the island 25 times',
     icon: '👏',
+  },
+  {
+    key: 'hotel_eggs',
+    name: 'Hotel Eggs',
+    description: 'Visit the island 30 times',
+    icon: '🍳',
   },
   {
     key: 'cmon',
@@ -191,6 +185,30 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     description: 'Place 200 pixels on the island',
     icon: '👴',
   },
+  {
+    key: 'midnight_run',
+    name: 'Watched Midnight Run (1988)',
+    description: 'Visit the island 88 times',
+    icon: '🎬',
+  },
+  {
+    key: 'vouch_for',
+    name: 'I Vouch for Him',
+    description: 'Place 222 pixels on the island',
+    icon: '👍',
+  },
+  {
+    key: 'party_bot',
+    name: 'Friend of Party Bot Micro',
+    description: 'Place 333 pixels on the island',
+    icon: '🤖',
+  },
+  {
+    key: 'bought_sl',
+    name: 'You Bought Shangri-La',
+    description: 'Place 1,000 pixels on the island',
+    icon: '💰',
+  },
 ];
 
 const GROUP_ACHIEVEMENTS = [
@@ -203,7 +221,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'hot_dog_house',
     name: 'Hot Dog House',
-    description: '44 pixels have been placed on the island',
+    description: '2,222 pixels have been placed on the island',
     icon: '🌭',
   },
   {
@@ -215,7 +233,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'case_closed',
     name: 'Case Closed',
-    description: '199 pixels have been placed on the island',
+    description: '1999 pixels have been placed on the island',
     icon: '👨‍⚖️',
   },
   {
@@ -231,10 +249,22 @@ const GROUP_ACHIEVEMENTS = [
     icon: '💰',
   },
   {
+    key: 'people_forget',
+    name: 'People Forget, But They Shouldn’t',
+    description: 'Island progress has reached 88%',
+    icon: '🤔',
+  },
+  {
     key: 'home_invasion',
     name: 'Home Invasion!!',
     description: '666 pixels have been placed on the island',
     icon: '🏚️',
+  },
+  {
+    key: 'dustys_by',
+    name: 'Dusty‘s Backyard',
+    description: '1,000 pixels have been placed on the island',
+    icon: '🌱',
   },
   {
     key: 'coming_going',
@@ -251,7 +281,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'bring_it_on',
     name: 'BRING IT ON',
-    description: `Every builder has visited Shangri-La at least three times`,
+    description: `Every builder has visited Shangri-La at least ten times`,
     icon: '❄️',
   },
   {
@@ -300,16 +330,19 @@ function checkIndividualAchievements(userName) {
     { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
     { key: 'true_friend',      condition: user.total_visits  >= 2   },
     { key: 'tgif',      condition: user.total_visits  >= 5   },
-    { key: 'hotel_eggs',      condition: user.total_visits  >= 10   },
-    { key: 'vouch_for',       condition: user.pixels_placed >= 21  },
     { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
-    { key: 'ham_point',       condition: user.pixels_placed >= 88  },
+    { key: 'ham_point',       condition: user.pixels_placed >= 288  },
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
+    { key: 'hotel_eggs',      condition: user.total_visits  >= 30   },
     { key: 'cmon',  condition: user.total_visits  >= 55  },
+    { key: 'midnight_run',  condition: user.total_visits  >= 88  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
     { key: 'lake_101',  condition: user.total_visits  >= 101  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
+    { key: 'vouch_for',       condition: user.pixels_placed >= 222  },
+    { key: 'party_bot',     condition: user.pixels_placed >= 333 },
+    { key: 'bought_sl',     condition: user.pixels_placed >= 1000 },
   ];
 
   const insertStmt = db.prepare(
@@ -345,13 +378,15 @@ function checkGroupAchievements() {
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'backflip',        condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
-    { key: 'bring_it_on',     condition: getMembersWithMinVisits(3) >= MAX_GROUP_SIZE },
-    { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
+    { key: 'bring_it_on',     condition: getMembersWithMinVisits(10) >= MAX_GROUP_SIZE },
+    { key: 'hot_dog_house',  condition: totalPixels    >= 2222            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
-    { key: 'case_closed',  condition: totalPixels    >= 199            },
+    { key: 'case_closed',  condition: totalPixels    >= 1999            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'this_economy',  condition: progress       >= 33             },
+    { key: 'people_forget',  condition: progress       >= 88             },
     { key: 'home_invasion',   condition: totalPixels    >= 666            },
+    { key: 'dustys_by',   condition: totalPixels    >= 1000            },
     { key: 'coming_going',  condition: progress       >= 50             },
     { key: 'shangri_la',       condition: progress       >= 100            },
   ];
