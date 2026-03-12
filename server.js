@@ -388,28 +388,6 @@ function checkGroupAchievements() {
 // ─── Routes ────────────────────────────────────────────────────────────────────
 
 /**
- * POST /api/dev/reset-cooldown
- * Resets the user's cooldown so they can place pixels immediately.
- * Only available when DEV_MODE=true is set in the environment.
- */
-app.post('/api/dev/reset-cooldown', (req, res) => {
-  if (process.env.DEV_MODE !== 'true') {
-    return res.status(403).json({ error: 'Dev mode not enabled' });
-  }
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Name required' });
-
-  const user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-
-  db.prepare(`
-    UPDATE users SET last_visit = 0, pixels_remaining = ?, trivia_used = 0 WHERE name = ?
-  `).run(PIXELS_PER_VISIT, name);
-
-  res.json({ success: true, pixels_remaining: PIXELS_PER_VISIT });
-});
-
-/**
  * GET /og-image
  * Returns a PNG thumbnail of the current pixel map for OG meta tags.
  */
