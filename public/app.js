@@ -954,3 +954,56 @@ async function init() {
 }
 
 init();
+
+// ─── Dev Panel ────────────────────────────────────────────────────────────────
+
+if (new URLSearchParams(location.search).has('dev')) {
+  const panel = document.getElementById('dev-panel');
+  panel.hidden = false;
+
+  // Reset cooldown — server wipes last_visit and restores pixels
+  document.getElementById('dev-reset-cooldown').addEventListener('click', async () => {
+    if (!state.userName) return showToast('Log in first');
+    const res = await fetch('/api/dev/reset-cooldown', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: state.userName }),
+    });
+    if (!res.ok) return showToast('Server error (is DEV_MODE set?)');
+    const data = await res.json();
+    state.user.pixels_remaining = data.pixels_remaining;
+    state.user.last_visit = 0;
+    clearInterval(state.countdownTimer);
+    renderVisitStatus(false);
+    showToast('Cooldown reset');
+  });
+
+  // Add 8 pixels client-side
+  document.getElementById('dev-add-pixels').addEventListener('click', () => {
+    if (!state.user) return showToast('Log in first');
+    state.user.pixels_remaining += 8;
+    renderVisitStatus(false);
+    showToast('+8 pixels added');
+  });
+
+  // Free draw — set pixels to a large number
+  document.getElementById('dev-free-draw').addEventListener('click', () => {
+    if (!state.user) return showToast('Log in first');
+    state.user.pixels_remaining = 9999;
+    renderVisitStatus(false);
+    showToast('Free draw on');
+  });
+
+  // Trigger trivia modal
+  document.getElementById('dev-trivia').addEventListener('click', () => {
+    if (!state.userName) return showToast('Log in first');
+    showTriviaOffer();
+    loadTriviaQuestion();
+  });
+
+  // Reload state from server
+  document.getElementById('dev-reload').addEventListener('click', async () => {
+    await loadState();
+    showToast('State reloaded');
+  });
+}

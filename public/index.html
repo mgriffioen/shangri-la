@@ -156,6 +156,18 @@
   </main>
   <footer class="site-footer">Built by Mark Griffioen, 2026</footer>
 
+  <!-- ─── Dev Panel (visible only with ?dev in URL) ───────────────────────── -->
+  <div id="dev-panel" class="dev-panel" hidden>
+    <div class="dev-panel-title">⚙ DEV MODE</div>
+    <div class="dev-panel-actions">
+      <button class="dev-btn" id="dev-reset-cooldown">Reset cooldown</button>
+      <button class="dev-btn" id="dev-add-pixels">+8 pixels</button>
+      <button class="dev-btn" id="dev-free-draw">Free draw</button>
+      <button class="dev-btn" id="dev-trivia">Trigger trivia</button>
+      <button class="dev-btn" id="dev-reload">Reload state</button>
+    </div>
+  </div>
+
   <!-- ─── Trivia Modal ─────────────────────────────────────────────────────── -->
   <div id="trivia-overlay" class="trivia-overlay" hidden>
     <div class="trivia-card">
