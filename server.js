@@ -1,9 +1,49 @@
 const express = require('express');
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs   = require('fs');
+const zlib = require('zlib');
 
 const app = express();
 app.use(express.json());
+
+// ─── CRC32 (for PNG generation) ────────────────────────────────────────────────
+
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[i] = c;
+  }
+  return t;
+})();
+
+function crc32(buf) {
+  let crc = 0xFFFFFFFF;
+  for (const byte of buf) crc = CRC_TABLE[(crc ^ byte) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+function pngChunk(type, data) {
+  const typeBuf = Buffer.from(type, 'ascii');
+  const len     = Buffer.alloc(4);
+  len.writeUInt32BE(data.length);
+  const crcBuf  = Buffer.alloc(4);
+  crcBuf.writeUInt32BE(crc32(Buffer.concat([typeBuf, data])));
+  return Buffer.concat([len, typeBuf, data, crcBuf]);
+}
+
+// ─── Serve index.html with injected OG origin ─────────────────────────────────
+
+const INDEX_HTML = path.join(__dirname, 'public', 'index.html');
+
+app.get('/', (req, res) => {
+  const origin = `${req.protocol}://${req.get('host')}`;
+  const html   = fs.readFileSync(INDEX_HTML, 'utf8').replaceAll('__OG_ORIGIN__', origin);
+  res.type('html').send(html);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
@@ -332,6 +372,60 @@ function checkGroupAchievements() {
 }
 
 // ─── Routes ────────────────────────────────────────────────────────────────────
+
+/**
+ * GET /og-image
+ * Returns a PNG thumbnail of the current pixel map for OG meta tags.
+ */
+app.get('/og-image', (req, res) => {
+  const progress   = getProgress();
+  const canvasSize = getCanvasSize(progress);
+  const pixels     = db.prepare('SELECT x, y, color FROM pixels').all();
+
+  const pixelMap = {};
+  for (const p of pixels) pixelMap[`${p.x},${p.y}`] = p.color;
+
+  const BG    = '#1a6691';                              // unpainted = ocean
+  const SCALE = Math.max(4, Math.floor(512 / canvasSize)); // target ~512 px
+  const W     = canvasSize * SCALE;
+  const H     = canvasSize * SCALE;
+
+  // Build raw scanlines: [filter-byte, R, G, B, …] per row
+  const scanlines = [];
+  for (let cy = 0; cy < canvasSize; cy++) {
+    const row = Buffer.alloc(1 + W * 3);
+    row[0] = 0; // filter: None
+    for (let cx = 0; cx < canvasSize; cx++) {
+      const hex = pixelMap[`${cx},${cy}`] || BG;
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      for (let s = 0; s < SCALE; s++) {
+        const off = 1 + (cx * SCALE + s) * 3;
+        row[off] = r; row[off + 1] = g; row[off + 2] = b;
+      }
+    }
+    for (let s = 0; s < SCALE; s++) scanlines.push(row);
+  }
+
+  const idat = zlib.deflateSync(Buffer.concat(scanlines));
+
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(W, 0);
+  ihdr.writeUInt32BE(H, 4);
+  ihdr[8] = 8; ihdr[9] = 2; // 8-bit RGB
+
+  const png = Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), // PNG signature
+    pngChunk('IHDR', ihdr),
+    pngChunk('IDAT', idat),
+    pngChunk('IEND', Buffer.alloc(0)),
+  ]);
+
+  res.set('Content-Type', 'image/png');
+  res.set('Cache-Control', 'public, max-age=60');
+  res.send(png);
+});
 
 /**
  * POST /api/login
