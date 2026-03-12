@@ -233,7 +233,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'case_closed',
     name: 'Case Closed',
-    description: '199 pixels have been placed on the island',
+    description: '1999 pixels have been placed on the island',
     icon: '👨‍⚖️',
   },
   {
@@ -281,7 +281,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'bring_it_on',
     name: 'BRING IT ON',
-    description: `Every builder has visited Shangri-La at least three times`,
+    description: `Every builder has visited Shangri-La at least ten times`,
     icon: '❄️',
   },
   {
@@ -378,10 +378,10 @@ function checkGroupAchievements() {
   const checks = [
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'backflip',        condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
-    { key: 'bring_it_on',     condition: getMembersWithMinVisits(3) >= MAX_GROUP_SIZE },
+    { key: 'bring_it_on',     condition: getMembersWithMinVisits(10) >= MAX_GROUP_SIZE },
     { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
-    { key: 'case_closed',  condition: totalPixels    >= 199            },
+    { key: 'case_closed',  condition: totalPixels    >= 1999            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
     { key: 'this_economy',  condition: progress       >= 33             },
     { key: 'people_forget',  condition: progress       >= 88             },
