@@ -478,6 +478,7 @@ main {
   font-weight: 700;
   color: var(--ocean-dark);
   font-size: 1.05rem;
+  padding-right: 10px;
 }
 
 /* ─── Stats Grid ─────────────────────────────────────────────────────────────── */
