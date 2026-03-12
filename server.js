@@ -200,14 +200,14 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   // ── Visit 45 ─────────────────────────────────────────────────────────────────
   {
     key: 'vw_golf',
-    name: 'Sean\u2019s VW Golf,'
+    name: 'Sean‘s VW Golf,'
     description: 'Visit the island 45 times',
     icon: '🚗',
   },
   // ── Visit 55 ─────────────────────────────────────────────────────────────────
   {
     key: 'cmon',
-    name: 'C\u2019mon',
+    name: 'C‘mon',
     description: 'Visit the island 55 times',
     icon: '🚬',
   },
@@ -298,7 +298,7 @@ const GROUP_ACHIEVEMENTS = [
   // ── Day ~4 ────────────────────────────────────────────────────────────────────
   {
     key: 'dustys_by',
-    name: 'Dusty\u2019s Backyard',
+    name: 'Dusty‘s Backyard',
     description: '1,000 pixels have been placed on the island',
     icon: '🌱',
   },
@@ -346,7 +346,7 @@ const GROUP_ACHIEVEMENTS = [
   // ── Day ~20 ───────────────────────────────────────────────────────────────────
   {
     key: 'people_forget',
-    name: 'People Forget, But They Shouldn\u2019t',
+    name: 'People Forget, But They Shouldn‘t',
     description: 'Island progress has reached 88%',
     icon: '🤔',
   },
