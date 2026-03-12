@@ -683,16 +683,16 @@ app.post('/api/seed-demo', (req, res) => {
     UPDATE global_stats SET value = 0 WHERE key = 'progress';
   `);
 
+  // 800 total visits × 0.1% = 80% progress, canvas at 80×80
   const members = [
-    { name: 'Mark',     visits: 27, pixels: 215, lastVisit: now - 2  * hour },
-    { name: 'Sean',     visits: 18, pixels: 88,  lastVisit: now - 5  * hour },
-    { name: 'Carl',     visits: 12, pixels: 55,  lastVisit: now - 14 * hour },
-    { name: 'Benedict', visits: 7,  pixels: 31,  lastVisit: now - 20 * hour },
-    { name: 'Dusty',    visits: 5,  pixels: 22,  lastVisit: now - 30 * hour },
-    { name: 'Paul',     visits: 3,  pixels: 12,  lastVisit: now - 48 * hour },
-    { name: 'Erik',     visits: 1,  pixels: 5,   lastVisit: now - 60 * hour },
-    { name: 'Brandon',  visits: 1,  pixels: 5,   lastVisit: now - 72 * hour },
-    { name: 'Zach',     visits: 1,  pixels: 5,   lastVisit: now - 84 * hour },
+    { name: 'Mark',     visits: 130, pixels: 820, lastVisit: now - 1  * hour },
+    { name: 'Sean',     visits: 100, pixels: 660, lastVisit: now - 3  * hour },
+    { name: 'Carl',     visits: 95,  pixels: 420, lastVisit: now - 7  * hour },
+    { name: 'Benedict', visits: 100, pixels: 390, lastVisit: now - 15 * hour },
+    { name: 'Dusty',    visits: 88,  pixels: 340, lastVisit: now - 20 * hour },
+    { name: 'Paul',     visits: 92,  pixels: 360, lastVisit: now - 32 * hour },
+    { name: 'Erik',     visits: 98,  pixels: 400, lastVisit: now - 44 * hour },
+    { name: 'Brandon',  visits: 97,  pixels: 480, lastVisit: now - 60 * hour },
   ];
 
   const insertUser = db.prepare(`
@@ -701,24 +701,33 @@ app.post('/api/seed-demo', (req, res) => {
   `);
   for (const m of members) insertUser.run(m);
 
+  // Everyone has 88+ visits and 340+ pixels — all 6 individual achievements
   const insertAch = db.prepare(`
     INSERT OR IGNORE INTO user_achievements (user_name, achievement_key, earned_at)
     VALUES (?, ?, ?)
   `);
   for (const m of members) {
-    insertAch.run(m.name, 'lake_livin',      now - m.visits * hour);
-    if (m.visits >= 5)  insertAch.run(m.name, 'tgif',           now - (m.visits - 5)  * hour);
-    if (m.visits >= 15) insertAch.run(m.name, 'perfect_spiral', now - (m.visits - 15) * hour);
-    if (m.visits >= 25) insertAch.run(m.name, 'gets_it',        now - (m.visits - 25) * hour);
-    if (m.pixels >= 69)  insertAch.run(m.name, 'nice', now - 2 * hour);
-    if (m.pixels >= 200) insertAch.run(m.name, 'omp',  now - 1 * hour);
+    insertAch.run(m.name, 'lake_livin',     now - m.visits        * hour);
+    insertAch.run(m.name, 'tgif',           now - (m.visits - 5)  * hour);
+    insertAch.run(m.name, 'perfect_spiral', now - (m.visits - 15) * hour);
+    insertAch.run(m.name, 'gets_it',        now - (m.visits - 25) * hour);
+    insertAch.run(m.name, 'nice',           now - (m.visits - 40) * hour);
+    insertAch.run(m.name, 'omp',            now - (m.visits - 80) * hour);
   }
 
-  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('we_did_it',  now - 50 * hour);
-  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('slide_raft', now - 30 * hour);
-  db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`).run('nice_nice',  now - 10 * hour);
+  // All group achievements except shangri_la (island at 80%, still going)
+  const insertGroup = db.prepare(`INSERT OR IGNORE INTO group_achievements (achievement_key, earned_at) VALUES (?, ?)`);
+  insertGroup.run('we_did_it',     now - 780 * hour);
+  insertGroup.run('backflip',      now - 770 * hour);
+  insertGroup.run('bring_it_on',   now - 755 * hour);
+  insertGroup.run('hot_dog_house', now - 700 * hour);
+  insertGroup.run('slide_raft',    now - 600 * hour);
+  insertGroup.run('nice_nice',     now - 400 * hour);
+  insertGroup.run('this_economy',  now - 300 * hour);
+  insertGroup.run('home_invasion', now - 200 * hour);
+  insertGroup.run('coming_going',  now - 100 * hour);
 
-  // Island shape on the 32×32 canvas
+  // Large island on the 80×80 canvas
   const PALETTE = { ocean: '#1a6691', sand: '#deb887', grass: '#2e7d32', tree: '#1b5e20', rock: '#607d8b', flower: '#e91e63', path: '#c19a6b' };
   const paintedPixels = [];
   const rect = (x0, y0, x1, y1, color, user) => {
@@ -726,33 +735,42 @@ app.post('/api/seed-demo', (req, res) => {
       for (let x = x0; x <= x1; x++)
         paintedPixels.push({ x, y, color, user });
   };
+  const dots = (coords, color, user) => {
+    for (const [x, y] of coords) paintedPixels.push({ x, y, color, user });
+  };
 
-  rect(8, 8, 23, 23, PALETTE.sand,  'Mark');
-  rect(10, 10, 21, 21, PALETTE.grass, 'Mark');
-  rect(11, 11, 13, 13, PALETTE.tree,  'Sean');
-  rect(18, 11, 20, 13, PALETTE.tree,  'Carl');
-  rect(11, 18, 13, 20, PALETTE.tree,  'Benedict');
-  rect(18, 18, 20, 20, PALETTE.tree,  'Dusty');
-  [[8,8],[8,23],[23,8],[23,23],[9,9],[9,22],[22,9],[22,22]].forEach(([x,y]) =>
-    paintedPixels.push({ x, y, color: PALETTE.rock, user: 'Paul' }));
-  rect(15, 10, 16, 21, PALETTE.path, 'Mark');
-  rect(10, 15, 21, 16, PALETTE.path, 'Mark');
-  [[14,12],[17,12],[14,19],[17,19],[12,15],[19,15]].forEach(([x,y]) =>
-    paintedPixels.push({ x, y, color: PALETTE.flower, user: 'Erik' }));
-  [[7,15],[7,16],[24,15],[24,16],[15,7],[16,7],[15,24],[16,24]].forEach(([x,y]) =>
-    paintedPixels.push({ x, y, color: PALETTE.ocean, user: 'Brandon' }));
+  rect(10, 10, 69, 69, PALETTE.sand,  'Mark');
+  rect(14, 14, 65, 65, PALETTE.grass, 'Sean');
+  rect(15, 15, 21, 21, PALETTE.tree,  'Carl');
+  rect(58, 15, 64, 21, PALETTE.tree,  'Benedict');
+  rect(15, 58, 21, 64, PALETTE.tree,  'Dusty');
+  rect(58, 58, 64, 64, PALETTE.tree,  'Paul');
+  rect(36, 17, 43, 23, PALETTE.tree,  'Erik');
+  rect(36, 56, 43, 62, PALETTE.tree,  'Brandon');
+  rect(17, 36, 23, 43, PALETTE.tree,  'Carl');
+  rect(56, 36, 62, 43, PALETTE.tree,  'Benedict');
+  rect(38, 14, 39, 65, PALETTE.path,  'Mark');
+  rect(14, 38, 65, 39, PALETTE.path,  'Mark');
+  dots([[25,25],[26,25],[25,26],[26,26],[27,26],[26,27],[27,27],[28,27],[27,28],[28,28],[50,25],[51,25],[50,26],[51,26],[52,26],[51,27],[52,27],[53,27],[52,28],[53,28],[25,50],[26,50],[25,51],[26,51],[27,51],[26,52],[27,52],[28,52],[27,53],[28,53],[50,50],[51,50],[50,51],[51,51],[52,51],[51,52],[52,52],[53,52],[52,53],[53,53]], PALETTE.path, 'Sean');
+  rect(34, 34, 45, 45, PALETTE.sand,  'Sean');
+  rect(26, 26, 31, 31, PALETTE.ocean, 'Carl');
+  rect(48, 26, 53, 31, PALETTE.ocean, 'Carl');
+  rect(26, 48, 31, 53, PALETTE.ocean, 'Carl');
+  rect(48, 48, 53, 53, PALETTE.ocean, 'Carl');
+  dots([[10,10],[10,11],[11,10],[68,10],[69,10],[69,11],[10,68],[10,69],[11,69],[68,69],[69,68],[69,69],[10,38],[10,39],[10,40],[69,38],[69,39],[69,40],[38,10],[39,10],[40,10],[38,69],[39,69],[40,69],[33,20],[34,20],[45,20],[46,20],[20,33],[20,34],[20,45],[20,46],[59,33],[59,34],[59,45],[59,46],[33,59],[34,59],[45,59],[46,59]], PALETTE.rock, 'Paul');
+  dots([[33,33],[46,33],[33,46],[46,46],[28,38],[29,38],[50,38],[51,38],[38,28],[38,29],[38,50],[38,51],[22,22],[22,23],[23,22],[56,22],[57,22],[56,23],[22,56],[22,57],[23,57],[56,56],[57,56],[56,57],[30,18],[40,18],[50,18],[18,30],[18,40],[18,50],[61,30],[61,40],[61,50],[30,61],[40,61],[50,61]], PALETTE.flower, 'Erik');
+  dots([[38,7],[39,7],[38,8],[39,8],[38,9],[39,9]], PALETTE.path, 'Brandon');
+  dots([[8,38],[8,39],[8,40],[71,38],[71,39],[71,40],[38,8],[39,8],[40,8],[38,71],[39,71],[40,71],[9,20],[9,21],[9,50],[9,51],[70,20],[70,21],[70,50],[70,51],[20,9],[21,9],[50,9],[51,9],[20,70],[21,70],[50,70],[51,70]], PALETTE.ocean, 'Brandon');
 
   const insertPixel = db.prepare(`INSERT OR REPLACE INTO pixels (x, y, color, user_name, placed_at) VALUES (?, ?, ?, ?, ?)`);
   const insertAll = db.transaction(() => {
-    paintedPixels.forEach((p, i) => insertPixel.run(p.x, p.y, p.color, p.user, now - i * 60_000));
+    paintedPixels.forEach((p, i) => insertPixel.run(p.x, p.y, p.color, p.user, now - i * 30_000));
   });
   insertAll();
 
-  const totalPixels = members.reduce((s, m) => s + m.pixels, 0);
-  const progress    = parseFloat(((totalPixels / (32 * 32)) * 100).toFixed(2));
-  db.prepare("UPDATE global_stats SET value = ? WHERE key = 'progress'").run(progress);
+  db.prepare("UPDATE global_stats SET value = ? WHERE key = 'progress'").run(80);
 
-  res.json({ success: true, message: `Demo state loaded. ${members.length} members, ${paintedPixels.length} pixels, ${progress}% progress.` });
+  res.json({ success: true, message: `Demo state loaded. ${members.length} members, ${paintedPixels.length} pixels, 80% progress.` });
 });
 
 /**
