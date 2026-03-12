@@ -221,7 +221,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'hot_dog_house',
     name: 'Hot Dog House',
-    description: '44 pixels have been placed on the island',
+    description: '2,222 pixels have been placed on the island',
     icon: '🌭',
   },
   {
@@ -379,7 +379,7 @@ function checkGroupAchievements() {
     { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
     { key: 'backflip',        condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
     { key: 'bring_it_on',     condition: getMembersWithMinVisits(10) >= MAX_GROUP_SIZE },
-    { key: 'hot_dog_house',  condition: totalPixels    >= 44            },
+    { key: 'hot_dog_house',  condition: totalPixels    >= 2222            },
     { key: 'slide_raft',  condition: totalPixels    >= 100            },
     { key: 'case_closed',  condition: totalPixels    >= 1999            },
     { key: 'nice_nice',  condition: totalPixels    >= 420            },
