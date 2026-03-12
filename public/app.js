@@ -38,7 +38,6 @@ const PALETTE_NAMES = {
   '#f9a825': 'Amber',
   '#f4e09a': 'Desert Sand',
   '#7b1fa2': 'Purple',
-  // Row 6: Terrain extras
   '#e91e63': 'Pink',
 };
 const PALETTE = Object.keys(PALETTE_NAMES);
