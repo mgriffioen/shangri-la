@@ -151,6 +151,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     description: 'Place 200 pixels on the island',
     icon: '👴',
   },
+  {
+    key: 'party_bot',
+    name: 'Friend of Party Bot Micro',
+    description: 'Place 333 pixels on the island',
+    icon: '🤖',
+  },
 ];
 
 const GROUP_ACHIEVEMENTS = [
@@ -276,6 +282,7 @@ function checkIndividualAchievements(userName) {
     { key: 'lake_101',  condition: user.total_visits  >= 101  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
+    { key: 'party_bot',     condition: user.pixels_placed >= 333 },
   ];
 
   const insertStmt = db.prepare(
