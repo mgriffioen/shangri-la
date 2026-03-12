@@ -568,13 +568,13 @@ main {
 .accordion-summary::-webkit-details-marker { display: none; }
 
 .accordion-summary::after {
-  content: '➕';
+  content: '👉';
   font-size: 1.0rem;
   transition: transform 0.2s;
 }
 
 details[open] > .accordion-summary::after {
-  transform: rotate(45deg);
+  transform: rotate(90deg);
 }
 
 details[open] > .accordion-summary {
