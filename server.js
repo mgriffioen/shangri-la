@@ -134,6 +134,12 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '👀',
   },
   {
+    key: 'lake_101',
+    name: 'LAKE 101!!!',
+    description: 'Visit the island 101 times',
+    icon: '🚤',
+  },
+  {
     key: 'kubb_god',
     name: 'Kubb God',
     description: 'Place 111 pixels on the island',
@@ -261,6 +267,7 @@ function checkIndividualAchievements(userName) {
     { key: 'gets_it',  condition: user.total_visits  >= 25  },
     { key: 'cmon',  condition: user.total_visits  >= 55  },
     { key: 'nice',       condition: user.pixels_placed >= 69  },
+    { key: 'lake_101',  condition: user.total_visits  >= 101  },
     { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
     { key: 'omp',     condition: user.pixels_placed >= 200 },
   ];
