@@ -1006,4 +1006,9 @@ if (new URLSearchParams(location.search).has('dev')) {
     await loadState();
     showToast('State reloaded');
   });
+
+  // Close / dismiss the panel
+  document.getElementById('dev-close').addEventListener('click', () => {
+    panel.hidden = true;
+  });
 }
