@@ -435,6 +435,7 @@ main {
 .canvas-area #section-palette {
   width: 100%;
   box-sizing: border-box;
+  max-width: 440px;
 }
 
 .canvas-wrapper {
@@ -932,6 +933,10 @@ details:not([open]) > .accordion-summary {
   details.accordion {
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .canvas-area #section-palette {
+    max-width: 100%;
   }
 
   /* Progress and stats are replaced by the header info bar on mobile */
