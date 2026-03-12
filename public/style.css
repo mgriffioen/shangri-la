@@ -436,6 +436,7 @@ main {
   width: 100%;
   box-sizing: border-box;
   max-width: 440px;
+
 }
 
 .canvas-wrapper {
@@ -490,6 +491,7 @@ main {
   font-weight: 700;
   color: var(--ocean-dark);
   font-size: 1.05rem;
+  padding-right: 10px;
 }
 
 /* ─── Stats Grid ─────────────────────────────────────────────────────────────── */
