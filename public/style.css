@@ -937,6 +937,10 @@ details:not([open]) > .accordion-summary {
     box-sizing: border-box;
   }
 
+  .canvas-area #section-palette {
+    max-width: 100%;
+  }
+
   /* Progress and stats are replaced by the header info bar on mobile */
   #section-progress,
   #section-stats  { display: none; }
