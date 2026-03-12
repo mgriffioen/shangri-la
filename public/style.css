@@ -585,6 +585,28 @@ details:not([open]) > .accordion-summary {
   padding-bottom: 0;
 }
 
+/* Nested accordions inside the Achievements card */
+.accordion-nested {
+  padding-bottom: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.accordion-nested:first-of-type {
+  border-top: none;
+  margin-top: 0;
+}
+
+.accordion-summary-nested {
+  font-size: 0.78rem;
+  padding-bottom: 8px;
+}
+
+details[open] > .accordion-summary-nested {
+  padding-bottom: 8px;
+}
+
 /* ─── Achievements ───────────────────────────────────────────────────────────── */
 .achievements-list {
   display: flex;
