@@ -113,182 +113,256 @@ for (const col of [
 // ─── Achievement Definitions ───────────────────────────────────────────────────
 
 const INDIVIDUAL_ACHIEVEMENTS = [
+  // ── Visit 1 ──────────────────────────────────────────────────────────────────
   {
-    key: 'lake_livin',
-    name: 'Lake Living',
-    description: 'You have begun the journey to Shangri-La',
-    icon: '🌅',
+    key: ‘lake_livin’,
+    name: ‘Lake Living’,
+    description: ‘You have begun the journey to Shangri-La’,
+    icon: ‘🌅’,
   },
+  // ── Visit 2 ──────────────────────────────────────────────────────────────────
   {
-    key: 'true_friend',
-    name: 'True Friend',
-    description: 'You visited a second time',
-    icon: '🥹',
+    key: ‘true_friend’,
+    name: ‘True Friend’,
+    description: ‘You visited a second time’,
+    icon: ‘🥹’,
   },
+  // ── Visit 5 ──────────────────────────────────────────────────────────────────
   {
-    key: 'tgif',
-    name: 'TGIF',
-    description: 'Visit the island 5 times',
-    icon: '⭐',
+    key: ‘tgif’,
+    name: ‘TGIF’,
+    description: ‘Visit the island 5 times’,
+    icon: ‘⭐’,
   },
+  // ── Visit ~9 (69 px) ─────────────────────────────────────────────────────────
   {
-    key: 'perfect_spiral',
-    name: 'Perfect Spiral',
-    description: 'Visit the island 15 times',
-    icon: '🏈',
+    key: ‘nice’,
+    name: ‘Nice’,
+    description: ‘Place 69 pixels on the island’,
+    icon: ‘👀’,
   },
+  // ── Visit ~14 (111 px) ───────────────────────────────────────────────────────
   {
-    key: 'ham_point',
-    name: 'Ham Point',
-    description: 'Place 288 pixels on the island',
-    icon: '🍖',
+    key: ‘kubb_god’,
+    name: ‘Kubb God’,
+    description: ‘Place 111 pixels on the island’,
+    icon: ‘👑’,
   },
+  // ── Visit 15 ─────────────────────────────────────────────────────────────────
   {
-    key: 'gets_it',
-    name: 'This guy gets it',
-    description: 'Visit the island 25 times',
-    icon: '👏',
+    key: ‘perfect_spiral’,
+    name: ‘Perfect Spiral’,
+    description: ‘Visit the island 15 times’,
+    icon: ‘🏈’,
   },
+  // ── Visit 25 ─────────────────────────────────────────────────────────────────
   {
-    key: 'hotel_eggs',
-    name: 'Hotel Eggs',
-    description: 'Visit the island 30 times',
-    icon: '🍳',
+    key: ‘gets_it’,
+    name: ‘This guy gets it’,
+    description: ‘Visit the island 25 times’,
+    icon: ‘👏’,
   },
+  // ── Visit 25 (200 px) ────────────────────────────────────────────────────────
   {
-    key: 'cmon',
-    name: 'C‘mon',
-    description: 'Visit the island 55 times',
-    icon: '🚬',
+    key: ‘omp’,
+    name: ‘Old Man Paul’,
+    description: ‘Place 200 pixels on the island’,
+    icon: ‘👴’,
   },
+  // ── Visit ~28 (222 px) ───────────────────────────────────────────────────────
   {
-    key: 'nice',
-    name: 'Nice',
-    description: 'Place 69 pixels on the island',
-    icon: '👀',
+    key: ‘vouch_for’,
+    name: ‘I Vouch for Him’,
+    description: ‘Place 222 pixels on the island’,
+    icon: ‘👍’,
   },
+  // ── Visit 30 ─────────────────────────────────────────────────────────────────
   {
-    key: 'lake_101',
-    name: 'LAKE 101!!!',
-    description: 'Visit the island 101 times',
-    icon: '🚤',
+    key: ‘hotel_eggs’,
+    name: ‘Hotel Eggs’,
+    description: ‘Visit the island 30 times’,
+    icon: ‘🍳’,
   },
+  // ── Visit ~36 (288 px) ───────────────────────────────────────────────────────
   {
-    key: 'kubb_god',
-    name: 'Kubb God',
-    description: 'Place 111 pixels on the island',
-    icon: '👑',
+    key: ‘ham_point’,
+    name: ‘Ham Point’,
+    description: ‘Place 288 pixels on the island’,
+    icon: ‘🍖’,
   },
+  // ── Visit ~42 (333 px) ───────────────────────────────────────────────────────
   {
-    key: 'omp',
-    name: 'Old Man Paul',
-    description: 'Place 200 pixels on the island',
-    icon: '👴',
+    key: ‘party_bot’,
+    name: ‘Friend of Party Bot Micro’,
+    description: ‘Place 333 pixels on the island’,
+    icon: ‘🤖’,
   },
+  // ── Visit 45 ─────────────────────────────────────────────────────────────────
   {
-    key: 'midnight_run',
-    name: 'Watched Midnight Run (1988)',
-    description: 'Visit the island 88 times',
-    icon: '🎬',
+    key: ‘gap_45v’,
+    name: ‘[Name Me]’,
+    description: ‘Visit the island 45 times’,
+    icon: ‘❓’,
   },
+  // ── Visit 55 ─────────────────────────────────────────────────────────────────
   {
-    key: 'vouch_for',
-    name: 'I Vouch for Him',
-    description: 'Place 222 pixels on the island',
-    icon: '👍',
+    key: ‘cmon’,
+    name: ‘C\u2019mon’,
+    description: ‘Visit the island 55 times’,
+    icon: ‘🚬’,
   },
+  // ── Visit ~63 (500 px) ───────────────────────────────────────────────────────
   {
-    key: 'party_bot',
-    name: 'Friend of Party Bot Micro',
-    description: 'Place 333 pixels on the island',
-    icon: '🤖',
+    key: ‘gap_500px’,
+    name: ‘[Name Me]’,
+    description: ‘Place 500 pixels on the island’,
+    icon: ‘❓’,
   },
+  // ── Visit 75 ─────────────────────────────────────────────────────────────────
   {
-    key: 'bought_sl',
-    name: 'You Bought Shangri-La',
-    description: 'Place 1,000 pixels on the island',
-    icon: '💰',
+    key: ‘gap_75v’,
+    name: ‘[Name Me]’,
+    description: ‘Visit the island 75 times’,
+    icon: ‘❓’,
+  },
+  // ── Visit 88 ─────────────────────────────────────────────────────────────────
+  {
+    key: ‘midnight_run’,
+    name: ‘Watched Midnight Run (1988)’,
+    description: ‘Visit the island 88 times’,
+    icon: ‘🎬’,
+  },
+  // ── Visit 101 ────────────────────────────────────────────────────────────────
+  {
+    key: ‘lake_101’,
+    name: ‘LAKE 101!!!’,
+    description: ‘Visit the island 101 times’,
+    icon: ‘🚤’,
+  },
+  // ── Visit 115 ────────────────────────────────────────────────────────────────
+  {
+    key: ‘gap_115v’,
+    name: ‘[Name Me]’,
+    description: ‘Visit the island 115 times’,
+    icon: ‘❓’,
+  },
+  // ── Visit ~125 (1000 px) — capstone ──────────────────────────────────────────
+  {
+    key: ‘bought_sl’,
+    name: ‘You Bought Shangri-La’,
+    description: ‘Place 1,000 pixels on the island’,
+    icon: ‘💰’,
   },
 ];
 
 const GROUP_ACHIEVEMENTS = [
+  // ── Day 1 ─────────────────────────────────────────────────────────────────────
   {
-    key: 'we_did_it',
-    name: 'We Did It!',
+    key: ‘slide_raft’,
+    name: ‘The Slide is on the Raft’,
+    description: ‘100 pixels have been placed on the island’,
+    icon: ‘🛝’,
+  },
+  {
+    key: ‘we_did_it’,
+    name: ‘We Did It!’,
     description: `All ${MAX_GROUP_SIZE} hunks have visited Shangri-La`,
-    icon: '🚢',
+    icon: ‘🚢’,
+  },
+  // ── Day 2 ─────────────────────────────────────────────────────────────────────
+  {
+    key: ‘nice_nice’,
+    name: ‘NICE’,
+    description: ‘420 pixels have been placed on the island’,
+    icon: ‘🤙’,
   },
   {
-    key: 'hot_dog_house',
-    name: 'Hot Dog House',
-    description: '2,222 pixels have been placed on the island',
-    icon: '🌭',
-  },
-  {
-    key: 'slide_raft',
-    name: 'The Slide is on the Raft',
-    description: '100 pixels have been placed on the island',
-    icon: '🛝',
-  },
-  {
-    key: 'case_closed',
-    name: 'Case Closed',
-    description: '1999 pixels have been placed on the island',
-    icon: '👨‍⚖️',
-  },
-  {
-    key: 'nice_nice',
-    name: 'NICE',
-    description: '420 pixels have been placed on the island',
-    icon: '🤙',
-  },
-  {
-    key: 'this_economy',
-    name: 'In This Economy?',
-    description: 'Island progress has reached 33%',
-    icon: '💰',
-  },
-  {
-    key: 'people_forget',
-    name: 'People Forget, But They Shouldn’t',
-    description: 'Island progress has reached 88%',
-    icon: '🤔',
-  },
-  {
-    key: 'home_invasion',
-    name: 'Home Invasion!!',
-    description: '666 pixels have been placed on the island',
-    icon: '🏚️',
-  },
-  {
-    key: 'dustys_by',
-    name: 'Dusty‘s Backyard',
-    description: '1,000 pixels have been placed on the island',
-    icon: '🌱',
-  },
-  {
-    key: 'coming_going',
-    name: 'It is Really Coming and Going',
-    description: 'Island progress has reached 50%',
-    icon: '🌦️',
-  },
-  {
-    key: 'backflip',
-    name: 'Teach You to Backflip',
+    key: ‘backflip’,
+    name: ‘Teach You to Backflip’,
     description: `Every builder has visited Shangri-La at least twice`,
-    icon: '🤸‍♀️',
+    icon: ‘🤸‍♀️’,
+  },
+  // ── Day 3 ─────────────────────────────────────────────────────────────────────
+  {
+    key: ‘home_invasion’,
+    name: ‘Home Invasion!!’,
+    description: ‘666 pixels have been placed on the island’,
+    icon: ‘🏚️’,
   },
   {
-    key: 'bring_it_on',
-    name: 'BRING IT ON',
+    key: ‘bring_it_on’,
+    name: ‘BRING IT ON’,
     description: `Every builder has visited Shangri-La at least ten times`,
-    icon: '❄️',
+    icon: ‘❄️’,
+  },
+  // ── Day ~4 ────────────────────────────────────────────────────────────────────
+  {
+    key: ‘dustys_by’,
+    name: ‘Dusty\u2019s Backyard’,
+    description: ‘1,000 pixels have been placed on the island’,
+    icon: ‘🌱’,
+  },
+  // ── Day ~6 ────────────────────────────────────────────────────────────────────
+  {
+    key: ‘case_closed’,
+    name: ‘Case Closed’,
+    description: ‘1999 pixels have been placed on the island’,
+    icon: ‘👨‍⚖️’,
   },
   {
-    key: 'shangri_la',
-    name: 'Shangri-La Achieved!',
-    description: 'The island is complete — 100% progress reached!',
-    icon: '🌞',
+    key: ‘hot_dog_house’,
+    name: ‘Hot Dog House’,
+    description: ‘2,222 pixels have been placed on the island’,
+    icon: ‘🌭’,
+  },
+  // ── Day ~8 ────────────────────────────────────────────────────────────────────
+  {
+    key: ‘this_economy’,
+    name: ‘In This Economy?’,
+    description: ‘Island progress has reached 33%’,
+    icon: ‘💰’,
+  },
+  // ── Day ~12 ───────────────────────────────────────────────────────────────────
+  {
+    key: ‘coming_going’,
+    name: ‘It is Really Coming and Going’,
+    description: ‘Island progress has reached 50%’,
+    icon: ‘🌦️’,
+  },
+  // ── Day ~15 ───────────────────────────────────────────────────────────────────
+  {
+    key: ‘gap_grp_66pct’,
+    name: ‘[Name Me]’,
+    description: ‘Island progress has reached 66%’,
+    icon: ‘❓’,
+  },
+  // ── Day ~17 (canvas grows to final size) ──────────────────────────────────────
+  {
+    key: ‘gap_grp_75pct’,
+    name: ‘[Name Me]’,
+    description: ‘Island progress has reached 75%’,
+    icon: ‘❓’,
+  },
+  // ── Day ~20 ───────────────────────────────────────────────────────────────────
+  {
+    key: ‘people_forget’,
+    name: ‘People Forget, But They Shouldn\u2019t’,
+    description: ‘Island progress has reached 88%’,
+    icon: ‘🤔’,
+  },
+  // ── Day ~21 ───────────────────────────────────────────────────────────────────
+  {
+    key: ‘gap_grp_90pct’,
+    name: ‘[Name Me]’,
+    description: ‘Island progress has reached 90%’,
+    icon: ‘❓’,
+  },
+  // ── Day 23 ────────────────────────────────────────────────────────────────────
+  {
+    key: ‘shangri_la’,
+    name: ‘Shangri-La Achieved!’,
+    description: ‘The island is complete — 100% progress reached!’,
+    icon: ‘🌞’,
   },
 ];
 
@@ -327,22 +401,26 @@ function checkIndividualAchievements(userName) {
   );
 
   const checks = [
-    { key: 'lake_livin',        condition: user.pixels_placed >= 8   },
-    { key: 'true_friend',      condition: user.total_visits  >= 2   },
-    { key: 'tgif',      condition: user.total_visits  >= 5   },
-    { key: 'perfect_spiral',  condition: user.total_visits  >= 15  },
-    { key: 'ham_point',       condition: user.pixels_placed >= 288  },
-    { key: 'gets_it',  condition: user.total_visits  >= 25  },
-    { key: 'hotel_eggs',      condition: user.total_visits  >= 30   },
-    { key: 'cmon',  condition: user.total_visits  >= 55  },
-    { key: 'midnight_run',  condition: user.total_visits  >= 88  },
-    { key: 'nice',       condition: user.pixels_placed >= 69  },
-    { key: 'lake_101',  condition: user.total_visits  >= 101  },
-    { key: 'kubb_god',     condition: user.pixels_placed >= 111 },
-    { key: 'omp',     condition: user.pixels_placed >= 200 },
-    { key: 'vouch_for',       condition: user.pixels_placed >= 222  },
-    { key: 'party_bot',     condition: user.pixels_placed >= 333 },
-    { key: 'bought_sl',     condition: user.pixels_placed >= 1000 },
+    { key: 'lake_livin',     condition: user.pixels_placed >= 8    },
+    { key: 'true_friend',    condition: user.total_visits  >= 2    },
+    { key: 'tgif',           condition: user.total_visits  >= 5    },
+    { key: 'nice',           condition: user.pixels_placed >= 69   },
+    { key: 'kubb_god',       condition: user.pixels_placed >= 111  },
+    { key: 'perfect_spiral', condition: user.total_visits  >= 15   },
+    { key: 'gets_it',        condition: user.total_visits  >= 25   },
+    { key: 'omp',            condition: user.pixels_placed >= 200  },
+    { key: 'vouch_for',      condition: user.pixels_placed >= 222  },
+    { key: 'hotel_eggs',     condition: user.total_visits  >= 30   },
+    { key: 'ham_point',      condition: user.pixels_placed >= 288  },
+    { key: 'party_bot',      condition: user.pixels_placed >= 333  },
+    { key: 'gap_45v',        condition: user.total_visits  >= 45   },
+    { key: 'cmon',           condition: user.total_visits  >= 55   },
+    { key: 'gap_500px',      condition: user.pixels_placed >= 500  },
+    { key: 'gap_75v',        condition: user.total_visits  >= 75   },
+    { key: 'midnight_run',   condition: user.total_visits  >= 88   },
+    { key: 'lake_101',       condition: user.total_visits  >= 101  },
+    { key: 'gap_115v',       condition: user.total_visits  >= 115  },
+    { key: 'bought_sl',      condition: user.pixels_placed >= 1000 },
   ];
 
   const insertStmt = db.prepare(
@@ -376,19 +454,22 @@ function checkGroupAchievements() {
   );
 
   const checks = [
-    { key: 'we_did_it',       condition: uniqueVisitors >= MAX_GROUP_SIZE },
-    { key: 'backflip',        condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
-    { key: 'bring_it_on',     condition: getMembersWithMinVisits(10) >= MAX_GROUP_SIZE },
-    { key: 'hot_dog_house',  condition: totalPixels    >= 2222            },
-    { key: 'slide_raft',  condition: totalPixels    >= 100            },
-    { key: 'case_closed',  condition: totalPixels    >= 1999            },
-    { key: 'nice_nice',  condition: totalPixels    >= 420            },
-    { key: 'this_economy',  condition: progress       >= 33             },
-    { key: 'people_forget',  condition: progress       >= 88             },
-    { key: 'home_invasion',   condition: totalPixels    >= 666            },
-    { key: 'dustys_by',   condition: totalPixels    >= 1000            },
-    { key: 'coming_going',  condition: progress       >= 50             },
-    { key: 'shangri_la',       condition: progress       >= 100            },
+    { key: 'slide_raft',       condition: totalPixels    >= 100             },
+    { key: 'we_did_it',        condition: uniqueVisitors >= MAX_GROUP_SIZE  },
+    { key: 'nice_nice',        condition: totalPixels    >= 420             },
+    { key: 'backflip',         condition: getMembersWithMinVisits(2) >= MAX_GROUP_SIZE },
+    { key: 'home_invasion',    condition: totalPixels    >= 666             },
+    { key: 'bring_it_on',      condition: getMembersWithMinVisits(10) >= MAX_GROUP_SIZE },
+    { key: 'dustys_by',        condition: totalPixels    >= 1000            },
+    { key: 'case_closed',      condition: totalPixels    >= 1999            },
+    { key: 'hot_dog_house',    condition: totalPixels    >= 2222            },
+    { key: 'this_economy',     condition: progress       >= 33              },
+    { key: 'coming_going',     condition: progress       >= 50              },
+    { key: 'gap_grp_66pct',    condition: progress       >= 66              },
+    { key: 'gap_grp_75pct',    condition: progress       >= 75              },
+    { key: 'people_forget',    condition: progress       >= 88              },
+    { key: 'gap_grp_90pct',    condition: progress       >= 90              },
+    { key: 'shangri_la',       condition: progress       >= 100             },
   ];
 
   const insertStmt = db.prepare(
