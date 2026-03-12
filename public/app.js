@@ -3,20 +3,45 @@
    ───────────────────────────────────────────────────────────────────────────── */
 
 // ─── Palette ──────────────────────────────────────────────────────────────────
-const PALETTE = [
+const PALETTE_NAMES = {
   // Row 1: Ocean
-  '#0d3b52', '#1a6691', '#5dade2', '#aed6f1', '#e8f4f8',
+  '#0d3b52': 'Deep Ocean',
+  '#1a6691': 'Ocean Blue',
+  '#5dade2': 'Sky Blue',
+  '#aed6f1': 'Pale Blue',
+  '#e8f4f8': 'Sea Foam',
   // Row 2: Sand / Earth
-  '#5d4037', '#8b6914', '#c19a6b', '#deb887', '#fff8dc',
+  '#5d4037': 'Dark Brown',
+  '#8b6914': 'Mud',
+  '#c19a6b': 'Camel',
+  '#deb887': 'Burlywood',
+  '#fff8dc': 'Cornsilk',
   // Row 3: Vegetation
-  '#1b5e20', '#2e7d32', '#43a047', '#81c784', '#c8e6c9',
+  '#1b5e20': 'Dark Forest',
+  '#2e7d32': 'Forest Green',
+  '#43a047': 'Grass',
+  '#81c784': 'Light Green',
+  '#c8e6c9': 'Mint',
   // Row 4: Rock / Stone
-  '#37474f', '#607d8b', '#90a4ae', '#cfd8dc', '#fafafa',
+  '#37474f': 'Slate',
+  '#607d8b': 'Blue Grey',
+  '#90a4ae': 'Stone',
+  '#cfd8dc': 'Pale Stone',
+  '#fafafa': 'White',
   // Row 5: Accent
-  '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
+  '#b71c1c': 'Crimson',
+  '#e65100': 'Burnt Orange',
+  '#f9a825': 'Amber',
+  '#7b1fa2': 'Purple',
+  '#e91e63': 'Pink',
   // Row 6: Terrain extras
-  '#eceff1', '#ff6f00', '#33691e', '#f4e09a', '#004d40',
-];
+  '#eceff1': 'Snow',
+  '#ff6f00': 'Lava',
+  '#33691e': 'Swamp',
+  '#f4e09a': 'Desert Sand',
+  '#004d40': 'Deep Jungle',
+};
+const PALETTE = Object.keys(PALETTE_NAMES);
 
 
 const CELL_SIZE     = 10;
@@ -578,7 +603,7 @@ function renderPalette() {
       class="swatch ${color === state.selectedColor ? 'active' : ''}"
       style="background:${color}"
       data-color="${color}"
-      title="${color}"
+      title="${PALETTE_NAMES[color]} (${color})"
     ></div>
   `).join('');
 
