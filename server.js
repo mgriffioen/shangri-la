@@ -422,11 +422,16 @@ app.get('/og-image', (req, res) => {
     for (let s = 0; s < SCALE; s++) scanlines.push(row);
   }
 
-  const idat = zlib.deflateSync(Buffer.concat(scanlines));
+  // Crop to 1.91:1 (standard OG ratio) from the vertical centre
+  const cropH    = Math.round(W / 1.91);
+  const cropStart = Math.round((H - cropH) / 2);
+  const cropped   = scanlines.slice(cropStart, cropStart + cropH);
+
+  const idat = zlib.deflateSync(Buffer.concat(cropped));
 
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(W, 0);
-  ihdr.writeUInt32BE(H, 4);
+  ihdr.writeUInt32BE(cropH, 4);
   ihdr[8] = 8; ihdr[9] = 2; // 8-bit RGB
 
   const png = Buffer.concat([
