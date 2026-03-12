@@ -424,6 +424,8 @@ main {
 .canvas-area #section-palette {
   width: 100%;
   box-sizing: border-box;
+  max-width: 440px;
+
 }
 
 .canvas-wrapper {
