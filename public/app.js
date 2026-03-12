@@ -14,6 +14,8 @@ const PALETTE = [
   '#37474f', '#607d8b', '#90a4ae', '#cfd8dc', '#fafafa',
   // Row 5: Accent
   '#b71c1c', '#e65100', '#f9a825', '#7b1fa2', '#e91e63',
+  // Row 6: Terrain extras
+  '#eceff1', '#ff6f00', '#33691e', '#f4e09a', '#004d40',
 ];
 
 
