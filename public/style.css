@@ -1130,3 +1130,47 @@ details[open] > .accordion-summary-nested {
   color: var(--text-muted);
   opacity: 0.6;
 }
+
+/* ─── Dev Panel ───────────────────────────────────────────────────────────── */
+.dev-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border-top: 2px solid #e94560;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  font-family: monospace;
+}
+.dev-panel-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #e94560;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.dev-panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dev-btn {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-family: monospace;
+  font-weight: 600;
+  background: #16213e;
+  color: #a8d8ea;
+  border: 1px solid #a8d8ea44;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.dev-btn:hover {
+  background: #a8d8ea;
+  color: #16213e;
+}
