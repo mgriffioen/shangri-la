@@ -258,7 +258,7 @@ function showNextAchievement() {
   popup.classList.add('visible');
   popup.setAttribute('aria-hidden', 'false');
 
-  state.popupTimer = setTimeout(() => dismissAchievementPopup(), 5000);
+  state.popupTimer = setTimeout(() => dismissAchievementPopup(), 25000);
 }
 
 function dismissAchievementPopup() {
@@ -273,7 +273,7 @@ function dismissAchievementPopup() {
 async function shareAchievement() {
   const ach = state.currentAchievement;
   if (!ach) return;
-  const text = `I just unlocked "${ach.name}" ${ach.icon}`;
+  const text = `I just unlocked "${ach.name}" on Building Shangri-La! ${ach.icon} ${location.href}`;
   if (navigator.share) {
     try {
       await navigator.share({ title: 'Building Shangri-La', text });
