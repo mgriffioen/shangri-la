@@ -43,10 +43,10 @@ header {
   box-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
 
-.header-inner { max-width: 1200px; margin: 0 auto; }
+.header-inner { max-width: 1160px; margin: 0 auto; }
 
 header h1 {
-  font-family: 'Alfa Slab One', sans-serif;
+  font-family: 'Notable', sans-serif;
   font-size: 1.75rem;
   font-weight: 400;
   letter-spacing: 0.5px;
