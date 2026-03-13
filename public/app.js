@@ -273,7 +273,7 @@ function dismissAchievementPopup() {
 async function shareAchievement() {
   const ach = state.currentAchievement;
   if (!ach) return;
-  const text = `I just unlocked "${ach.name}" on Building Shangri-La! ${ach.icon} ${location.href}`;
+  const text = `${location.href} I just unlocked "${ach.name}" ${ach.icon}`;
   if (navigator.share) {
     try {
       await navigator.share({ title: 'Building Shangri-La', text });
