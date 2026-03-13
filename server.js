@@ -329,7 +329,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'swim_door',
     name: 'Swim Meet Door',
-    description: 'Every builder has visited Shangri-La at least 50 times',
+    description: 'Every builder has visited Shangri-La at least 55 times',
     icon: '🏊‍♂️',
   },
   {
