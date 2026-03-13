@@ -307,13 +307,24 @@ function closeTriviaModal() {
   document.getElementById('trivia-overlay').hidden = true;
 }
 
+const EXCLUDED_TRIVIA_CATEGORIES = ['video game'];
+
 async function loadTriviaQuestion() {
   showTriviaState('loading');
   try {
-    const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple&encode=base64');
-    const data = await res.json();
-    if (data.response_code !== 0 || !data.results?.length) throw new Error();
-    const q = data.results[0];
+    let q;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple&encode=base64');
+      const data = await res.json();
+      if (data.response_code !== 0 || !data.results?.length) throw new Error();
+      const candidate = data.results[0];
+      const category = b64decode(candidate.category).toLowerCase();
+      if (!EXCLUDED_TRIVIA_CATEGORIES.some(ex => category.includes(ex))) {
+        q = candidate;
+        break;
+      }
+    }
+    if (!q) throw new Error();
     const correct  = b64decode(q.correct_answer);
     const answers  = [correct, ...q.incorrect_answers.map(b64decode)]
       .sort(() => Math.random() - 0.5);
