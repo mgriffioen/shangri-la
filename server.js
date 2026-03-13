@@ -199,7 +199,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   },
   {
     key: 'cherry_bbq',
-    name: 'Cherry BBQ Potato Chips',
+    name: 'Great Lakes Potato Chip Co. Michigan Cherry BBQ Potato Chips',
     description: 'Place 500 pixels on the island',
     icon: '🍒',
   },
@@ -303,6 +303,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🌦️',
   },
   {
+    key: 'dudeski',
+    name: 'DUDESKI',
+    description: 'Every builder has visited Shangri-La at least 22 times',
+    icon: '⛷',
+  },
+  {
     key: 'flossmore',
     name: 'Flossmore, IL',
     description: 'Island progress has reached 66%',
@@ -319,6 +325,12 @@ const GROUP_ACHIEVEMENTS = [
     name: 'People Forget, But They Shouldn‘t',
     description: 'Island progress has reached 88%',
     icon: '🤔',
+  },
+  {
+    key: 'swim_door',
+    name: 'Swim Meet Door',
+    description: 'Every builder has visited Shangri-La at least 50 times',
+    icon: '🏊‍♂️',
   },
   {
     key: 'shavehead_lake',
@@ -433,9 +445,11 @@ function checkGroupAchievements() {
     { key: 'hot_dog_house',    condition: totalPixels    >= 2222            },
     { key: 'this_economy',     condition: progress       >= 33              },
     { key: 'coming_going',     condition: progress       >= 50              },
+    { key: 'dudeski',      condition: getMembersWithMinVisits(22) >= MAX_GROUP_SIZE },
     { key: 'flossmore',        condition: progress       >= 66              },
     { key: 'worms',            condition: progress       >= 75              },
     { key: 'people_forget',    condition: progress       >= 88              },
+    { key: 'swim_door',      condition: getMembersWithMinVisits(55) >= MAX_GROUP_SIZE },
     { key: 'shavehead_lake',    condition: progress       >= 90              },
     { key: 'shangri_la',       condition: progress       >= 100             },
   ];
