@@ -43,7 +43,7 @@ header {
   box-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
 
-.header-inner { max-width: 1400px; margin: 0 auto; }
+.header-inner { max-width: 1200px; margin: 0 auto; }
 
 header h1 {
   font-family: 'Anton', sans-serif;
@@ -53,8 +53,8 @@ header h1 {
 }
 
 .tagline {
-  font-size: 0.85rem;
-  opacity: 0.8;
+  font-size: 1.1rem;
+  /*opacity: 0.8;*/
   margin-top: 2px;
 }
 
@@ -92,7 +92,7 @@ main {
   grid-template-columns: 260px 1fr 280px;
   gap: 16px;
   padding: 16px;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
   align-items: start;
@@ -583,8 +583,8 @@ main {
 .accordion-summary::-webkit-details-marker { display: none; }
 
 .accordion-summary::after {
-  content: '➕';
-  font-size: 1.0rem;
+  content: '🤙';
+  font-size: 1.50rem;
   transition: transform 0.2s;
 }
 
