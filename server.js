@@ -50,8 +50,8 @@ const PORT = process.env.PORT || 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 12;
-const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
-// const VISIT_COOLDOWN_MS = 2 * 1000             // 10 second for testing
+// const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
+const VISIT_COOLDOWN_MS = 2 * 1000             // 10 second for testing
 const PROGRESS_PER_VISIT = 0.1;             // 0.1% each visit
 const MAX_GROUP_SIZE = 8;
 
