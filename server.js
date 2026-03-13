@@ -199,7 +199,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   },
   {
     key: 'cherry_bbq',
-    name: 'Great Lakes Potato Chip Co. Michigan Cherry BBQ Potato Chips',
+    name: 'Cherry BBQ Potato Chips',
     description: 'Place 500 pixels on the island',
     icon: '🍒',
   },
