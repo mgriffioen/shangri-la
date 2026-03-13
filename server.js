@@ -128,7 +128,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'tgif',
     name: 'TGIF',
-    description: 'Visit the island 5 times',
+    description: 'Visit the island 7 times',
     icon: '⭐',
   },
   {
@@ -381,9 +381,9 @@ function checkIndividualAchievements(userName) {
   );
 
   const checks = [
-    { key: 'lake_livin',     condition: user.pixels_placed >= 8    },
+    { key: 'lake_livin',     condition: user.pixels_placed >= 12    },
     { key: 'true_friend',    condition: user.total_visits  >= 2    },
-    { key: 'tgif',           condition: user.total_visits  >= 5    },
+    { key: 'tgif',           condition: user.total_visits  >= 7    },
     { key: 'nice',           condition: user.pixels_placed >= 69   },
     { key: 'kubb_god',       condition: user.pixels_placed >= 111  },
     { key: 'perfect_spiral', condition: user.total_visits  >= 15   },
@@ -912,7 +912,7 @@ app.post('/api/seed-demo', (req, res) => {
   `);
   for (const m of members) {
     insertAch.run(m.name, 'lake_livin',     now - m.visits        * hour);
-    insertAch.run(m.name, 'tgif',           now - (m.visits - 5)  * hour);
+    insertAch.run(m.name, 'tgif',           now - (m.visits - 7)  * hour);
     insertAch.run(m.name, 'perfect_spiral', now - (m.visits - 15) * hour);
     insertAch.run(m.name, 'gets_it',        now - (m.visits - 25) * hour);
     insertAch.run(m.name, 'nice',           now - (m.visits - 40) * hour);
