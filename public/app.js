@@ -852,8 +852,11 @@ async function login(name) {
   renderVisitStatus(data.newVisit);
   renderPalette();
 
-  // Load achievements for this user
-  state.achievements = await apiFetchAchievements(name);
+  // Load achievements and fresh member data for this user
+  [state.achievements, state.members] = await Promise.all([
+    apiFetchAchievements(name),
+    apiFetchMembers(),
+  ]);
   renderAchievements();
   renderUserAchievement();
   renderStats();
