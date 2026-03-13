@@ -222,10 +222,10 @@ const INDIVIDUAL_ACHIEVEMENTS = [
     icon: '🚤',
   },
   {
-    key: 'euchre',
-    name: 'Euchre: Our Favorite Card Game',
+    key: 'the_sauce',
+    name: 'It‘s the Sauce',
     description: 'Visit the island 115 times',
-    icon: '♣️',
+    icon: '🍕',
   },
   {
     key: 'bought_sl',
@@ -399,7 +399,7 @@ function checkIndividualAchievements(userName) {
     { key: 'bless_maker',    condition: user.total_visits  >= 75   },
     { key: 'midnight_run',   condition: user.total_visits  >= 88   },
     { key: 'lake_101',       condition: user.total_visits  >= 101  },
-    { key: 'euchre',         condition: user.total_visits  >= 115  },
+    { key: 'the_sauce',         condition: user.total_visits  >= 115  },
     { key: 'bought_sl',      condition: user.pixels_placed >= 1000 },
   ];
 
