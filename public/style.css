@@ -348,12 +348,12 @@ main {
 
 .pixels-dots {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .pixel-dot {
-  width: 20px;
-  height: 20px;
+  width: 13px;
+  height: 13px;
   border-radius: 4px;
   background: var(--px-active);
   transition: background 0.2s, transform 0.2s;
