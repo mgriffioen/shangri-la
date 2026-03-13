@@ -352,8 +352,8 @@ main {
 }
 
 .pixel-dot {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   border-radius: 4px;
   background: var(--px-active);
   transition: background 0.2s, transform 0.2s;
