@@ -341,7 +341,7 @@ async function shareAchievement() {
     ctx.fillText(suit, x + 10, y + 54);
 
     // Center suit (large)
-    ctx.font      = `104px Arial, sans-serif`;
+    ctx.font      = `64px Arial, sans-serif`;
     ctx.textAlign = 'center';
     ctx.fillText(suit, x + CARD_W / 2, y + CARD_H / 2 + 10);
     ctx.textAlign = 'left';
