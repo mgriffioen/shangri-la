@@ -71,6 +71,7 @@ const state = {
   popupBusy:           false,
   popupTimer:          null,
   currentAchievement:  null,
+  solitaireTriggered:  false,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -283,6 +284,148 @@ async function shareAchievement() {
     showToast('Copied to clipboard!');
   }
 }
+
+// ─── Solitaire Win Animation ──────────────────────────────────────────────────
+
+(function () {
+  const SUITS  = ['♠', '♣', '♥', '♦'];
+  const RANKS  = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  const RED    = new Set(['♥', '♦']);
+  const CARD_W = 52, CARD_H = 72, RADIUS = 5;
+
+  let rafId       = null;
+  let spawnTimer  = null;
+  let cards       = [];
+  let frameCount  = 0;
+
+  function makeCard(cw) {
+    const suit = SUITS[Math.floor(Math.random() * 4)];
+    const rank = RANKS[Math.floor(Math.random() * 13)];
+    return {
+      suit, rank,
+      red: RED.has(suit),
+      x:   Math.random() * (cw - CARD_W),
+      y:   -CARD_H - Math.random() * 200,
+      vx:  (Math.random() - 0.5) * 7,
+      vy:  Math.random() * 3 + 2,
+    };
+  }
+
+  function drawCard(ctx, card) {
+    const { x, y, suit, rank, red } = card;
+
+    // Card body
+    ctx.beginPath();
+    ctx.moveTo(x + RADIUS, y);
+    ctx.lineTo(x + CARD_W - RADIUS, y);
+    ctx.arcTo(x + CARD_W, y, x + CARD_W, y + RADIUS, RADIUS);
+    ctx.lineTo(x + CARD_W, y + CARD_H - RADIUS);
+    ctx.arcTo(x + CARD_W, y + CARD_H, x + CARD_W - RADIUS, y + CARD_H, RADIUS);
+    ctx.lineTo(x + RADIUS, y + CARD_H);
+    ctx.arcTo(x, y + CARD_H, x, y + CARD_H - RADIUS, RADIUS);
+    ctx.lineTo(x, y + RADIUS);
+    ctx.arcTo(x, y, x + RADIUS, y, RADIUS);
+    ctx.closePath();
+    ctx.fillStyle   = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#bbb';
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+
+    // Rank + suit corners
+    const color = red ? '#c00' : '#1a1a1a';
+    ctx.fillStyle = color;
+    ctx.font      = `bold 11px "Arial Narrow", Arial, sans-serif`;
+    ctx.fillText(rank, x + 4, y + 13);
+    ctx.font      = `11px Arial, sans-serif`;
+    ctx.fillText(suit, x + 4, y + 24);
+
+    // Center suit (large)
+    ctx.font      = `28px Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(suit, x + CARD_W / 2, y + CARD_H / 2 + 10);
+    ctx.textAlign = 'left';
+  }
+
+  function tick(canvas, ctx) {
+    const { width: cw, height: ch } = canvas;
+    frameCount++;
+
+    // Slowly fade out old card positions (creates the trail)
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    ctx.fillRect(0, 0, cw, ch);
+
+    for (const c of cards) {
+      c.vy += 0.45;   // gravity
+      c.x  += c.vx;
+      c.y  += c.vy;
+
+      // Bounce off floor
+      if (c.y + CARD_H > ch) {
+        c.y   = ch - CARD_H;
+        c.vy *= -0.82;
+        c.vx += (Math.random() - 0.5) * 1.5; // slight horizontal scatter on bounce
+      }
+      // Bounce off walls
+      if (c.x < 0)            { c.x = 0;            c.vx = Math.abs(c.vx); }
+      if (c.x + CARD_W > cw)  { c.x = cw - CARD_W;  c.vx = -Math.abs(c.vx); }
+
+      drawCard(ctx, c);
+    }
+
+    rafId = requestAnimationFrame(() => tick(canvas, ctx));
+  }
+
+  function stopSolitaire() {
+    cancelAnimationFrame(rafId);
+    clearInterval(spawnTimer);
+    rafId = spawnTimer = null;
+    cards = [];
+    frameCount = 0;
+    const canvas = document.getElementById('solitaire-canvas');
+    canvas.classList.remove('visible');
+    setTimeout(() => { canvas.hidden = true; }, 1300);
+  }
+
+  window.startSolitaireWin = function () {
+    const canvas = document.getElementById('solitaire-canvas');
+    if (!canvas.hidden) return; // already running
+
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.hidden = false;
+
+    const ctx = canvas.getContext('2d');
+    // Fill with transparent background so the page shows through initially
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Fade in
+    requestAnimationFrame(() => canvas.classList.add('visible'));
+
+    // Spawn first card immediately, then one every 350ms up to 18 cards
+    cards.push(makeCard(canvas.width));
+    spawnTimer = setInterval(() => {
+      if (cards.length < 18) {
+        cards.push(makeCard(canvas.width));
+      } else {
+        clearInterval(spawnTimer);
+        spawnTimer = null;
+      }
+    }, 350);
+
+    // Start animation loop after fade-in begins
+    rafId = requestAnimationFrame(() => tick(canvas, ctx));
+
+    // Click anywhere to dismiss
+    canvas.addEventListener('click', stopSolitaire, { once: true });
+
+    // Also handle window resize
+    window.addEventListener('resize', () => {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }, { once: true });
+  };
+})();
 
 // ─── Trivia ───────────────────────────────────────────────────────────────────
 
@@ -497,6 +640,12 @@ function renderProgress() {
   ];
   const stage = [...stages].reverse().find(s => pct >= s.min) || stages[0];
   document.getElementById('canvas-stage-label').textContent = stage.label;
+
+  // Fire the solitaire win animation the first time we hit 100%
+  if (pct >= 100 && !state.solitaireTriggered) {
+    state.solitaireTriggered = true;
+    setTimeout(startSolitaireWin, 1800); // short delay so the achievement popup can appear first
+  }
 }
 
 function renderInfoBar() {
@@ -650,7 +799,8 @@ async function apiLogin(name) {
 }
 
 async function apiFetchState() {
-  const res = await fetch('/api/state');
+  const params = state.userName ? `?name=${encodeURIComponent(state.userName)}` : '';
+  const res = await fetch(`/api/state${params}`);
   if (!res.ok) throw new Error('Failed to fetch state');
   return res.json();
 }
@@ -726,6 +876,12 @@ async function placePixel(x, y, color) {
       const achData = await apiFetchAchievements(state.userName);
       state.achievements = achData;
       renderAchievements();
+    }
+
+    // This user just placed their last pixel and completed the island
+    if (data.endgameUnlocked) {
+      state.progress = 100;
+      renderProgress();
     }
 
     renderPixelDots();
@@ -866,6 +1022,12 @@ async function login(name) {
   if (data.newAchievements?.length) {
     enqueueAchievements(data.newAchievements);
   }
+
+  // This user's login pushed the island to 100% — fire the win animation
+  if (data.endgameUnlocked) {
+    state.progress = 100;
+    renderProgress();
+  }
 }
 
 // ─── Polling ──────────────────────────────────────────────────────────────────
@@ -945,6 +1107,11 @@ async function init() {
   drawCanvas();
   renderCanvasSizeLabel();
 
+  // Pre-set userName from localStorage so the first state fetch already uses
+  // the per-user progress cap (prevents the animation firing before login).
+  const savedName = localStorage.getItem('shangri-la-name');
+  if (savedName) state.userName = savedName;
+
   // Load global state (canvas + stats) immediately, no login required
   try {
     await loadState();
@@ -955,7 +1122,6 @@ async function init() {
   startPolling();
 
   // Auto-login if name saved
-  const savedName = localStorage.getItem('shangri-la-name');
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     try {
