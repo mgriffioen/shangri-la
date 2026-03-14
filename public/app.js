@@ -335,13 +335,13 @@ async function shareAchievement() {
     // Rank + suit corners
     const color = red ? '#c00' : '#1a1a1a';
     ctx.fillStyle = color;
-    ctx.font      = `bold 22px "Arial Narrow", Arial, sans-serif`;
+    ctx.font      = `bold 28px "Arial Narrow", Arial, sans-serif`;
     ctx.fillText(rank, x + 10, y + 23);
-    ctx.font      = `22px Arial, sans-serif`;
-    ctx.fillText(suit, x + 10, y + 54);
+    ctx.font      = `28px Arial, sans-serif`;
+    ctx.fillText(suit, x + 10, y + 44);
 
     // Center suit (large)
-    ctx.font      = `44px Arial, sans-serif`;
+    ctx.font      = `104px Arial, sans-serif`;
     ctx.textAlign = 'center';
     ctx.fillText(suit, x + CARD_W / 2, y + CARD_H / 2 + 10);
     ctx.textAlign = 'left';
