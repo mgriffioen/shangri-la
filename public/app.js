@@ -293,6 +293,20 @@ async function shareAchievement() {
   const RED    = new Set(['♥', '♦']);
   const CARD_W = 152, CARD_H = 210.5, RADIUS = 5;
 
+  // Pip positions as [fx, fy] fractions within the pip area
+  const PIP_LAYOUTS = {
+    'A':  [[0.5, 0.5]],
+    '2':  [[0.5, 0.15], [0.5, 0.85]],
+    '3':  [[0.5, 0.15], [0.5, 0.5], [0.5, 0.85]],
+    '4':  [[0.2, 0.15], [0.8, 0.15], [0.2, 0.85], [0.8, 0.85]],
+    '5':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.5], [0.2, 0.85], [0.8, 0.85]],
+    '6':  [[0.2, 0.15], [0.8, 0.15], [0.2, 0.5], [0.8, 0.5], [0.2, 0.85], [0.8, 0.85]],
+    '7':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.33], [0.2, 0.5], [0.8, 0.5], [0.2, 0.85], [0.8, 0.85]],
+    '8':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.33], [0.2, 0.5], [0.8, 0.5], [0.5, 0.67], [0.2, 0.85], [0.8, 0.85]],
+    '9':  [[0.2, 0.1], [0.8, 0.1], [0.2, 0.35], [0.8, 0.35], [0.5, 0.5], [0.2, 0.65], [0.8, 0.65], [0.2, 0.9], [0.8, 0.9]],
+    '10': [[0.2, 0.1], [0.8, 0.1], [0.5, 0.25], [0.2, 0.4], [0.8, 0.4], [0.2, 0.6], [0.8, 0.6], [0.5, 0.75], [0.2, 0.9], [0.8, 0.9]],
+  };
+
   let rafId       = null;
   let spawnTimer  = null;
   let cards       = [];
@@ -340,10 +354,24 @@ async function shareAchievement() {
     ctx.font      = `28px Arial, sans-serif`;
     ctx.fillText(suit, x + 10, y + 54);
 
-    // Center suit (large)
-    ctx.font      = `64px Arial, sans-serif`;
+    // Pips or face letter
     ctx.textAlign = 'center';
-    ctx.fillText(suit, x + CARD_W / 2, y + CARD_H / 2 + 10);
+    const pips = PIP_LAYOUTS[rank];
+    if (pips) {
+      // Pip area: below corner index, centred horizontally
+      const pipSize = Math.max(8, CARD_H * 0.2);
+      const px = x + CARD_W * 0.15, pw = CARD_W * 0.7;
+      const py = y + CARD_H * 0.38,  ph = CARD_H * 0.52;
+      ctx.font = `${pipSize}px Arial, sans-serif`;
+      for (const [fx, fy] of pips) {
+        ctx.fillText(suit, px + pw * fx, py + ph * fy);
+      }
+    } else {
+      // J / Q / K — big centred letter
+      const faceSize = Math.max(16, CARD_H * 0.32);
+      ctx.font = `bold ${faceSize}px "Arial Narrow", Arial, sans-serif`;
+      ctx.fillText(rank, x + CARD_W / 2, y + CARD_H / 2 + faceSize * 0.35);
+    }
     ctx.textAlign = 'left';
   }
 
