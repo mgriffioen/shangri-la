@@ -106,6 +106,7 @@ for (const col of [
   'undo_prev_color TEXT',
   'undo_prev_user TEXT',
   'trivia_used INTEGER DEFAULT 0',
+  'endgame_seen INTEGER DEFAULT 0',
 ]) {
   try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
 }
@@ -567,8 +568,9 @@ app.post('/api/login', (req, res) => {
 
   const elapsed  = now - user.last_visit;
   const canVisit = user.pixels_remaining === 0 && elapsed >= VISIT_COOLDOWN_MS;
-  let newVisit       = false;
+  let newVisit        = false;
   let newAchievements = [];
+  let endgameUnlocked = false;
 
   if (canVisit) {
     db.prepare(`
@@ -595,6 +597,13 @@ app.post('/api/login', (req, res) => {
       ...checkIndividualAchievements(name),
       ...checkGroupAchievements(),
     ];
+
+    // If this login pushed the island to 100% for the first time, this user
+    // is the one who completes it — give them the endgame animation.
+    if (currentProgress < 100 && newProgress >= 100 && !user.endgame_seen) {
+      db.prepare('UPDATE users SET endgame_seen = 1 WHERE name = ?').run(name);
+      endgameUnlocked = true;
+    }
   }
 
   res.json({
@@ -607,6 +616,7 @@ app.post('/api/login', (req, res) => {
     },
     newVisit,
     newAchievements,
+    endgameUnlocked,
     canVisit,
     nextVisitTime: user.last_visit + VISIT_COOLDOWN_MS,
     undoAvailable: user.undo_available === 1 && user.pixels_remaining > 0,
@@ -625,10 +635,18 @@ app.get('/api/state', (req, res) => {
   const totalVisitsRow = db.prepare('SELECT SUM(total_visits) AS total FROM users').get();
   const groupEarned    = db.prepare('SELECT achievement_key, earned_at FROM group_achievements').all();
 
+  // If the island is complete, show newcomers a tantalisingly close-but-not-100% progress
+  // so they get to personally experience pushing it over the line.
+  let displayProgress = progress;
+  if (progress >= 100 && req.query.name) {
+    const u = db.prepare('SELECT endgame_seen FROM users WHERE name = ?').get(req.query.name);
+    if (u && !u.endgame_seen) displayProgress = 97.5;
+  }
+
   res.json({
     pixels,
-    progress,
-    canvasSize: getCanvasSize(progress),
+    progress: displayProgress,
+    canvasSize: getCanvasSize(progress), // always use real progress for canvas size
     stats: {
       totalPixels,
       uniqueVisitors,
@@ -710,6 +728,17 @@ app.post('/api/place', (req, res) => {
     ...checkGroupAchievements(),
   ];
 
+  // Endgame: when the island is complete and this user just placed their last pixel,
+  // tell the client to trigger the win animation and mark them as having seen it.
+  let endgameUnlocked = false;
+  if (getProgress() >= 100 && updatedUser.pixels_remaining === 0) {
+    const freshUser = db.prepare('SELECT endgame_seen FROM users WHERE name = ?').get(name);
+    if (freshUser && !freshUser.endgame_seen) {
+      db.prepare('UPDATE users SET endgame_seen = 1 WHERE name = ?').run(name);
+      endgameUnlocked = true;
+    }
+  }
+
   res.json({
     success: true,
     pixel: { x, y, color, user_name: name },
@@ -717,6 +746,7 @@ app.post('/api/place', (req, res) => {
     undoAvailable: updatedUser.pixels_remaining > 0,
     nextVisitTime,
     newAchievements,
+    endgameUnlocked,
     offerTrivia: updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0 && Math.random() < 0.34,
   });
 });

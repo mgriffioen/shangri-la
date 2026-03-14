@@ -799,7 +799,8 @@ async function apiLogin(name) {
 }
 
 async function apiFetchState() {
-  const res = await fetch('/api/state');
+  const params = state.userName ? `?name=${encodeURIComponent(state.userName)}` : '';
+  const res = await fetch(`/api/state${params}`);
   if (!res.ok) throw new Error('Failed to fetch state');
   return res.json();
 }
@@ -875,6 +876,12 @@ async function placePixel(x, y, color) {
       const achData = await apiFetchAchievements(state.userName);
       state.achievements = achData;
       renderAchievements();
+    }
+
+    // This user just placed their last pixel and completed the island
+    if (data.endgameUnlocked) {
+      state.progress = 100;
+      renderProgress();
     }
 
     renderPixelDots();
@@ -1015,6 +1022,12 @@ async function login(name) {
   if (data.newAchievements?.length) {
     enqueueAchievements(data.newAchievements);
   }
+
+  // This user's login pushed the island to 100% — fire the win animation
+  if (data.endgameUnlocked) {
+    state.progress = 100;
+    renderProgress();
+  }
 }
 
 // ─── Polling ──────────────────────────────────────────────────────────────────
@@ -1094,6 +1107,11 @@ async function init() {
   drawCanvas();
   renderCanvasSizeLabel();
 
+  // Pre-set userName from localStorage so the first state fetch already uses
+  // the per-user progress cap (prevents the animation firing before login).
+  const savedName = localStorage.getItem('shangri-la-name');
+  if (savedName) state.userName = savedName;
+
   // Load global state (canvas + stats) immediately, no login required
   try {
     await loadState();
@@ -1104,7 +1122,6 @@ async function init() {
   startPolling();
 
   // Auto-login if name saved
-  const savedName = localStorage.getItem('shangri-la-name');
   if (savedName) {
     document.getElementById('name-input').value = savedName;
     try {
