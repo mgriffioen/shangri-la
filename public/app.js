@@ -291,7 +291,7 @@ async function shareAchievement() {
   const SUITS  = ['♠', '♣', '♥', '♦'];
   const RANKS  = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   const RED    = new Set(['♥', '♦']);
-  const CARD_W = 52, CARD_H = 72, RADIUS = 5;
+  const CARD_W = 152, CARD_H = 210.5, RADIUS = 5;
 
   // Pip positions as [fx, fy] fractions within the pip area
   const PIP_LAYOUTS = {
@@ -349,10 +349,10 @@ async function shareAchievement() {
     // Rank + suit corners
     const color = red ? '#c00' : '#1a1a1a';
     ctx.fillStyle = color;
-    ctx.font      = `bold 11px "Arial Narrow", Arial, sans-serif`;
-    ctx.fillText(rank, x + 4, y + 13);
-    ctx.font      = `11px Arial, sans-serif`;
-    ctx.fillText(suit, x + 4, y + 24);
+    ctx.font      = `bold 28px "Arial Narrow", Arial, sans-serif`;
+    ctx.fillText(rank, x + 10, y + 33);
+    ctx.font      = `28px Arial, sans-serif`;
+    ctx.fillText(suit, x + 10, y + 54);
 
     // Pips or face letter
     ctx.textAlign = 'center';
