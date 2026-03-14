@@ -291,7 +291,7 @@ async function shareAchievement() {
   const SUITS  = ['♠', '♣', '♥', '♦'];
   const RANKS  = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   const RED    = new Set(['♥', '♦']);
-  const CARD_W = 52, CARD_H = 72, RADIUS = 5;
+  const CARD_W = 152, CARD_H = 210.5, RADIUS = 5;
 
   let rafId       = null;
   let spawnTimer  = null;
