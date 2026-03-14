@@ -336,9 +336,9 @@ async function shareAchievement() {
     const color = red ? '#c00' : '#1a1a1a';
     ctx.fillStyle = color;
     ctx.font      = `bold 22px "Arial Narrow", Arial, sans-serif`;
-    ctx.fillText(rank, x + 4, y + 13);
+    ctx.fillText(rank, x + 10, y + 23);
     ctx.font      = `22px Arial, sans-serif`;
-    ctx.fillText(suit, x + 4, y + 24);
+    ctx.fillText(suit, x + 10, y + 54);
 
     // Center suit (large)
     ctx.font      = `44px Arial, sans-serif`;
