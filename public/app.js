@@ -71,7 +71,6 @@ const state = {
   popupBusy:           false,
   popupTimer:          null,
   currentAchievement:  null,
-  solitaireTriggered:  false,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -284,176 +283,6 @@ async function shareAchievement() {
     showToast('Copied to clipboard!');
   }
 }
-
-// ─── Solitaire Win Animation ──────────────────────────────────────────────────
-
-(function () {
-  const SUITS  = ['♠', '♣', '♥', '♦'];
-  const RANKS  = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-  const RED    = new Set(['♥', '♦']);
-  const CARD_W = 152, CARD_H = 210.5, RADIUS = 5;
-
-  // Pip positions as [fx, fy] fractions within the pip area
-  const PIP_LAYOUTS = {
-    'A':  [[0.5, 0.5]],
-    '2':  [[0.5, 0.15], [0.5, 0.85]],
-    '3':  [[0.5, 0.15], [0.5, 0.5], [0.5, 0.85]],
-    '4':  [[0.2, 0.15], [0.8, 0.15], [0.2, 0.85], [0.8, 0.85]],
-    '5':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.5], [0.2, 0.85], [0.8, 0.85]],
-    '6':  [[0.2, 0.15], [0.8, 0.15], [0.2, 0.5], [0.8, 0.5], [0.2, 0.85], [0.8, 0.85]],
-    '7':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.33], [0.2, 0.5], [0.8, 0.5], [0.2, 0.85], [0.8, 0.85]],
-    '8':  [[0.2, 0.15], [0.8, 0.15], [0.5, 0.33], [0.2, 0.5], [0.8, 0.5], [0.5, 0.67], [0.2, 0.85], [0.8, 0.85]],
-    '9':  [[0.2, 0.1], [0.8, 0.1], [0.2, 0.35], [0.8, 0.35], [0.5, 0.5], [0.2, 0.65], [0.8, 0.65], [0.2, 0.9], [0.8, 0.9]],
-    '10': [[0.2, 0.1], [0.8, 0.1], [0.5, 0.25], [0.2, 0.4], [0.8, 0.4], [0.2, 0.6], [0.8, 0.6], [0.5, 0.75], [0.2, 0.9], [0.8, 0.9]],
-  };
-
-  let rafId       = null;
-  let spawnTimer  = null;
-  let cards       = [];
-  let frameCount  = 0;
-
-  function makeCard(cw) {
-    const suit = SUITS[Math.floor(Math.random() * 4)];
-    const rank = RANKS[Math.floor(Math.random() * 13)];
-    return {
-      suit, rank,
-      red: RED.has(suit),
-      x:   Math.random() * (cw - CARD_W),
-      y:   -CARD_H - Math.random() * 200,
-      vx:  (Math.random() - 0.5) * 7,
-      vy:  Math.random() * 3 + 2,
-    };
-  }
-
-  function drawCard(ctx, card) {
-    const { x, y, suit, rank, red } = card;
-
-    // Card body
-    ctx.beginPath();
-    ctx.moveTo(x + RADIUS, y);
-    ctx.lineTo(x + CARD_W - RADIUS, y);
-    ctx.arcTo(x + CARD_W, y, x + CARD_W, y + RADIUS, RADIUS);
-    ctx.lineTo(x + CARD_W, y + CARD_H - RADIUS);
-    ctx.arcTo(x + CARD_W, y + CARD_H, x + CARD_W - RADIUS, y + CARD_H, RADIUS);
-    ctx.lineTo(x + RADIUS, y + CARD_H);
-    ctx.arcTo(x, y + CARD_H, x, y + CARD_H - RADIUS, RADIUS);
-    ctx.lineTo(x, y + RADIUS);
-    ctx.arcTo(x, y, x + RADIUS, y, RADIUS);
-    ctx.closePath();
-    ctx.fillStyle   = '#fff';
-    ctx.fill();
-    ctx.strokeStyle = '#bbb';
-    ctx.lineWidth   = 1;
-    ctx.stroke();
-
-    // Rank + suit corners
-    const color = red ? '#c00' : '#1a1a1a';
-    ctx.fillStyle = color;
-    ctx.font      = `bold 28px "Arial Narrow", Arial, sans-serif`;
-    ctx.fillText(rank, x + 10, y + 33);
-    ctx.font      = `28px Arial, sans-serif`;
-    ctx.fillText(suit, x + 10, y + 54);
-
-    // Pips or face letter
-    ctx.textAlign = 'center';
-    const pips = PIP_LAYOUTS[rank];
-    if (pips) {
-      // Pip area: below corner index, centred horizontally
-      const pipSize = Math.max(8, CARD_H * 0.2);
-      const px = x + CARD_W * 0.15, pw = CARD_W * 0.7;
-      const py = y + CARD_H * 0.38,  ph = CARD_H * 0.52;
-      ctx.font = `${pipSize}px Arial, sans-serif`;
-      for (const [fx, fy] of pips) {
-        ctx.fillText(suit, px + pw * fx, py + ph * fy);
-      }
-    } else {
-      // J / Q / K — big centred letter
-      const faceSize = Math.max(16, CARD_H * 0.32);
-      ctx.font = `bold ${faceSize}px "Arial Narrow", Arial, sans-serif`;
-      ctx.fillText(rank, x + CARD_W / 2, y + CARD_H / 2 + faceSize * 0.35);
-    }
-    ctx.textAlign = 'left';
-  }
-
-  function tick(canvas, ctx) {
-    const { width: cw, height: ch } = canvas;
-    frameCount++;
-
-    // Slowly fade out old card positions (creates the trail)
-    ctx.fillStyle = 'rgba(255,255,255,0.07)';
-    ctx.fillRect(0, 0, cw, ch);
-
-    for (const c of cards) {
-      c.vy += 0.45;   // gravity
-      c.x  += c.vx;
-      c.y  += c.vy;
-
-      // Bounce off floor
-      if (c.y + CARD_H > ch) {
-        c.y   = ch - CARD_H;
-        c.vy *= -0.82;
-        c.vx += (Math.random() - 0.5) * 1.5; // slight horizontal scatter on bounce
-      }
-      // Bounce off walls
-      if (c.x < 0)            { c.x = 0;            c.vx = Math.abs(c.vx); }
-      if (c.x + CARD_W > cw)  { c.x = cw - CARD_W;  c.vx = -Math.abs(c.vx); }
-
-      drawCard(ctx, c);
-    }
-
-    rafId = requestAnimationFrame(() => tick(canvas, ctx));
-  }
-
-  function stopSolitaire() {
-    cancelAnimationFrame(rafId);
-    clearInterval(spawnTimer);
-    rafId = spawnTimer = null;
-    cards = [];
-    frameCount = 0;
-    const canvas = document.getElementById('solitaire-canvas');
-    canvas.classList.remove('visible');
-    setTimeout(() => { canvas.hidden = true; }, 1300);
-  }
-
-  window.startSolitaireWin = function () {
-    const canvas = document.getElementById('solitaire-canvas');
-    if (!canvas.hidden) return; // already running
-
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.hidden = false;
-
-    const ctx = canvas.getContext('2d');
-    // Fill with transparent background so the page shows through initially
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Fade in
-    requestAnimationFrame(() => canvas.classList.add('visible'));
-
-    // Spawn first card immediately, then one every 350ms up to 18 cards
-    cards.push(makeCard(canvas.width));
-    spawnTimer = setInterval(() => {
-      if (cards.length < 18) {
-        cards.push(makeCard(canvas.width));
-      } else {
-        clearInterval(spawnTimer);
-        spawnTimer = null;
-      }
-    }, 350);
-
-    // Start animation loop after fade-in begins
-    rafId = requestAnimationFrame(() => tick(canvas, ctx));
-
-    // Click anywhere to dismiss
-    canvas.addEventListener('click', stopSolitaire, { once: true });
-
-    // Also handle window resize
-    window.addEventListener('resize', () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }, { once: true });
-  };
-})();
 
 // ─── Trivia ───────────────────────────────────────────────────────────────────
 
@@ -669,11 +498,6 @@ function renderProgress() {
   const stage = [...stages].reverse().find(s => pct >= s.min) || stages[0];
   document.getElementById('canvas-stage-label').textContent = stage.label;
 
-  // Fire the solitaire win animation the first time we hit 100%
-  if (pct >= 100 && !state.solitaireTriggered) {
-    state.solitaireTriggered = true;
-    setTimeout(startSolitaireWin, 1800); // short delay so the achievement popup can appear first
-  }
 }
 
 function renderInfoBar() {
