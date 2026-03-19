@@ -111,6 +111,10 @@
 
     <!-- CENTER: canvas + terrain palette -->
     <section class="canvas-area">
+      <div id="canvas-complete-bar" class="canvas-complete-bar" hidden>
+        🌞 Island Complete!
+        <button id="tl-open-btn" class="tl-open-btn">Watch Timelapse</button>
+      </div>
       <div class="canvas-wrapper" id="canvas-wrapper">
         <canvas id="island-canvas"></canvas>
       </div>
@@ -209,6 +213,48 @@
   <!-- ─── Toast ────────────────────────────────────────────────────────────── -->
   <div id="toast" class="toast" aria-hidden="true"></div>
 
+  <!-- ─── Confetti Canvas ────────────────────────────────────────────────── -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- ─── Endgame Modal ─────────────────────────────────────────────────── -->
+  <div id="endgame-overlay" class="endgame-overlay" hidden>
+    <div class="endgame-card">
+
+      <!-- Celebration state -->
+      <div id="endgame-celebrate" class="endgame-state">
+        <div class="endgame-emoji">🌞</div>
+        <h2 class="endgame-title">Shangri-La Achieved!</h2>
+        <p class="endgame-sub">The island is complete. You built it together.</p>
+        <div class="endgame-btns">
+          <button class="endgame-btn-primary" id="endgame-timelapse-btn">Watch Timelapse</button>
+          <button class="endgame-btn-ghost" id="endgame-share-celebrate-btn">Share</button>
+        </div>
+      </div>
+
+      <!-- Timelapse state -->
+      <div id="endgame-timelapse" class="endgame-state" hidden>
+        <h3 class="tl-title">Building Shangri-La</h3>
+        <div class="tl-canvas-wrap">
+          <canvas id="tl-canvas" class="tl-canvas"></canvas>
+        </div>
+        <div class="tl-progress-wrap">
+          <div class="tl-progress-track">
+            <div class="tl-progress-fill" id="tl-progress-fill"></div>
+          </div>
+          <span class="tl-progress-pct" id="tl-progress-pct">0%</span>
+        </div>
+        <div class="tl-controls">
+          <button class="tl-speed-btn active" id="tl-speed-normal">Normal</button>
+          <button class="tl-speed-btn" id="tl-speed-fast">Fast</button>
+          <button class="endgame-btn-ghost" id="tl-close-btn">Close</button>
+        </div>
+        <div id="tl-share-wrap" class="tl-share-wrap" hidden>
+          <button class="endgame-btn-primary" id="tl-share-btn">🔗 Share the Island</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
