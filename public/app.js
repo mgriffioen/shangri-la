@@ -316,12 +316,10 @@ function closeEndgameModal() {
 
 const TL_CELL       = 3;
 const TL_FINAL_SIZE = 96;
-const TL_SPEEDS     = {
-  normal: { batch: 30,  delay: 50 },
-  fast:   { batch: 100, delay: 20 },
-};
+const TL_BATCH = 30;
+const TL_DELAY = 50;
 
-const tlState = { pixels: [], idx: 0, speed: 'normal', timer: null, ctx: null };
+const tlState = { pixels: [], idx: 0, timer: null, ctx: null };
 
 function stopTimelapse() {
   clearTimeout(tlState.timer);
@@ -357,7 +355,7 @@ async function startTimelapse() {
 }
 
 function advanceTimelapse() {
-  const { batch, delay } = TL_SPEEDS[tlState.speed];
+  const batch = TL_BATCH, delay = TL_DELAY;
   const total = tlState.pixels.length;
   for (let i = 0; i < batch && tlState.idx < total; i++, tlState.idx++) {
     const p = tlState.pixels[tlState.idx];
@@ -1077,16 +1075,6 @@ document.getElementById('endgame-timelapse-btn').addEventListener('click', () =>
 document.getElementById('endgame-share-celebrate-btn').addEventListener('click', () => shareIsland());
 document.getElementById('tl-close-btn').addEventListener('click', () => closeEndgameModal());
 document.getElementById('tl-share-btn').addEventListener('click', () => shareIsland());
-document.getElementById('tl-speed-normal').addEventListener('click', () => {
-  tlState.speed = 'normal';
-  document.getElementById('tl-speed-normal').classList.add('active');
-  document.getElementById('tl-speed-fast').classList.remove('active');
-});
-document.getElementById('tl-speed-fast').addEventListener('click', () => {
-  tlState.speed = 'fast';
-  document.getElementById('tl-speed-fast').classList.add('active');
-  document.getElementById('tl-speed-normal').classList.remove('active');
-});
 
 document.getElementById('user-avatar').addEventListener('click', (e) => {
   e.stopPropagation();
