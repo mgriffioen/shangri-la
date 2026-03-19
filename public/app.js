@@ -71,6 +71,7 @@ const state = {
   popupBusy:           false,
   popupTimer:          null,
   currentAchievement:  null,
+  isComplete:          false,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -189,7 +190,7 @@ canvas.addEventListener('click', async (e) => {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function canPlacePixel() {
-  return state.user && state.user.pixels_remaining > 0;
+  return !state.isComplete && state.user && state.user.pixels_remaining > 0;
 }
 
 const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
@@ -230,6 +231,159 @@ function showToast(msg) {
   el.classList.add('visible');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('visible'), 2800);
+}
+
+// ─── Endgame ──────────────────────────────────────────────────────────────────
+
+function markIslandComplete() {
+  state.isComplete = true;
+  canvas.classList.add('complete');
+  const bar = document.getElementById('canvas-complete-bar');
+  bar.hidden = false;
+}
+
+function triggerEndgame() {
+  markIslandComplete();
+  launchConfetti();
+  setTimeout(() => showEndgameModal(), 1800);
+}
+
+function launchConfetti() {
+  const cc = document.getElementById('confetti-canvas');
+  cc.width  = window.innerWidth;
+  cc.height = window.innerHeight;
+  cc.style.display = 'block';
+  const ctx = cc.getContext('2d');
+  const COLORS = ['#1a6691','#2e7d32','#f9a825','#e91e63','#e65100','#7b1fa2','#43a047','#deb887','#5dade2','#ff6f00'];
+  const particles = Array.from({ length: 130 }, () => ({
+    x:             Math.random() * cc.width,
+    y:             Math.random() * cc.height - cc.height,
+    vx:            (Math.random() - 0.5) * 3,
+    vy:            Math.random() * 3 + 2,
+    color:         COLORS[Math.floor(Math.random() * COLORS.length)],
+    size:          Math.random() * 8 + 4,
+    rotation:      Math.random() * Math.PI * 2,
+    rotationSpeed: (Math.random() - 0.5) * 0.18,
+  }));
+
+  let startTime = null;
+  const DURATION = 4200;
+
+  function frame(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const alpha   = Math.max(0, 1 - Math.max(0, elapsed - 2800) / 1400);
+    ctx.clearRect(0, 0, cc.width, cc.height);
+    ctx.globalAlpha = alpha;
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.07;
+      p.rotation += p.rotationSpeed;
+      if (p.y > cc.height) { p.y = -p.size; p.x = Math.random() * cc.width; p.vy = Math.random() * 3 + 2; }
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.55);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    if (elapsed < DURATION) {
+      requestAnimationFrame(frame);
+    } else {
+      ctx.clearRect(0, 0, cc.width, cc.height);
+      cc.style.display = 'none';
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+// ─── Endgame Modal ────────────────────────────────────────────────────────────
+
+function showEndgameModal() {
+  document.getElementById('endgame-celebrate').hidden = false;
+  document.getElementById('endgame-timelapse').hidden = true;
+  document.getElementById('endgame-overlay').hidden   = false;
+}
+
+function closeEndgameModal() {
+  document.getElementById('endgame-overlay').hidden = true;
+  stopTimelapse();
+}
+
+// ─── Timelapse ────────────────────────────────────────────────────────────────
+
+const TL_CELL       = 3;
+const TL_FINAL_SIZE = 96;
+const TL_SPEEDS     = {
+  normal: { batch: 30,  delay: 50 },
+  fast:   { batch: 100, delay: 20 },
+};
+
+const tlState = { pixels: [], idx: 0, speed: 'normal', timer: null, ctx: null };
+
+function stopTimelapse() {
+  clearTimeout(tlState.timer);
+  tlState.timer = null;
+}
+
+async function startTimelapse() {
+  document.getElementById('endgame-celebrate').hidden = true;
+  document.getElementById('endgame-timelapse').hidden = false;
+  document.getElementById('tl-share-wrap').hidden     = true;
+  document.getElementById('tl-progress-fill').style.width = '0%';
+  document.getElementById('tl-progress-pct').textContent  = '0%';
+
+  const tlCanvas    = document.getElementById('tl-canvas');
+  const tlCtx       = tlCanvas.getContext('2d');
+  tlCanvas.width    = TL_FINAL_SIZE * TL_CELL;
+  tlCanvas.height   = TL_FINAL_SIZE * TL_CELL;
+  tlCtx.fillStyle   = OCEAN_COLOR;
+  tlCtx.fillRect(0, 0, tlCanvas.width, tlCanvas.height);
+  tlState.ctx = tlCtx;
+
+  try {
+    const res = await fetch('/api/timelapse');
+    tlState.pixels = await res.json();
+  } catch {
+    showToast('Could not load timelapse data.');
+    return;
+  }
+
+  tlState.idx = 0;
+  stopTimelapse();
+  advanceTimelapse();
+}
+
+function advanceTimelapse() {
+  const { batch, delay } = TL_SPEEDS[tlState.speed];
+  const total = tlState.pixels.length;
+  for (let i = 0; i < batch && tlState.idx < total; i++, tlState.idx++) {
+    const p = tlState.pixels[tlState.idx];
+    tlState.ctx.fillStyle = p.color;
+    tlState.ctx.fillRect(p.x * TL_CELL, p.y * TL_CELL, TL_CELL, TL_CELL);
+  }
+  const pct = total > 0 ? Math.min(100, Math.round((tlState.idx / total) * 100)) : 100;
+  document.getElementById('tl-progress-fill').style.width = pct + '%';
+  document.getElementById('tl-progress-pct').textContent  = pct + '%';
+
+  if (tlState.idx < total) {
+    tlState.timer = setTimeout(advanceTimelapse, delay);
+  } else {
+    document.getElementById('tl-share-wrap').hidden = false;
+  }
+}
+
+async function shareIsland() {
+  const text = 'We built Shangri-La together! 🌞';
+  const url  = location.href;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Building Shangri-La', text, url }); } catch {}
+  } else {
+    await navigator.clipboard.writeText(`${text} ${url}`);
+    showToast('Copied to clipboard!');
+  }
 }
 
 // ─── Achievement Popup ────────────────────────────────────────────────────────
@@ -734,6 +888,7 @@ async function placePixel(x, y, color) {
     if (data.endgameUnlocked) {
       state.progress = 100;
       renderProgress();
+      triggerEndgame();
     }
 
     renderPixelDots();
@@ -807,6 +962,8 @@ async function loadState() {
   state.stats        = stateData.stats;
   state.members      = members;
 
+  if (stateData.isComplete && !state.isComplete) markIslandComplete();
+
   // Canvas expand animation
   if (state.canvasSize !== prevSize) {
     resizeCanvas(state.canvasSize);
@@ -879,6 +1036,7 @@ async function login(name) {
   if (data.endgameUnlocked) {
     state.progress = 100;
     renderProgress();
+    triggerEndgame();
   }
 }
 
@@ -913,6 +1071,22 @@ document.getElementById('cooldown-share-btn').addEventListener('click', async ()
 document.getElementById('trivia-yes-btn').addEventListener('click', () => loadTriviaQuestion());
 document.getElementById('trivia-no-btn').addEventListener('click', () => closeTriviaModal());
 document.getElementById('trivia-close-btn').addEventListener('click', () => closeTriviaModal());
+
+document.getElementById('tl-open-btn').addEventListener('click', () => showEndgameModal());
+document.getElementById('endgame-timelapse-btn').addEventListener('click', () => startTimelapse());
+document.getElementById('endgame-share-celebrate-btn').addEventListener('click', () => shareIsland());
+document.getElementById('tl-close-btn').addEventListener('click', () => closeEndgameModal());
+document.getElementById('tl-share-btn').addEventListener('click', () => shareIsland());
+document.getElementById('tl-speed-normal').addEventListener('click', () => {
+  tlState.speed = 'normal';
+  document.getElementById('tl-speed-normal').classList.add('active');
+  document.getElementById('tl-speed-fast').classList.remove('active');
+});
+document.getElementById('tl-speed-fast').addEventListener('click', () => {
+  tlState.speed = 'fast';
+  document.getElementById('tl-speed-fast').classList.add('active');
+  document.getElementById('tl-speed-normal').classList.remove('active');
+});
 
 document.getElementById('user-avatar').addEventListener('click', (e) => {
   e.stopPropagation();

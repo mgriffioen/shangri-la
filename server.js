@@ -647,6 +647,7 @@ app.get('/api/state', (req, res) => {
     pixels,
     progress: displayProgress,
     canvasSize: getCanvasSize(progress), // always use real progress for canvas size
+    isComplete: progress >= 100,
     stats: {
       totalPixels,
       uniqueVisitors,
@@ -673,6 +674,10 @@ app.post('/api/place', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
   if (!user) {
     return res.status(404).json({ error: 'User not found. Please log in first.' });
+  }
+
+  if (getProgress() >= 100) {
+    return res.status(403).json({ error: 'The island is complete — Shangri-La has been built!' });
   }
 
   if (user.pixels_remaining <= 0) {
@@ -891,6 +896,19 @@ app.get('/api/members', (req, res) => {
   });
 
   res.json(members);
+});
+
+/**
+ * GET /api/timelapse
+ * Returns all placed pixels in chronological order for the timelapse replay.
+ */
+app.get('/api/timelapse', (req, res) => {
+  const pixels = db.prepare(`
+    SELECT x, y, color, user_name, placed_at
+    FROM pixels
+    ORDER BY placed_at ASC
+  `).all();
+  res.json(pixels);
 });
 
 /**
