@@ -240,7 +240,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'slide_raft',
     name: 'The Slide is on the Raft',
-    description: '100 pixels have been placed on the island',
+    description: '100 pixels have been placed',
     icon: '🛝',
   },
   {
@@ -252,43 +252,43 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'nice_nice',
     name: 'NICE',
-    description: '420 pixels have been placed on the island',
+    description: '420 pixels have been placed',
     icon: '🤙',
   },
   {
     key: 'backflip',
     name: 'Teach You to Backflip',
-    description: `Every builder has visited Shangri-La at least twice`,
+    description: `The whole group has visited twice`,
     icon: '🤸‍♀️',
   },
   {
     key: 'home_invasion',
     name: 'Home Invasion!!',
-    description: '666 pixels have been placed on the island',
+    description: '666 pixels have been placed',
     icon: '🏚️',
   },
   {
     key: 'bring_it_on',
     name: 'BRING IT ON',
-    description: `Every builder has visited Shangri-La at least ten times`,
+    description: `The whole group has visited ten times`,
     icon: '❄️',
   },
   {
     key: 'dustys_by',
     name: 'Dusty‘s Backyard',
-    description: '1,000 pixels have been placed on the island',
+    description: '1,000 pixels have been placed',
     icon: '🌱',
   },
   {
     key: 'case_closed',
     name: 'Case Closed',
-    description: '1999 pixels have been placed on the island',
+    description: '1999 pixels have been placed',
     icon: '👨‍⚖️',
   },
   {
     key: 'hot_dog_house',
     name: 'Hot Dog House',
-    description: '2,222 pixels have been placed on the island',
+    description: '2,222 pixels have been placed',
     icon: '🌭',
   },
   {
@@ -306,7 +306,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'dudeski',
     name: 'DUDESKI',
-    description: 'Every builder has visited Shangri-La at least 22 times',
+    description: 'The whole group has visited 22 times',
     icon: '⛷',
   },
   {
@@ -330,7 +330,7 @@ const GROUP_ACHIEVEMENTS = [
   {
     key: 'swim_door',
     name: 'Swim Meet Door',
-    description: 'Every builder has visited Shangri-La at least 55 times',
+    description: 'The whole group has visited 55 times',
     icon: '🏊‍♂️',
   },
   {
