@@ -93,7 +93,7 @@ main {
   gap: 16px;
   padding: 16px;
   margin: 0 auto;
-  width: max-content;
+  width: 90%;
   align-items: start;
 }
 
