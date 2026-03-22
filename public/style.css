@@ -124,6 +124,12 @@ main {
   align-items: start;
 }
 
+@media (max-width: 860px) {
+  main {
+    width: 60%;
+  }
+}
+
 @media (max-width: 560px) {
   main {
     width: 90%;
