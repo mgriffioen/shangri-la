@@ -60,14 +60,6 @@ Each visit includes one undo. It reverts the last pixel placed and refunds one p
 
 Players can attempt a trivia question once per visit. A correct answer grants bonus pixels.
 
-### Endgame
-
-When the island reaches 100%, the member whose visit pushes it over the threshold sees:
-1. A confetti burst
-2. A "Shangri-La Achieved!" celebration modal
-3. A full timelapse replay of every pixel placed, in order
-4. A share button
-
 ## Achievements
 
 ### Individual (20 total)
