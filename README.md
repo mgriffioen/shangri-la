@@ -74,53 +74,9 @@ When the island reaches 100%, the member whose visit pushes it over the threshol
 
 Earned per player based on visits and pixels placed.
 
-| Achievement | Description |
-|---|---|
-| 🌅 Lake Living | First visit |
-| 🥹 True Friend | Visit a second time |
-| ⭐ TGIF | 7 visits |
-| 👀 Nice | 69 pixels placed |
-| 👑 Kubb God | 111 pixels placed |
-| 🏈 Perfect Spiral | 15 visits |
-| 👏 This guy gets it | 25 visits |
-| 👴 Old Man Paul | 200 pixels placed |
-| 👍 I Vouch for Him | 222 pixels placed |
-| 🍳 Hotel Eggs | 30 visits |
-| 🍖 Ham Point | 288 pixels placed |
-| 🤖 Friend of Party Bot Micro | 333 pixels placed |
-| 🚗 Sean's VW Golf | 45 visits |
-| 🚬 C'mon | 55 visits |
-| 🍒 Cherry BBQ Potato Chips | 500 pixels placed |
-| 💦 Bless the Maker and His water | 75 visits |
-| 🎬 Watched Midnight Run (1988) | 88 visits |
-| 🚤 LAKE 101!!! | 101 visits |
-| 🍕 It's the Sauce | 115 visits |
-| 💰 You Bought Shangri-La | 1,000 pixels placed |
-
 ### Group (18 total)
 
 Earned collectively based on island-wide progress and group participation.
-
-| Achievement | Trigger |
-|---|---|
-| 🛝 The Slide is on the Raft | 100 pixels placed |
-| 🚢 We Did It! | All 8 members visited |
-| 🤙 NICE | 420 pixels placed |
-| 🤸 Teach You to Backflip | Whole group visited twice |
-| 🏚️ Home Invasion!! | 666 pixels placed |
-| ❄️ BRING IT ON | Whole group visited ten times |
-| 🌱 Dusty's Backyard | 1,000 pixels placed |
-| 👨‍⚖️ Case Closed | 1,999 pixels placed |
-| 🌭 Hot Dog House | 2,222 pixels placed |
-| 💰 In This Economy? | 33% progress |
-| 🌦️ It is Really Coming and Going | 50% progress |
-| ⛷ DUDESKI | Whole group visited 22 times |
-| 🪥 Flossmore, IL | 66% progress |
-| 🪱 Worms | 75% progress |
-| 🤔 People Forget, But They Shouldn't | 88% progress |
-| 🏊 Swim Meet Door | Whole group visited 55 times |
-| 🏖 Shavehead Lake | 90% progress |
-| 🌞 Shangri-La Achieved! | 100% — island complete |
 
 ## API
 
