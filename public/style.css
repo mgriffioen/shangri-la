@@ -86,6 +86,12 @@ header h1 {
   }
 }
 
+@media (max-width: 560px) {
+  main {
+    width: 90%;
+  }
+}
+
 /* ─── Main Layout ────────────────────────────────────────────────────────────── */
 main {
   display: grid;
@@ -93,7 +99,7 @@ main {
   gap: 16px;
   padding: 16px;
   margin: 0 auto;
-  width: 90%;
+  width: max-content;
   align-items: start;
 }
 
