@@ -657,7 +657,7 @@ function renderInfoBar() {
   document.getElementById('info-bar-fill').style.width = pct + '%';
   const { totalPixels, uniqueVisitors } = state.stats || {};
   document.getElementById('info-bar-stats').textContent =
-    `${pct.toFixed(1)}% · ${totalPixels ?? 0} px placed · ${uniqueVisitors ?? 0}/8 builders`;
+    `${pct.toFixed(1)}% · ${totalPixels ?? 0} px placed · ${uniqueVisitors ?? 0}/8 hunks`;
 }
 
 function renderStats() {
