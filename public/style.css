@@ -113,12 +113,6 @@ header h1 {
   }
 }
 
-@media (max-width: 560px) {
-  main {
-    width: 90%;
-  }
-}
-
 /* ─── Main Layout ────────────────────────────────────────────────────────────── */
 main {
   display: grid;
@@ -128,6 +122,12 @@ main {
   margin: 0 auto;
   width: max-content;
   align-items: start;
+}
+
+@media (max-width: 560px) {
+  main {
+    width: 90%;
+  }
 }
 
 /* ─── Panels ─────────────────────────────────────────────────────────────────── */
