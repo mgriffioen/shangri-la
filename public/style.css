@@ -1,3 +1,31 @@
+/* ─── Floating words ─────────────────────────────────────────────────────────── */
+@keyframes float-up {
+  from { transform: translateY(0);     opacity: 0; }
+  8%   {                               opacity: 1; }
+  92%  {                               opacity: 1; }
+  to   { transform: translateY(-105vh); opacity: 0; }
+}
+
+#floating-words {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.floating-word {
+  position: absolute;
+  bottom: -2em;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(160, 110, 40, 0.45);
+  white-space: nowrap;
+  animation: float-up linear forwards;
+  user-select: none;
+}
+
 /* ─── Reset & Base ───────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

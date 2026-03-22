@@ -19,6 +19,8 @@
 </head>
 <body>
 
+  <div id="floating-words" aria-hidden="true"></div>
+
   <!-- ─── Header ─────────────────────────────────────────────────────────── -->
   <header>
     <div class="header-inner">
@@ -255,5 +257,37 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+    (function () {
+      const container = document.getElementById('floating-words');
+      const MAX = 4;
+      const DURATION_MIN = 28; // seconds
+      const DURATION_MAX = 38;
+
+      function spawn() {
+        if (container.children.length >= MAX) return;
+        const el = document.createElement('span');
+        el.className = 'floating-word';
+        el.textContent = 'the water';
+        const duration = DURATION_MIN + Math.random() * (DURATION_MAX - DURATION_MIN);
+        const left = 5 + Math.random() * 88; // 5–93% from left
+        el.style.left = left + '%';
+        el.style.animationDuration = duration.toFixed(1) + 's';
+        el.addEventListener('animationend', () => { el.remove(); scheduleNext(); });
+        container.appendChild(el);
+      }
+
+      function scheduleNext() {
+        // Stagger next spawn so they don't all arrive at once
+        const gap = 4000 + Math.random() * 6000; // 4–10 s
+        setTimeout(() => { spawn(); }, gap);
+      }
+
+      // Seed initial words staggered so the screen isn't empty at load
+      for (let i = 0; i < MAX; i++) {
+        setTimeout(spawn, i * 7000);
+      }
+    })();
+  </script>
 </body>
 </html>
