@@ -54,7 +54,7 @@ The island grows as collective progress increases:
 
 ### Undo
 
-Each visit includes one undo. It reverts the last pixel placed and refunds one pixel — but only while pixels remain in that visit. Once the 12th pixel is placed, the cooldown begins and undo is no longer available.
+Each pixel placement includes one undo. It reverts the last pixel placed and refunds one pixel — but only while pixels remain in that visit. Once the 12th pixel is placed, the cooldown begins and undo is no longer available.
 
 ### Trivia
 
