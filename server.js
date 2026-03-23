@@ -106,6 +106,7 @@ for (const col of [
   'undo_prev_user TEXT',
   'trivia_used INTEGER DEFAULT 0',
   'endgame_seen INTEGER DEFAULT 0',
+  'emoji TEXT',
 ]) {
   try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
 }
@@ -891,10 +892,31 @@ app.get('/api/members', (req, res) => {
       total_visits:  user.total_visits,
       pixels_placed: user.pixels_placed,
       achievements,
+      emoji:         user.emoji || null,
     };
   });
 
   res.json(members);
+});
+
+/**
+ * POST /api/emoji
+ * Body: { name, emoji }
+ *
+ * Persists the user's chosen avatar emoji so all clients can see it.
+ */
+const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
+
+app.post('/api/emoji', (req, res) => {
+  const { name, emoji } = req.body;
+  if (!name || !emoji) return res.status(400).json({ error: 'Missing required fields' });
+  if (!AVATAR_EMOJIS.includes(emoji)) return res.status(400).json({ error: 'Invalid emoji' });
+
+  const user = db.prepare('SELECT name FROM users WHERE name = ?').get(name);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+
+  db.prepare('UPDATE users SET emoji = ? WHERE name = ?').run(emoji, name);
+  res.json({ ok: true });
 });
 
 /**
