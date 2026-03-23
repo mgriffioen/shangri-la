@@ -905,7 +905,7 @@ app.get('/api/members', (req, res) => {
  *
  * Persists the user's chosen avatar emoji so all clients can see it.
  */
-const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
+const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🤙','🌵'];
 
 app.post('/api/emoji', (req, res) => {
   const { name, emoji } = req.body;
