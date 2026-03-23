@@ -180,6 +180,7 @@ main {
 /* ─── Login Section ──────────────────────────────────────────────────────────── */
 .name-row {
   display: flex;
+  align-items: center;
   gap: 6px;
 }
 
