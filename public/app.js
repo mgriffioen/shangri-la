@@ -203,6 +203,8 @@ function avatarEmoji(name) {
 
 function getAvatarEmoji(name) {
   if (name === state.userName && state.chosenEmoji) return state.chosenEmoji;
+  const member = state.members && state.members.find(m => m.name === name);
+  if (member && member.emoji) return member.emoji;
   return avatarEmoji(name);
 }
 
@@ -561,8 +563,17 @@ function buildAvatarPicker() {
       picker.querySelectorAll('.avatar-option').forEach(b =>
         b.classList.toggle('selected', b.textContent === emoji)
       );
-      // Refresh members board (updates the current user's row)
-      renderMembers();
+      // Persist emoji on server so other clients see it
+      fetch('/api/emoji', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: state.userName, emoji }),
+      }).then(() => {
+        // Update local members cache so renderMembers reflects it immediately
+        const me = state.members.find(m => m.name === state.userName);
+        if (me) me.emoji = emoji;
+        renderMembers();
+      });
       closAvatarPicker();
     });
     picker.appendChild(btn);
@@ -996,6 +1007,14 @@ async function login(name) {
 
   // Load persisted emoji choice for this user
   state.chosenEmoji = localStorage.getItem(`shangri-la-emoji:${name}`) || null;
+  // Sync any locally stored emoji to the server
+  if (state.chosenEmoji) {
+    fetch('/api/emoji', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, emoji: state.chosenEmoji }),
+    }).catch(() => {});
+  }
 
   // Show user sections
   document.getElementById('section-login').style.display   = 'none';
