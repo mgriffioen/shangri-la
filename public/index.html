@@ -193,6 +193,15 @@
         <p id="trivia-result-msg"></p>
         <button id="trivia-close-btn" class="trivia-btn-ghost">Close</button>
       </div>
+      <!-- Error state -->
+      <div id="trivia-error-state" class="trivia-state" hidden>
+        <div class="trivia-emoji">😵</div>
+        <p>Couldn't load a question right now. Want to try again?</p>
+        <div class="trivia-btns">
+          <button id="trivia-retry-btn" class="trivia-btn-primary">Try again</button>
+          <button id="trivia-error-close-btn" class="trivia-btn-ghost">Skip</button>
+        </div>
+      </div>
     </div>
   </div>
 
