@@ -447,7 +447,7 @@ function b64decode(str) {
 }
 
 function showTriviaState(id) {
-  for (const s of ['offer', 'loading', 'question', 'result']) {
+  for (const s of ['offer', 'loading', 'question', 'result', 'error']) {
     document.getElementById(`trivia-${s}-state`).hidden = s !== id;
   }
 }
