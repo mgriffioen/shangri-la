@@ -498,8 +498,7 @@ async function loadTriviaQuestion() {
     }
     showTriviaState('question');
   } catch {
-    closeTriviaModal();
-    showToast('Could not load question — maybe next time!');
+    showTriviaState('error');
   }
 }
 
@@ -1088,6 +1087,8 @@ document.getElementById('cooldown-share-btn').addEventListener('click', async ()
 document.getElementById('trivia-yes-btn').addEventListener('click', () => loadTriviaQuestion());
 document.getElementById('trivia-no-btn').addEventListener('click', () => closeTriviaModal());
 document.getElementById('trivia-close-btn').addEventListener('click', () => closeTriviaModal());
+document.getElementById('trivia-retry-btn').addEventListener('click', () => loadTriviaQuestion());
+document.getElementById('trivia-error-close-btn').addEventListener('click', () => closeTriviaModal());
 
 document.getElementById('tl-open-btn').addEventListener('click', () => showEndgameModal());
 document.getElementById('endgame-timelapse-btn').addEventListener('click', () => startTimelapse());
