@@ -619,7 +619,7 @@ function renderVisitStatus(newVisit) {
     document.getElementById('undo-btn').style.display = state.undoAvailable ? 'inline-block' : 'none';
   } else {
     statusEl.className   = 'visit-status waiting';
-    statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20! Sean, let me know if you don‘t get it. 🤙';
+    statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20! 🤙';
     cooldownEl.style.display = 'block';
     pixelsEl.style.display   = 'none';
     startCountdown();
