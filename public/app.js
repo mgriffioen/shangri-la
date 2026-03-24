@@ -653,8 +653,8 @@ function renderProgress() {
 
   const stages = [
     { min: 0,   label: 'Stage 1 — Raft-sized (32×32)' },
-    { min: 25,  label: 'Stage 2 — Getting Paw Paw vibes... (48×48)' },
-    { min: 50,  label: 'Stage 3 — Frog Hollow says what? (64×64)' },
+    { min: 25,  label: 'Stage 2 — Getting Paw Paw vibes / RIP MOM (48×48)' },
+    { min: 50,  label: 'Stage 3 — Frog Hollow floating trampline? (64×64)' },
     { min: 75,  label: 'Stage 4 — Jello Shots on Shavehead Lake (80×80)' },
     { min: 100, label: 'Stage 5 — Shangri-La (96×96)' },
   ];
