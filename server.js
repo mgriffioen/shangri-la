@@ -1235,7 +1235,7 @@ if (twilioClient) {
     for (const user of due) {
       try {
         await twilioClient.messages.create({
-          body: `Hey ${user.name}! Your Shangri-La cooldown is done 🌴 Time to head back and place your pixels.`,
+          body: `Hey ${user.name}! I've got 69 problems, but it's 420 somewhere: time to visit the island! 🤙 ${process.env.APP_URL || 'https://shangri-la.fly.dev'}`,
           from: process.env.TWILIO_PHONE_NUMBER,
           to:   user.phone,
         });
