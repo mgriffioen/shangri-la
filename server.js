@@ -1070,6 +1070,119 @@ app.post('/api/reset', (req, res) => {
   res.json({ success: true, message: 'Island reset.' });
 });
 
+// ─── Admin Dashboard ───────────────────────────────────────────────────────────
+
+/*
+ * GET /admin?secret=<RESET_SECRET>
+ *
+ * Admin dashboard showing cooldown status for all users.
+ */
+app.get('/admin', (req, res) => {
+  const secret = process.env.RESET_SECRET;
+  if (!secret || req.query.secret !== secret) {
+    return res.status(403).send('<h2>403 Forbidden</h2>');
+  }
+
+  const now = Date.now();
+  const users = db.prepare('SELECT * FROM users ORDER BY name ASC').all();
+  const progress = db.prepare("SELECT value FROM global_stats WHERE key='progress'").get()?.value ?? 0;
+  const totalPixels = db.prepare('SELECT COUNT(*) as c FROM pixels').get()?.c ?? 0;
+
+  function fmt(ms) {
+    if (ms <= 0) return '—';
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  const rows = users.map(u => {
+    const elapsed = now - u.last_visit;
+    const onCooldown = u.pixels_remaining === 0 && elapsed < VISIT_COOLDOWN_MS;
+    const inVisit = u.pixels_remaining > 0;
+    const remaining = onCooldown ? VISIT_COOLDOWN_MS - elapsed : 0;
+    const lastVisitStr = u.last_visit ? new Date(u.last_visit).toLocaleString('en-US', { timeZone: 'America/Chicago' }) : 'Never';
+
+    let statusBadge, statusColor;
+    if (inVisit) {
+      statusBadge = `Visiting (${u.pixels_remaining} px left)`;
+      statusColor = '#2ecc71';
+    } else if (onCooldown) {
+      statusBadge = `Cooldown: ${fmt(remaining)}`;
+      statusColor = '#e67e22';
+    } else {
+      statusBadge = 'Ready';
+      statusColor = '#3498db';
+    }
+
+    return `
+      <tr>
+        <td>${u.emoji || '👤'} ${u.name}</td>
+        <td style="color:${statusColor};font-weight:600">${statusBadge}</td>
+        <td>${u.total_visits}</td>
+        <td>${u.pixels_placed}</td>
+        <td style="color:#888;font-size:0.85em">${lastVisitStr}</td>
+      </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="30">
+  <title>Shangri-La Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0d1117; color: #e6edf3; padding: 2rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #8b949e; font-size: 0.875rem; margin-bottom: 2rem; }
+    .stats { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1rem 1.5rem; }
+    .stat-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; margin-top: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+    th { background: #21262d; padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #8b949e; }
+    td { padding: 0.75rem 1rem; border-top: 1px solid #21262d; }
+    tr:hover td { background: #1c2128; }
+    .refresh { color: #8b949e; font-size: 0.75rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🏔️ Shangri-La Admin</h1>
+  <p class="subtitle">Auto-refreshes every 30 seconds</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Progress</div>
+      <div class="stat-value">${progress}%</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total Pixels</div>
+      <div class="stat-value">${totalPixels}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Members</div>
+      <div class="stat-value">${users.length}</div>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Member</th>
+        <th>Status</th>
+        <th>Visits</th>
+        <th>Pixels Placed</th>
+        <th>Last Visit (CT)</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <p class="refresh">Server time: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} CT</p>
+</body>
+</html>`;
+
+  res.type('html').send(html);
+});
+
 // ─── Start ─────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
