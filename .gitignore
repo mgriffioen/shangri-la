@@ -3,3 +3,4 @@ shangri-la.db
 *.db-shm
 *.db-wal
 .DS_Store
+.env
