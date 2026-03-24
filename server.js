@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs   = require('fs');
 const zlib = require('zlib');
+const twilio = require('twilio');
 
 const app = express();
 app.use(express.json());
@@ -107,9 +109,17 @@ for (const col of [
   'trivia_used INTEGER DEFAULT 0',
   'endgame_seen INTEGER DEFAULT 0',
   'emoji TEXT',
+  'phone TEXT',
+  'sms_sent INTEGER DEFAULT 0',
 ]) {
   try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
 }
+
+// ─── Twilio ────────────────────────────────────────────────────────────────────
+
+const twilioClient = (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN)
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  : null;
 
 // ─── Achievement Definitions ───────────────────────────────────────────────────
 
@@ -582,7 +592,8 @@ app.post('/api/login', (req, res) => {
           undo_y           = NULL,
           undo_prev_color  = NULL,
           undo_prev_user   = NULL,
-          trivia_used      = 0
+          trivia_used      = 0,
+          sms_sent         = 0
       WHERE name = ?
     `).run(PIXELS_PER_VISIT, name);
 
@@ -613,6 +624,7 @@ app.post('/api/login', (req, res) => {
       pixels_remaining: user.pixels_remaining,
       pixels_placed:    user.pixels_placed,
       last_visit:       user.last_visit,
+      phone:            user.phone || null,
     },
     newVisit,
     newAchievements,
@@ -1182,6 +1194,59 @@ app.get('/admin', (req, res) => {
 
   res.type('html').send(html);
 });
+
+// ─── SMS Opt-in ────────────────────────────────────────────────────────────────
+
+app.post('/api/sms-opt-in', (req, res) => {
+  const { name, phone } = req.body;
+  if (!name || !phone) return res.status(400).json({ error: 'Name and phone required' });
+  const digits = phone.replace(/\D/g, '');
+  let normalized;
+  if (digits.length === 10) {
+    normalized = '+1' + digits;
+  } else if (digits.length === 11 && digits[0] === '1') {
+    normalized = '+' + digits;
+  } else if (phone.trim().startsWith('+') && digits.length >= 8 && digits.length <= 15) {
+    normalized = '+' + digits;
+  } else {
+    return res.status(400).json({ error: 'Please enter a valid phone number' });
+  }
+  const user = db.prepare('SELECT name FROM users WHERE name = ?').get(name);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  db.prepare('UPDATE users SET phone = ?, sms_sent = 0 WHERE name = ?').run(normalized, name);
+  res.json({ success: true, phone: normalized });
+});
+
+app.delete('/api/sms-opt-in', (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name required' });
+  db.prepare('UPDATE users SET phone = NULL, sms_sent = 0 WHERE name = ?').run(name);
+  res.json({ success: true });
+});
+
+// ─── SMS Background Job ────────────────────────────────────────────────────────
+
+if (twilioClient) {
+  setInterval(async () => {
+    const now = Date.now();
+    const due = db.prepare(
+      'SELECT name, phone FROM users WHERE phone IS NOT NULL AND sms_sent = 0 AND pixels_remaining = 0 AND last_visit > 0 AND last_visit + ? <= ?'
+    ).all(VISIT_COOLDOWN_MS, now);
+    for (const user of due) {
+      try {
+        await twilioClient.messages.create({
+          body: `Hey ${user.name}! Your Shangri-La cooldown is done 🌴 Time to head back and place your pixels.`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to:   user.phone,
+        });
+        db.prepare('UPDATE users SET sms_sent = 1 WHERE name = ?').run(user.name);
+        console.log(`SMS sent to ${user.name}`);
+      } catch (err) {
+        console.error(`SMS to ${user.name} failed:`, err.message);
+      }
+    }
+  }, 60_000);
+}
 
 // ─── Start ─────────────────────────────────────────────────────────────────────
 

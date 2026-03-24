@@ -74,6 +74,21 @@
           <div class="cooldown-label">Next visit in</div>
           <div class="cooldown-timer" id="cooldown-timer">—</div>
           <button class="cooldown-share-btn" id="cooldown-share-btn">Share my progress</button>
+          <!-- SMS opt-in -->
+          <div id="sms-optin" class="sms-optin" style="display:none">
+            <div id="sms-optin-form">
+              <p class="sms-optin-label">Get a text when you're ready?</p>
+              <div class="sms-optin-row">
+                <input id="sms-phone-input" type="tel" placeholder="+1 555 000 0000" autocomplete="tel" />
+                <button id="sms-optin-btn" class="sms-optin-btn">Notify me</button>
+              </div>
+              <div id="sms-optin-error" class="sms-optin-error" style="display:none"></div>
+            </div>
+            <div id="sms-optin-saved" style="display:none">
+              <span class="sms-optin-saved-msg">You'll get a text when ready ✓</span>
+              <button id="sms-remove-btn" class="sms-remove-btn">Remove</button>
+            </div>
+          </div>
         </div>
 
         <!-- Pixels remaining dots (shown during active visit) -->

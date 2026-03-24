@@ -72,6 +72,7 @@ const state = {
   popupTimer:          null,
   currentAchievement:  null,
   isComplete:          false,
+  phone:               null,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -618,11 +619,12 @@ function renderVisitStatus(newVisit) {
     renderPixelDots();
     document.getElementById('undo-btn').style.display = state.undoAvailable ? 'inline-block' : 'none';
   } else {
-    statusEl.className   = 'visit-status waiting';
-    statusEl.textContent = 'You‘ve used all your pixels. See you in 4:20! 🤙';
-    cooldownEl.style.display = 'block';
-    pixelsEl.style.display   = 'none';
+    statusEl.className   = ‘visit-status waiting’;
+    statusEl.textContent = ‘You’ve used all your pixels. See you in 4:20! 🤙’;
+    cooldownEl.style.display = ‘block’;
+    pixelsEl.style.display   = ‘none’;
     startCountdown();
+    renderSmsOptin();
   }
 }
 
@@ -1000,6 +1002,7 @@ async function login(name) {
   state.user          = data.user;
   state.nextVisitTime = data.nextVisitTime;
   state.undoAvailable = data.undoAvailable ?? false;
+  state.phone         = data.user.phone || null;
 
   // Save to localStorage for next time
   localStorage.setItem('shangri-la-name', name);
@@ -1165,5 +1168,65 @@ async function init() {
     }
   }
 }
+
+// ─── SMS Opt-in ────────────────────────────────────────────────────────────────
+
+function renderSmsOptin() {
+  const wrap      = document.getElementById('sms-optin');
+  const formEl    = document.getElementById('sms-optin-form');
+  const savedEl   = document.getElementById('sms-optin-saved');
+  const errorEl   = document.getElementById('sms-optin-error');
+  const phoneInput = document.getElementById('sms-phone-input');
+
+  wrap.style.display = 'block';
+  errorEl.style.display = 'none';
+
+  if (state.phone) {
+    formEl.style.display  = 'none';
+    savedEl.style.display = 'block';
+  } else {
+    formEl.style.display  = 'block';
+    savedEl.style.display = 'none';
+    phoneInput.value = '';
+  }
+}
+
+document.getElementById('sms-optin-btn').addEventListener('click', async () => {
+  const phoneInput = document.getElementById('sms-phone-input');
+  const errorEl   = document.getElementById('sms-optin-error');
+  const phone = phoneInput.value.trim();
+  if (!phone) return;
+  errorEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/sms-opt-in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: state.userName, phone }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Something went wrong';
+      errorEl.style.display = 'block';
+      return;
+    }
+    state.phone = data.phone;
+    renderSmsOptin();
+  } catch {
+    errorEl.textContent = 'Could not save number. Try again.';
+    errorEl.style.display = 'block';
+  }
+});
+
+document.getElementById('sms-remove-btn').addEventListener('click', async () => {
+  try {
+    await fetch('/api/sms-opt-in', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: state.userName }),
+    });
+    state.phone = null;
+    renderSmsOptin();
+  } catch {}
+});
 
 init();

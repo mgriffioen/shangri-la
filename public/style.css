@@ -378,6 +378,72 @@ main {
 }
 .cooldown-share-btn:hover { opacity: 0.82; }
 
+/* ─── SMS Opt-in ──────────────────────────────────────────────────────────────── */
+.sms-optin {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.sms-optin-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+}
+
+.sms-optin-row {
+  display: flex;
+  gap: 6px;
+}
+
+.sms-optin-row input[type="tel"] {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  min-width: 0;
+}
+
+.sms-optin-btn {
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background: var(--ocean-dark);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.sms-optin-btn:hover { opacity: 0.82; }
+
+.sms-optin-error {
+  font-size: 0.73rem;
+  color: #c0392b;
+  margin-top: 4px;
+}
+
+.sms-optin-saved-msg {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.sms-remove-btn {
+  background: none;
+  border: none;
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 6px;
+  padding: 0;
+}
+.sms-remove-btn:hover { color: var(--text-main); }
+
 /* ─── Pixels Remaining ───────────────────────────────────────────────────────── */
 .pixels-box {
   padding: 8px 0 4px;
