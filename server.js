@@ -407,7 +407,7 @@ function getTotalPixels() {
 }
 
 function getUniqueVisitors() {
-  return db.prepare('SELECT COUNT(*) AS cnt FROM users WHERE total_visits > 0').get().cnt;
+  return db.prepare('SELECT COUNT(DISTINCT lower(name)) AS cnt FROM users WHERE total_visits > 0').get().cnt;
 }
 
 /**
@@ -607,11 +607,17 @@ app.post('/api/login', (req, res) => {
     return res.status(403).json({ error: 'This island is by invitation only. Your name is not on the guest list.' });
   }
 
-  let user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  let user = db.prepare('SELECT * FROM users WHERE lower(name) = ?').get(name);
   if (!user) {
     db.prepare(
       'INSERT INTO users (name, last_visit, total_visits, pixels_placed, pixels_remaining) VALUES (?, 0, 0, 0, 0)'
     ).run(name);
+    user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  } else if (user.name !== name) {
+    // Normalize stored name to lowercase
+    db.prepare('UPDATE users             SET name     = ? WHERE name     = ?').run(name, user.name);
+    db.prepare('UPDATE pixels            SET user_name = ? WHERE user_name = ?').run(name, user.name);
+    db.prepare('UPDATE user_achievements SET user_name = ? WHERE user_name = ?').run(name, user.name);
     user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
   }
 
@@ -721,7 +727,7 @@ app.post('/api/place', (req, res) => {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+  const user = db.prepare('SELECT * FROM users WHERE lower(name) = lower(?)').get(name);
   if (!user) {
     return res.status(404).json({ error: 'User not found. Please log in first.' });
   }
