@@ -652,6 +652,7 @@ app.get('/api/state', (req, res) => {
       totalPixels,
       uniqueVisitors,
       totalVisits: totalVisitsRow.total || 0,
+      maxGroupSize: MAX_GROUP_SIZE,
     },
     groupAchievements: groupEarned,
   });
