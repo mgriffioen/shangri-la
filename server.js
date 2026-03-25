@@ -548,7 +548,7 @@ app.post('/api/login', (req, res) => {
     return res.status(400).json({ error: 'Name is required' });
   }
 
-  const name = raw.trim().slice(0, 30).toLowerCase();
+  const name = raw.trim().slice(0, 30).toLowerCase(); 
   const now  = Date.now();
 
   const allowedNames = process.env.ALLOWED_NAMES
