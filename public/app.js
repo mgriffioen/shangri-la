@@ -195,6 +195,11 @@ function canPlacePixel() {
 
 const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
 
+function toTitleCase(name) {
+  if (!name) return name;
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
 function avatarEmoji(name) {
   let hash = 0;
   for (const ch of (name || '')) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffffffff;
@@ -759,7 +764,7 @@ function renderMembers() {
           ${m.joined ? getAvatarEmoji(m.name) : '?'}
         </div>
         <div class="member-info">
-          <div class="member-name">${escapeHtml(m.name)}</div>
+          <div class="member-name">${escapeHtml(toTitleCase(m.name))}</div>
           ${m.joined && earnedBadges ? `<div class="member-badges">${earnedBadges}</div>` : ''}
           ${!m.joined ? `<div class="member-level">Yet to arrive…</div>` : ''}
         </div>
@@ -1026,7 +1031,7 @@ async function login(name) {
   avatarEl.style.background = avatarColor(name);
   buildAvatarPicker();
 
-  document.getElementById('user-name-display').textContent = name;
+  document.getElementById('user-name-display').textContent = toTitleCase(name);
   document.getElementById('user-meta').textContent =
     `${data.user.total_visits} visit${data.user.total_visits !== 1 ? 's' : ''} · ${data.user.pixels_placed} pixels`;
 

@@ -1168,7 +1168,7 @@ app.get('/admin', (req, res) => {
 
     return `
       <tr>
-        <td>${u.emoji || '👤'} ${u.name}</td>
+        <td>${u.emoji || '👤'} ${u.name.charAt(0).toUpperCase() + u.name.slice(1)}</td>
         <td style="color:${statusColor};font-weight:600">${statusBadge}</td>
         <td>${u.total_visits}</td>
         <td>${u.pixels_placed}</td>
