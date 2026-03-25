@@ -999,6 +999,7 @@ async function loadState() {
 }
 
 async function login(name) {
+  name = name.toLowerCase();
   const data = await apiLogin(name);
 
   state.userName      = name;
