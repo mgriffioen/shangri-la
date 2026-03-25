@@ -10,7 +10,7 @@ const Database = require('better-sqlite3');
 const DB_PATH  = process.env.DB_PATH || require('path').join(__dirname, 'shangri-la.db');
 const db       = new Database(DB_PATH);
 
-const NAMES = ['erik', 'mark'];
+const NAMES = ['erik', 'mark', 'sean'];
 
 const merge = db.transaction((canonical) => {
   const capitalised = canonical.charAt(0).toUpperCase() + canonical.slice(1);
