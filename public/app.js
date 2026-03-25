@@ -665,13 +665,13 @@ function renderProgress() {
 function renderInfoBar() {
   const pct = Math.min(100, state.progress);
   document.getElementById('info-bar-fill').style.width = pct + '%';
-  const { totalPixels, uniqueVisitors } = state.stats || {};
+  const { totalPixels, uniqueVisitors, maxGroupSize } = state.stats || {};
   document.getElementById('info-bar-stats').textContent =
-    `${pct.toFixed(1)}% · ${totalPixels ?? 0} px placed · ${uniqueVisitors ?? 0}/8 hunks`;
+    `${pct.toFixed(1)}% · ${totalPixels ?? 0} px placed · ${uniqueVisitors ?? 0}/${maxGroupSize ?? 8} hunks`;
 }
 
 function renderStats() {
-  const { totalPixels, uniqueVisitors, totalVisits } = state.stats || {};
+  const { totalPixels, uniqueVisitors, totalVisits, maxGroupSize } = state.stats || {};
 
   const earnedGroupKeys = new Set(state.achievements.group.earned.map(e => e.achievement_key));
   const groupAchievementsHtml = state.achievements.group.definitions
@@ -688,7 +688,7 @@ function renderStats() {
       <div class="stat-label">Pixels placed</div>
     </div>
     <div class="stat-tile">
-      <div class="stat-value">${uniqueVisitors ?? 0} / 8</div>
+      <div class="stat-value">${uniqueVisitors ?? 0} / ${maxGroupSize ?? 8}</div>
       <div class="stat-label">Hunks visited</div>
     </div>
     <div class="stat-tile">
