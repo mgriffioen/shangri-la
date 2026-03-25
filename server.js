@@ -111,6 +111,55 @@ for (const col of [
   try { db.exec(`ALTER TABLE users ADD COLUMN ${col}`); } catch {}
 }
 
+// ─── Startup migration: merge case-insensitive duplicate users ─────────────────
+{
+  const allNames = db.prepare('SELECT name FROM users').all().map(r => r.name);
+  const groups = new Map();
+  for (const name of allNames) {
+    const key = name.toLowerCase();
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(name);
+  }
+
+  const mergeDuplicates = db.transaction((names) => {
+    const canonical = names[0].toLowerCase();
+    const others    = names.filter(n => n !== canonical);
+
+    if (!db.prepare('SELECT 1 FROM users WHERE name = ?').get(canonical)) {
+      const source = others.shift();
+      db.prepare('UPDATE users             SET name = ? WHERE name = ?').run(canonical, source);
+      db.prepare('UPDATE pixels            SET user_name = ? WHERE user_name = ?').run(canonical, source);
+      db.prepare('UPDATE user_achievements SET user_name = ? WHERE user_name = ?').run(canonical, source);
+      console.log(`[migration] Renamed "${source}" -> "${canonical}"`);
+    }
+
+    for (const dup of others) {
+      const dupRow = db.prepare('SELECT * FROM users WHERE name = ?').get(dup);
+      if (!dupRow) continue;
+      db.prepare(`
+        UPDATE users SET
+          total_visits     = total_visits     + ?,
+          pixels_placed    = pixels_placed    + ?,
+          pixels_remaining = pixels_remaining + ?,
+          last_visit       = MAX(last_visit, ?)
+        WHERE name = ?
+      `).run(dupRow.total_visits, dupRow.pixels_placed, dupRow.pixels_remaining, dupRow.last_visit, canonical);
+      db.prepare('UPDATE pixels SET user_name = ? WHERE user_name = ?').run(canonical, dup);
+      db.prepare(`
+        INSERT OR IGNORE INTO user_achievements (user_name, achievement_key, earned_at)
+        SELECT ?, achievement_key, earned_at FROM user_achievements WHERE user_name = ?
+      `).run(canonical, dup);
+      db.prepare('DELETE FROM user_achievements WHERE user_name = ?').run(dup);
+      db.prepare('DELETE FROM users WHERE name = ?').run(dup);
+      console.log(`[migration] Merged "${dup}" into "${canonical}"`);
+    }
+  });
+
+  for (const [, names] of groups) {
+    if (names.length > 1) mergeDuplicates(names);
+  }
+}
+
 // ─── Achievement Definitions ───────────────────────────────────────────────────
 
 const INDIVIDUAL_ACHIEVEMENTS = [
