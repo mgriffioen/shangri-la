@@ -1087,6 +1087,7 @@ app.get('/admin', (req, res) => {
   const users = db.prepare('SELECT * FROM users ORDER BY name ASC').all();
   const progress = db.prepare("SELECT value FROM global_stats WHERE key='progress'").get()?.value ?? 0;
   const totalPixels = db.prepare('SELECT COUNT(*) as c FROM pixels').get()?.c ?? 0;
+  const recentPixels = db.prepare('SELECT p.x, p.y, p.color, p.user_name, p.placed_at, u.emoji FROM pixels p LEFT JOIN users u ON p.user_name = u.name ORDER BY p.placed_at DESC LIMIT 100').all();
 
   function fmt(ms) {
     if (ms <= 0) return '—';
@@ -1145,6 +1146,8 @@ app.get('/admin', (req, res) => {
     td { padding: 0.75rem 1rem; border-top: 1px solid #21262d; }
     tr:hover td { background: #1c2128; }
     .refresh { color: #8b949e; font-size: 0.75rem; margin-top: 1rem; }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; }
+    .color-swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid #30363d; vertical-align: middle; margin-right: 6px; }
   </style>
 </head>
 <body>
@@ -1177,6 +1180,27 @@ app.get('/admin', (req, res) => {
     <tbody>${rows}</tbody>
   </table>
   <p class="refresh">Server time: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} CT</p>
+  <h2 class="section-title">Recent Pixel History (last 100)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Time (CT)</th>
+        <th>Member</th>
+        <th>Color</th>
+        <th>Coordinates</th>
+      </tr>
+    </thead>
+    <tbody>${recentPixels.map(p => {
+      const timeStr = p.placed_at ? new Date(p.placed_at).toLocaleString('en-US', { timeZone: 'America/Chicago' }) : '—';
+      return `
+      <tr>
+        <td style="color:#8b949e;font-size:0.85em">${timeStr}</td>
+        <td>${p.emoji || '👤'} ${p.user_name}</td>
+        <td><span class="color-swatch" style="background:${p.color}"></span>${p.color}</td>
+        <td style="font-family:monospace">(${p.x}, ${p.y})</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>
 </body>
 </html>`;
 
