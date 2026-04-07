@@ -85,6 +85,8 @@ function resizeCanvas(size) {
   const px = size * CELL_SIZE;
   canvas.width  = px;
   canvas.height = px;
+  document.body.classList.remove('canvas-stage-48', 'canvas-stage-64', 'canvas-stage-80', 'canvas-stage-96');
+  if (size > 32) document.body.classList.add(`canvas-stage-${Math.min(size, 96)}`);
 }
 
 function drawCanvas() {
