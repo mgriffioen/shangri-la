@@ -54,7 +54,7 @@ The island grows as collective progress increases:
 | 75%      | 80×80       |
 | 100%     | 96×96       |
 
-At 25% progress, when the canvas expands past 32×32, the page background theme switches from sand/brown to forest green.
+At each progress change, when the canvas expands, the page background theme switches to a new color theme.
 
 ### Undo
 
