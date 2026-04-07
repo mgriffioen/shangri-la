@@ -34,11 +34,13 @@ ALLOWED_NAMES=Mark,Sean,Carl,Benedict,Dusty,Paul,Erik,Brandon
 RESET_SECRET=something-only-you-know
 ```
 
+Names are normalized to lowercase on login and stored/compared case-insensitively. Display names are shown in title case on the frontend and admin panel. A startup migration automatically merges any case-variant duplicate user rows (e.g. `Erik` and `erik`).
+
 ## Game Mechanics
 
 - **Pixels per visit**: 12
 - **Visit cooldown**: 4 hours 20 minutes
-- **Progress per visit**: +0.1% (1,000 total visits = 100%)
+- **Progress per visit**: +0.6% (~167 total visits = 100%)
 
 ### Canvas expansion
 
@@ -51,6 +53,8 @@ The island grows as collective progress increases:
 | 50%      | 64×64       |
 | 75%      | 80×80       |
 | 100%     | 96×96       |
+
+At 25% progress, when the canvas expands past 32×32, the page background theme switches from sand/brown to forest green.
 
 ### Undo
 
@@ -75,21 +79,23 @@ Earned collectively based on island-wide progress and group participation.
 | Method | Endpoint             | Description                                                        |
 |--------|----------------------|--------------------------------------------------------------------|
 | POST   | `/api/login`         | Register or log in by name; issues pixels if off cooldown          |
-| GET    | `/api/state`         | Current pixel grid, progress %, canvas size, stats                 |
+| GET    | `/api/state`         | Current pixel grid, progress %, canvas size, stats (includes `maxGroupSize`) |
 | POST   | `/api/place`         | Place a pixel at `(x, y)` with a hex color                        |
 | POST   | `/api/undo`          | Undo the last placed pixel (once per visit)                        |
 | POST   | `/api/trivia-reward` | Grant bonus pixels after a correct trivia answer                   |
 | GET    | `/api/achievements`  | Achievement definitions and earned status                          |
-| GET    | `/api/members`       | Crew roster with per-user stats and achievements                   |
+| GET    | `/api/members`       | Crew roster with per-user stats, achievements, and `emoji`         |
+| POST   | `/api/emoji`         | Persist a user's chosen avatar emoji so all clients see it         |
 | GET    | `/api/leaderboard`   | All users sorted by pixels placed                                  |
 | GET    | `/api/recent`        | 12 most recently placed pixels                                     |
 | GET    | `/api/timelapse`     | All pixels in placement order (used by endgame timelapse)          |
 | POST   | `/api/seed-demo`     | Load demo state at 80% progress (requires `RESET_SECRET`)          |
 | POST   | `/api/reset`         | Wipe all data and reset to initial state (requires `RESET_SECRET`) |
+| GET    | `/admin`             | Admin dashboard: cooldown status, stats, pixel history (requires `?secret=RESET_SECRET`) |
 
 ## Database Schema
 
-- `users` — name, last_visit, total_visits, pixels_placed, pixels_remaining, created_at, undo_available, undo_x, undo_y, undo_prev_color, undo_prev_user, trivia_used, endgame_seen
+- `users` — name, last_visit, total_visits, pixels_placed, pixels_remaining, created_at, undo_available, undo_x, undo_y, undo_prev_color, undo_prev_user, trivia_used, endgame_seen, emoji
 - `pixels` — x, y (PK), color, user_name, placed_at
 - `global_stats` — key/value store (holds `progress`)
 - `user_achievements` — user_name + achievement_key (composite PK), earned_at
