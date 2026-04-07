@@ -60,6 +60,31 @@ body {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr;
+  transition: background-color 1.2s ease;
+}
+
+body.canvas-stage-48 {
+  background-color: #5a7a42;
+  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+}
+
+body.canvas-stage-64 {
+  background-color: #5a7a42;
+  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+}
+
+body.canvas-stage-80 {
+  background-color: #5a7a42;
+  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+}
+
+body.canvas-stage-96 {
+  background-color: #5a7a42;
+  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 /* ─── Header ─────────────────────────────────────────────────────────────────── */
