@@ -52,9 +52,9 @@ html { font-size: 15px; }
 
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  background-color: #c9aa70;
+  background-color: #c8902a;
   opacity: 0.8;
-  background: radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c9aa70 20%, #c9aa70 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e6cb6e 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e6cb6e 1.2000000000000002px, #c9aa70 1.2000000000000002px) -0.6000000000000001px 0;
+  background: radial-gradient(circle, transparent 20%, #c8902a 20%, #c8902a 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c8902a 20%, #c8902a 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e6b840 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e6b840 1.2000000000000002px, #c8902a 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
   color: var(--text);
   min-height: 100vh;
@@ -64,26 +64,26 @@ body {
 }
 
 body.canvas-stage-48 {
-  background-color: #5a7a42;
-  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #c83020;
+  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 body.canvas-stage-64 {
-  background-color: #5a7a42;
-  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #c83020;
+  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 body.canvas-stage-80 {
-  background-color: #5a7a42;
-  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #c83020;
+  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 body.canvas-stage-96 {
-  background-color: #5a7a42;
-  background: radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #5a7a42 20%, #5a7a42 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#8bb85a 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #8bb85a 1.2000000000000002px, #5a7a42 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #c83020;
+  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
