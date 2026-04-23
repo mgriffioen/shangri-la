@@ -76,14 +76,14 @@ body.canvas-stage-64 {
 }
 
 body.canvas-stage-80 {
-  background-color: #c83020;
-  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #802080;
+  background: radial-gradient(circle, transparent 20%, #802080 20%, #802080 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #802080 20%, #802080 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#d050a0 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #d050a0 1.2000000000000002px, #802080 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
 body.canvas-stage-96 {
-  background-color: #c83020;
-  background: radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #c83020 20%, #c83020 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#e05040 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #e05040 1.2000000000000002px, #c83020 1.2000000000000002px) -0.6000000000000001px 0;
+  background-color: #1a3060;
+  background: radial-gradient(circle, transparent 20%, #1a3060 20%, #1a3060 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #1a3060 20%, #1a3060 80%, transparent 80%, transparent) 15px 15px, linear-gradient(#4080c0 1.2000000000000002px, transparent 1.2000000000000002px) 0 -0.6000000000000001px, linear-gradient(90deg, #4080c0 1.2000000000000002px, #1a3060 1.2000000000000002px) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 }
 
