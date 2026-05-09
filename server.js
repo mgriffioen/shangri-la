@@ -371,6 +371,12 @@ const GROUP_ACHIEVEMENTS = [
     icon: '🪥',
   },
   {
+    key: 'nice_69',
+    name: 'NICE!',
+    description: 'Island progress has reached 69%',
+    icon: '🌬️',
+  },
+  {
     key: 'worms',
     name: 'Worms',
     description: 'Island progress has reached 75%',
@@ -504,6 +510,7 @@ function checkGroupAchievements() {
     { key: 'coming_going',     condition: progress       >= 50              },
     { key: 'dudeski',      condition: getMembersWithMinVisits(22) >= MAX_GROUP_SIZE },
     { key: 'flossmore',        condition: progress       >= 66              },
+    { key: 'nice_69',        condition: progress       >= 69              },
     { key: 'worms',            condition: progress       >= 75              },
     { key: 'people_forget',    condition: progress       >= 88              },
     { key: 'swim_door',      condition: getMembersWithMinVisits(55) >= MAX_GROUP_SIZE },
