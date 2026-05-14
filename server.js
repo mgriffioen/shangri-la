@@ -822,7 +822,7 @@ app.post('/api/place', (req, res) => {
     nextVisitTime,
     newAchievements,
     endgameUnlocked,
-    offerTrivia: updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0 && Math.random() < 0.34,
+    offerTrivia: updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0,
   });
 });
 
