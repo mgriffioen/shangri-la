@@ -51,7 +51,7 @@ const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'shangri-la.db');
 
 const PIXELS_PER_VISIT = 12;
 const VISIT_COOLDOWN_MS = 260 * 60 * 1000;      // 4 hours 20 minutes
-const PROGRESS_PER_VISIT = 0.3;             // 0.6% each visit
+const PROGRESS_PER_VISIT = 0.2;             // 0.2% each visit
 const MAX_GROUP_SIZE = 8;
 
 // ─── Database Setup ────────────────────────────────────────────────────────────
