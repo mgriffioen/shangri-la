@@ -262,7 +262,7 @@ const INDIVIDUAL_ACHIEVEMENTS = [
   {
     key: 'bless_maker',
     name: 'Bless the Maker and His water',
-    description: 'Visit the island 75 times',
+    description: 'Visit the island 69 times',
     icon: '💦',
   },
   {
@@ -459,7 +459,7 @@ function checkIndividualAchievements(userName) {
     { key: 'cmon',           condition: user.total_visits  >= 55   },
     { key: 'cherry_bbq',     condition: user.pixels_placed >= 500  },
     { key: 'green_o_clock',     condition: user.pixels_placed >= 516  },
-    { key: 'bless_maker',    condition: user.total_visits  >= 75   },
+    { key: 'bless_maker',    condition: user.total_visits  >= 69   },
     { key: 'midnight_run',   condition: user.total_visits  >= 88   },
     { key: 'lake_101',       condition: user.total_visits  >= 101  },
     { key: 'the_sauce',         condition: user.total_visits  >= 115  },
