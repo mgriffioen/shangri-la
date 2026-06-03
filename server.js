@@ -635,6 +635,25 @@ app.post('/api/login', (req, res) => {
     user = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
   }
 
+  if (getProgress() >= 100) {
+    return res.json({
+      user: {
+        name:             user.name,
+        total_visits:     user.total_visits,
+        pixels_remaining: user.pixels_remaining,
+        pixels_placed:    user.pixels_placed,
+        last_visit:       user.last_visit,
+      },
+      newVisit:        false,
+      newAchievements: [],
+      endgameUnlocked: false,
+      canVisit:        false,
+      nextVisitTime:   null,
+      undoAvailable:   false,
+      freeDraw:        true,
+    });
+  }
+
   const elapsed  = now - user.last_visit;
   const canVisit = user.pixels_remaining === 0 && elapsed >= VISIT_COOLDOWN_MS;
   let newVisit        = false;
@@ -746,11 +765,9 @@ app.post('/api/place', (req, res) => {
     return res.status(404).json({ error: 'User not found. Please log in first.' });
   }
 
-  if (getProgress() >= 100) {
-    return res.status(403).json({ error: 'The island is complete — Shangri-La has been built!' });
-  }
+  const isFreeDraw = getProgress() >= 100;
 
-  if (user.pixels_remaining <= 0) {
+  if (!isFreeDraw && user.pixels_remaining <= 0) {
     return res.status(403).json({ error: 'No pixels remaining for this visit. Come back in 4 hours 20 minutes!' });
   }
 
@@ -773,29 +790,39 @@ app.post('/api/place', (req, res) => {
     VALUES (?, ?, ?, ?, ?)
   `).run(x, y, color, name, now);
 
-  db.prepare(`
-    UPDATE users
-    SET pixels_remaining = pixels_remaining - 1,
-        pixels_placed    = pixels_placed    + 1
-    WHERE name = ?
-  `).run(name);
-
-  const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
-
-  let nextVisitTime = null;
-  if (updatedUser.pixels_remaining === 0) {
-    // Final pixel — start cooldown, no undo allowed
-    db.prepare(`
-      UPDATE users SET last_visit = ?, undo_available = 0, undo_x = NULL, undo_y = NULL,
-        undo_prev_color = NULL, undo_prev_user = NULL WHERE name = ?
-    `).run(now, name);
-    nextVisitTime = now + VISIT_COOLDOWN_MS;
-  } else {
-    // Save undo state
+  if (isFreeDraw) {
+    db.prepare(`UPDATE users SET pixels_placed = pixels_placed + 1 WHERE name = ?`).run(name);
     db.prepare(`
       UPDATE users SET undo_available = 1, undo_x = ?, undo_y = ?,
         undo_prev_color = ?, undo_prev_user = ? WHERE name = ?
     `).run(x, y, prevPixel?.color ?? null, prevPixel?.user_name ?? null, name);
+  } else {
+    db.prepare(`
+      UPDATE users
+      SET pixels_remaining = pixels_remaining - 1,
+          pixels_placed    = pixels_placed    + 1
+      WHERE name = ?
+    `).run(name);
+  }
+
+  const updatedUser = db.prepare('SELECT * FROM users WHERE name = ?').get(name);
+
+  let nextVisitTime = null;
+  if (!isFreeDraw) {
+    if (updatedUser.pixels_remaining === 0) {
+      // Final pixel — start cooldown, no undo allowed
+      db.prepare(`
+        UPDATE users SET last_visit = ?, undo_available = 0, undo_x = NULL, undo_y = NULL,
+          undo_prev_color = NULL, undo_prev_user = NULL WHERE name = ?
+      `).run(now, name);
+      nextVisitTime = now + VISIT_COOLDOWN_MS;
+    } else {
+      // Save undo state
+      db.prepare(`
+        UPDATE users SET undo_available = 1, undo_x = ?, undo_y = ?,
+          undo_prev_color = ?, undo_prev_user = ? WHERE name = ?
+      `).run(x, y, prevPixel?.color ?? null, prevPixel?.user_name ?? null, name);
+    }
   }
 
   const newAchievements = [
@@ -818,11 +845,12 @@ app.post('/api/place', (req, res) => {
     success: true,
     pixel: { x, y, color, user_name: name },
     pixels_remaining: updatedUser.pixels_remaining,
-    undoAvailable: updatedUser.pixels_remaining > 0,
+    undoAvailable: isFreeDraw || updatedUser.pixels_remaining > 0,
     nextVisitTime,
     newAchievements,
     endgameUnlocked,
-    offerTrivia: updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0,
+    offerTrivia: !isFreeDraw && updatedUser.pixels_remaining === 0 && updatedUser.trivia_used === 0,
+    freeDraw: isFreeDraw,
   });
 });
 
