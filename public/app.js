@@ -72,6 +72,7 @@ const state = {
   popupTimer:          null,
   currentAchievement:  null,
   isComplete:          false,
+  freeDraw:            false,
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -192,7 +193,7 @@ canvas.addEventListener('click', async (e) => {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function canPlacePixel() {
-  return !state.isComplete && state.user && state.user.pixels_remaining > 0;
+  return state.user && (state.freeDraw || state.user.pixels_remaining > 0);
 }
 
 const AVATAR_EMOJIS = ['🐬','🦜','🦩','🐠','🦋','🌺','🍍','🐙','🦀','🌴','🐚','🦈','🐊','🥏','🍉','🌊','🐿️','🦭','🦁','🌵'];
@@ -246,6 +247,7 @@ function showToast(msg) {
 
 function markIslandComplete() {
   state.isComplete = true;
+  state.freeDraw   = true;
   canvas.classList.add('complete');
   const bar = document.getElementById('canvas-complete-bar');
   bar.hidden = false;
@@ -615,6 +617,15 @@ function renderVisitStatus(newVisit) {
 
   if (!state.user) return;
 
+  if (state.freeDraw) {
+    statusEl.className   = 'visit-status active';
+    statusEl.textContent = 'Free draw — paint freely! 🎨';
+    cooldownEl.style.display = 'none';
+    pixelsEl.style.display   = 'none';
+    document.getElementById('undo-btn').style.display = state.undoAvailable ? 'inline-block' : 'none';
+    return;
+  }
+
   if (state.user.pixels_remaining > 0) {
     statusEl.className = 'visit-status ' + (newVisit ? 'new-visit' : 'active');
     statusEl.textContent = newVisit
@@ -879,14 +890,15 @@ async function placePixel(x, y, color) {
 
   // Optimistic update
   state.pixels.set(`${x},${y}`, { x, y, color, user_name: state.userName });
-  state.user.pixels_remaining--;
-  state.undoAvailable = state.user.pixels_remaining > 0;
+  if (!state.freeDraw) state.user.pixels_remaining--;
+  state.undoAvailable = state.freeDraw || state.user.pixels_remaining > 0;
   drawCanvas();
   renderPixelDots();
   renderVisitStatus(false);
 
   try {
     const data = await apiPlacePixel(x, y, color);
+    if (data.freeDraw) state.freeDraw = true;
     state.user.pixels_remaining = data.pixels_remaining;
     state.undoAvailable = data.undoAvailable ?? false;
     if (data.nextVisitTime) state.nextVisitTime = data.nextVisitTime;
@@ -917,7 +929,7 @@ async function placePixel(x, y, color) {
   } catch (err) {
     // Roll back
     state.pixels.delete(`${x},${y}`);
-    state.user.pixels_remaining++;
+    if (!state.freeDraw) state.user.pixels_remaining++;
     state.undoAvailable = false;
     state.pendingUndo = null;
     drawCanvas();
@@ -1008,6 +1020,7 @@ async function login(name) {
   state.user          = data.user;
   state.nextVisitTime = data.nextVisitTime;
   state.undoAvailable = data.undoAvailable ?? false;
+  if (data.freeDraw) state.freeDraw = true;
 
   // Save to localStorage for next time
   localStorage.setItem('shangri-la-name', name);
