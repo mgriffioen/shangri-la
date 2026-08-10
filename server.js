@@ -35,7 +35,15 @@ if (count === 0) {
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
+    }
+  },
+}));
 
 function requireSecret(req, res, next) {
   if (!ADMIN_SECRET) return next();

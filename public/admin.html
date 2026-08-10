@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shangri-La — Admin</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127754;</text></svg>">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="site.css">
   <style>
     .admin-wrap { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
     .admin-title { font-family: var(--font-display); font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; }
@@ -121,6 +121,8 @@
     const el = Object.fromEntries(fields.map((f) => [f, document.getElementById('f-' + f)]));
     const secretEl = document.getElementById('f-secret');
 
+    const querySecret = new URLSearchParams(location.search).get('secret');
+    if (querySecret) localStorage.setItem('shangri-la-secret', querySecret);
     secretEl.value = localStorage.getItem('shangri-la-secret') || '';
 
     function esc(s) {
