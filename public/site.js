@@ -123,10 +123,18 @@ function renderTimeline(weekends) {
   const eras = groupEras(weekends);
   const paletteByYear = new Map();
 
+  // Assign palettes in chronological era order so colors stay stable,
+  // then display newest era (and newest year within each era) first.
+  eras.forEach((era, i) => {
+    era.palette = PALETTES[i % PALETTES.length];
+    era.weekends.forEach((w) => paletteByYear.set(w.year, era.palette));
+  });
+
   const html = eras
-    .map((era, i) => {
-      const palette = PALETTES[i % PALETTES.length];
-      era.weekends.forEach((w) => paletteByYear.set(w.year, palette));
+    .slice()
+    .reverse()
+    .map((era) => {
+      const palette = era.palette;
       return `
         <section class="era" style="--era-accent:${palette.accent}; --era-glow:${palette.glow}">
           <header class="era-head">
@@ -138,7 +146,7 @@ function renderTimeline(weekends) {
             </div>
           </header>
           <div class="era-cards">
-            ${era.weekends.map((w) => cardHtml(w, palette)).join('')}
+            ${era.weekends.slice().reverse().map((w) => cardHtml(w, palette)).join('')}
           </div>
         </section>`;
     })
