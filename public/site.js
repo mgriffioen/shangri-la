@@ -37,7 +37,7 @@ function coverHtml(w, palette) {
   if (w.cover_url) {
     return `
       <div class="card-cover">
-        <img src="${esc(w.cover_url)}" alt="Shangri-La ${w.year} at ${esc(w.lake)}" loading="lazy"
+        <img src="${esc(w.cover_url)}" alt="Shangri-La ${w.year} at ${esc(w.lake)}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.parentNode.classList.add('cover-broken'); this.remove();">
         <div class="cover-fallback" style="--era-accent:${palette.accent}; --era-deep:${palette.deep}">
           <span class="cover-year">${w.year}</span>
@@ -123,10 +123,18 @@ function renderTimeline(weekends) {
   const eras = groupEras(weekends);
   const paletteByYear = new Map();
 
+  // Assign palettes in chronological era order so colors stay stable,
+  // then display newest era (and newest year within each era) first.
+  eras.forEach((era, i) => {
+    era.palette = PALETTES[i % PALETTES.length];
+    era.weekends.forEach((w) => paletteByYear.set(w.year, era.palette));
+  });
+
   const html = eras
-    .map((era, i) => {
-      const palette = PALETTES[i % PALETTES.length];
-      era.weekends.forEach((w) => paletteByYear.set(w.year, palette));
+    .slice()
+    .reverse()
+    .map((era) => {
+      const palette = era.palette;
       return `
         <section class="era" style="--era-accent:${palette.accent}; --era-glow:${palette.glow}">
           <header class="era-head">
@@ -138,7 +146,7 @@ function renderTimeline(weekends) {
             </div>
           </header>
           <div class="era-cards">
-            ${era.weekends.map((w) => cardHtml(w, palette)).join('')}
+            ${era.weekends.slice().reverse().map((w) => cardHtml(w, palette)).join('')}
           </div>
         </section>`;
     })

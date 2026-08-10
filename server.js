@@ -35,7 +35,15 @@ if (count === 0) {
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
+    }
+  },
+}));
 
 function requireSecret(req, res, next) {
   if (!ADMIN_SECRET) return next();
@@ -54,6 +62,28 @@ function isValidUrl(value) {
   } catch {
     return false;
   }
+}
+
+// Catch Google Photos URLs that only work for the album owner.
+function albumUrlProblem(value) {
+  if (!value) return null;
+  const u = new URL(value);
+  if (u.hostname === 'photos.google.com' && u.pathname.startsWith('/album/')) {
+    return 'That album link is your private library URL — it only works for you. ' +
+      'In Google Photos use Share → Create link, and paste that (photos.app.goo.gl/...) instead.';
+  }
+  return null;
+}
+
+function coverUrlProblem(value) {
+  if (!value) return null;
+  const u = new URL(value);
+  if (u.hostname.includes('fife.usercontent.google.com') || u.hostname === 'photos.google.com') {
+    return 'That cover URL is a temporary logged-in Google Photos URL — it will break for ' +
+      'everyone else and expire in days. Open the album’s SHARE link (incognito window works best), ' +
+      'open the photo there, then right-click → Copy image address to get a permanent lh3.googleusercontent.com URL.';
+  }
+  return null;
 }
 
 app.get('/api/weekends', (req, res) => {
@@ -78,6 +108,10 @@ app.post('/api/weekends', requireSecret, (req, res) => {
   }
   if (!isValidUrl(album_url) || !isValidUrl(cover_url)) {
     return res.status(400).json({ error: 'Album and cover must be valid http(s) URLs' });
+  }
+  const linkProblem = albumUrlProblem(album_url) || coverUrlProblem(cover_url);
+  if (linkProblem) {
+    return res.status(400).json({ error: linkProblem });
   }
 
   db.prepare(`

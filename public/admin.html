@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shangri-La — Admin</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127754;</text></svg>">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="site.css">
   <style>
     .admin-wrap { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
     .admin-title { font-family: var(--font-display); font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; }
@@ -23,6 +23,11 @@
     .field textarea { min-height: 4.5rem; resize: vertical; }
     .field-row { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
     .hint { font-size: 0.8rem; color: var(--text-faint); margin-top: 0.3rem; }
+    .hint code { color: var(--text-dim); }
+    .hint.warn { color: #fda4af; }
+    #cover-preview { margin-top: 0.6rem; display: flex; align-items: center; gap: 0.75rem; }
+    #cover-preview[hidden] { display: none; }
+    #cover-preview img { width: 120px; height: 68px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
     .btn-primary { background: #5eead4; color: #06222b; border: none; cursor: pointer; font-family: var(--font-body); }
     .btn-ghost { background: transparent; border: 1px solid var(--line); color: var(--text-dim); cursor: pointer; font-family: var(--font-body); }
     .actions { display: flex; gap: 0.75rem; align-items: center; }
@@ -77,12 +82,18 @@
         <div class="field">
           <label for="f-album">Google Photos album link</label>
           <input id="f-album" type="url" placeholder="https://photos.app.goo.gl/...">
-          <p class="hint">In Google Photos: open the album &rarr; Share &rarr; Create link, then paste it here.</p>
+          <p class="hint">In Google Photos: open the album &rarr; Share &rarr; Create link, then paste it here. It should look like <code>photos.app.goo.gl/...</code> &mdash; not the URL from your browser&rsquo;s address bar.</p>
+          <p class="hint warn" id="album-warn" hidden></p>
         </div>
         <div class="field">
           <label for="f-cover">Cover photo URL <span style="text-transform:none">(optional)</span></label>
           <input id="f-cover" type="url" placeholder="https://lh3.googleusercontent.com/...">
-          <p class="hint">Open a photo in the album, right-click it &rarr; &ldquo;Copy image address&rdquo;, and paste. Without one, the card shows a styled placeholder.</p>
+          <p class="hint">Open the album&rsquo;s <strong>share link</strong> (incognito window works best), open a photo, right-click &rarr; &ldquo;Copy image address&rdquo;, and paste. It should start with <code>lh3.googleusercontent.com</code>. Without one, the card shows a styled placeholder.</p>
+          <p class="hint warn" id="cover-warn" hidden></p>
+          <div id="cover-preview" hidden>
+            <img id="cover-preview-img" alt="Cover preview" referrerpolicy="no-referrer">
+            <span id="cover-preview-status" class="hint"></span>
+          </div>
         </div>
         <div class="field">
           <label for="f-notes">Notes <span style="text-transform:none">(optional)</span></label>
@@ -121,6 +132,8 @@
     const el = Object.fromEntries(fields.map((f) => [f, document.getElementById('f-' + f)]));
     const secretEl = document.getElementById('f-secret');
 
+    const querySecret = new URLSearchParams(location.search).get('secret');
+    if (querySecret) localStorage.setItem('shangri-la-secret', querySecret);
     secretEl.value = localStorage.getItem('shangri-la-secret') || '';
 
     function esc(s) {
@@ -144,6 +157,8 @@
       el.cover.value = w.cover_url;
       el.notes.value = w.notes;
       document.getElementById('form-title').textContent = 'Editing ' + w.year;
+      checkAlbumUrl();
+      checkCoverUrl();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -151,9 +166,50 @@
       form.reset();
       secretEl.value = localStorage.getItem('shangri-la-secret') || '';
       document.getElementById('form-title').textContent = 'Add / edit a summer';
+      checkAlbumUrl();
+      checkCoverUrl();
     }
 
     document.getElementById('clear-btn').addEventListener('click', clearForm);
+
+    // Live warnings for Google Photos URLs that only work for the album owner
+    const albumWarn = document.getElementById('album-warn');
+    const coverWarn = document.getElementById('cover-warn');
+    const preview = document.getElementById('cover-preview');
+    const previewImg = document.getElementById('cover-preview-img');
+    const previewStatus = document.getElementById('cover-preview-status');
+
+    function hostOf(value) {
+      try { return new URL(value).hostname; } catch { return ''; }
+    }
+
+    function checkAlbumUrl() {
+      const v = el.album.value.trim();
+      const bad = hostOf(v) === 'photos.google.com' && new URL(v).pathname.startsWith('/album/');
+      albumWarn.hidden = !bad;
+      if (bad) albumWarn.textContent = 'This is your private library URL — friends can’t open it. Use Share → Create link instead.';
+    }
+
+    function checkCoverUrl() {
+      const v = el.cover.value.trim();
+      const host = hostOf(v);
+      const bad = host.includes('fife.usercontent.google.com') || host === 'photos.google.com';
+      coverWarn.hidden = !bad;
+      if (bad) coverWarn.textContent = 'This is a temporary logged-in URL — it breaks for others and expires. Copy the image address from inside the shared album instead.';
+      if (v && !bad) {
+        preview.hidden = false;
+        previewStatus.textContent = 'Loading preview…';
+        previewImg.onload = () => { previewStatus.textContent = '✓ Cover loads'; previewStatus.style.color = '#5eead4'; };
+        previewImg.onerror = () => { previewStatus.textContent = '✗ This image won’t load — re-copy it from the shared album'; previewStatus.style.color = '#fda4af'; };
+        previewImg.src = v;
+      } else {
+        preview.hidden = true;
+        previewImg.removeAttribute('src');
+      }
+    }
+
+    el.album.addEventListener('input', checkAlbumUrl);
+    el.cover.addEventListener('input', checkCoverUrl);
 
     async function loadList() {
       const res = await fetch('/api/weekends');
