@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shangri-La — Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127754;</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-wrap { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .admin-title { font-family: var(--font-display); font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .admin-sub { color: var(--text-dim); margin-bottom: 2rem; }
+    .panel { background: var(--bg-raised); border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .panel h2 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.3rem; }
+    .field input, .field textarea {
+      width: 100%; padding: 0.6rem 0.75rem; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--bg); color: var(--text);
+      font-family: var(--font-body); font-size: 0.95rem;
+    }
+    .field input:focus, .field textarea:focus { outline: 2px solid rgba(94, 234, 212, 0.4); border-color: transparent; }
+    .field textarea { min-height: 4.5rem; resize: vertical; }
+    .field-row { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
+    .hint { font-size: 0.8rem; color: var(--text-faint); margin-top: 0.3rem; }
+    .btn-primary { background: #5eead4; color: #06222b; border: none; cursor: pointer; font-family: var(--font-body); }
+    .btn-ghost { background: transparent; border: 1px solid var(--line); color: var(--text-dim); cursor: pointer; font-family: var(--font-body); }
+    .actions { display: flex; gap: 0.75rem; align-items: center; }
+    .msg { font-size: 0.9rem; margin-left: auto; }
+    .msg.ok { color: #5eead4; }
+    .msg.err { color: #fda4af; }
+    .wk-row { display: flex; align-items: center; gap: 0.9rem; padding: 0.7rem 0.25rem; border-bottom: 1px solid var(--line); }
+    .wk-row:last-child { border-bottom: none; }
+    .wk-year { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; width: 3.2rem; }
+    .wk-lake { flex: 1; }
+    .wk-lake small { display: block; color: var(--text-faint); }
+    .wk-flags { font-size: 0.75rem; color: var(--text-faint); display: flex; gap: 0.6rem; }
+    .wk-flags .yes { color: #5eead4; }
+    .wk-actions button { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.85rem; padding: 0.25rem 0.4rem; font-family: var(--font-body); }
+    .wk-actions button:hover { color: var(--text); }
+    .wk-actions .danger:hover { color: #fda4af; }
+    .help { font-size: 0.88rem; color: var(--text-dim); }
+    .help li { margin: 0.5rem 0 0.5rem 1.2rem; }
+    .back { display: inline-block; margin-bottom: 1.5rem; color: var(--text-dim); font-size: 0.9rem; }
+    @media (max-width: 540px) { .field-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <a class="back" href="/">&larr; Back to the timeline</a>
+    <h1 class="admin-title">Edit the record</h1>
+    <p class="admin-sub">Add a summer, connect its Google Photos album, or fix the details.</p>
+
+    <div class="panel">
+      <h2 id="form-title">Add / edit a summer</h2>
+      <form id="wk-form">
+        <div class="field-row">
+          <div class="field">
+            <label for="f-year">Year</label>
+            <input id="f-year" type="number" min="1990" max="2100" required>
+          </div>
+          <div class="field">
+            <label for="f-dates">Dates <span style="text-transform:none">(optional)</span></label>
+            <input id="f-dates" type="text" placeholder="e.g. July 17–19">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-lake">Lake</label>
+            <input id="f-lake" type="text" required placeholder="e.g. Fish Lake">
+          </div>
+          <div class="field">
+            <label for="f-location">Location</label>
+            <input id="f-location" type="text" required placeholder="e.g. White Pigeon, MI">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-album">Google Photos album link</label>
+          <input id="f-album" type="url" placeholder="https://photos.app.goo.gl/...">
+          <p class="hint">In Google Photos: open the album &rarr; Share &rarr; Create link, then paste it here.</p>
+        </div>
+        <div class="field">
+          <label for="f-cover">Cover photo URL <span style="text-transform:none">(optional)</span></label>
+          <input id="f-cover" type="url" placeholder="https://lh3.googleusercontent.com/...">
+          <p class="hint">Open a photo in the album, right-click it &rarr; &ldquo;Copy image address&rdquo;, and paste. Without one, the card shows a styled placeholder.</p>
+        </div>
+        <div class="field">
+          <label for="f-notes">Notes <span style="text-transform:none">(optional)</span></label>
+          <textarea id="f-notes" placeholder="The year of the pontoon incident..."></textarea>
+        </div>
+        <div class="field">
+          <label for="f-secret">Admin secret</label>
+          <input id="f-secret" type="password" placeholder="Only needed if the server has one set">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="clear-btn" class="btn btn-ghost">Clear form</button>
+          <span class="msg" id="msg"></span>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Summers on record</h2>
+      <div id="wk-list"></div>
+    </div>
+
+    <div class="panel help">
+      <h2>Connecting Google Photos</h2>
+      <ul>
+        <li><strong>Album link</strong> &mdash; use the album&rsquo;s share link (Share &rarr; Create link). Anyone in the crew with the link can open the full album.</li>
+        <li><strong>Cover photo</strong> &mdash; Google doesn&rsquo;t let sites embed whole albums anymore, so pick one great photo per year: open it, right-click, &ldquo;Copy image address&rdquo;, paste it as the cover URL.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('wk-form');
+    const msg = document.getElementById('msg');
+    const fields = ['year', 'dates', 'lake', 'location', 'album', 'cover', 'notes'];
+    const el = Object.fromEntries(fields.map((f) => [f, document.getElementById('f-' + f)]));
+    const secretEl = document.getElementById('f-secret');
+
+    secretEl.value = localStorage.getItem('shangri-la-secret') || '';
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s ?? '';
+      return d.innerHTML;
+    }
+
+    function showMsg(text, ok) {
+      msg.textContent = text;
+      msg.className = 'msg ' + (ok ? 'ok' : 'err');
+      if (ok) setTimeout(() => { msg.textContent = ''; }, 3000);
+    }
+
+    function fillForm(w) {
+      el.year.value = w.year;
+      el.dates.value = w.dates;
+      el.lake.value = w.lake;
+      el.location.value = w.location;
+      el.album.value = w.album_url;
+      el.cover.value = w.cover_url;
+      el.notes.value = w.notes;
+      document.getElementById('form-title').textContent = 'Editing ' + w.year;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearForm() {
+      form.reset();
+      secretEl.value = localStorage.getItem('shangri-la-secret') || '';
+      document.getElementById('form-title').textContent = 'Add / edit a summer';
+    }
+
+    document.getElementById('clear-btn').addEventListener('click', clearForm);
+
+    async function loadList() {
+      const res = await fetch('/api/weekends');
+      const weekends = await res.json();
+      const list = document.getElementById('wk-list');
+      if (!weekends.length) {
+        list.innerHTML = '<p class="help">Nothing yet — add the first summer above.</p>';
+        return;
+      }
+      list.innerHTML = weekends
+        .slice()
+        .reverse()
+        .map((w) => `
+          <div class="wk-row">
+            <span class="wk-year">${w.year}</span>
+            <span class="wk-lake">${esc(w.lake)}<small>${esc(w.location)}</small></span>
+            <span class="wk-flags">
+              <span class="${w.album_url ? 'yes' : ''}">${w.album_url ? '&#10003; album' : 'no album'}</span>
+              <span class="${w.cover_url ? 'yes' : ''}">${w.cover_url ? '&#10003; cover' : 'no cover'}</span>
+            </span>
+            <span class="wk-actions">
+              <button data-edit="${w.year}">Edit</button>
+              <button data-del="${w.year}" class="danger">Delete</button>
+            </span>
+          </div>`)
+        .join('');
+
+      list.querySelectorAll('[data-edit]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const w = weekends.find((x) => x.year === Number(btn.dataset.edit));
+          if (w) fillForm(w);
+        });
+      });
+      list.querySelectorAll('[data-del]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const year = btn.dataset.del;
+          if (!confirm('Delete ' + year + '? This cannot be undone.')) return;
+          const secret = secretEl.value;
+          const res = await fetch('/api/weekends/' + year + '?secret=' + encodeURIComponent(secret), { method: 'DELETE' });
+          const data = await res.json();
+          if (res.ok) { showMsg('Deleted ' + year, true); loadList(); }
+          else showMsg(data.error || 'Delete failed', false);
+        });
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const secret = secretEl.value;
+      localStorage.setItem('shangri-la-secret', secret);
+      const body = {
+        year: Number(el.year.value),
+        dates: el.dates.value,
+        lake: el.lake.value,
+        location: el.location.value,
+        album_url: el.album.value,
+        cover_url: el.cover.value,
+        notes: el.notes.value,
+        secret,
+      };
+      const res = await fetch('/api/weekends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showMsg('Saved ' + body.year, true);
+        clearForm();
+        loadList();
+      } else {
+        showMsg(data.error || 'Save failed', false);
+      }
+    });
+
+    loadList();
+  </script>
+</body>
+</html>
