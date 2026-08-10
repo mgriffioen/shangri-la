@@ -37,7 +37,7 @@ function coverHtml(w, palette) {
   if (w.cover_url) {
     return `
       <div class="card-cover">
-        <img src="${esc(w.cover_url)}" alt="Shangri-La ${w.year} at ${esc(w.lake)}" loading="lazy"
+        <img src="${esc(w.cover_url)}" alt="Shangri-La ${w.year} at ${esc(w.lake)}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.parentNode.classList.add('cover-broken'); this.remove();">
         <div class="cover-fallback" style="--era-accent:${palette.accent}; --era-deep:${palette.deep}">
           <span class="cover-year">${w.year}</span>

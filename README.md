@@ -46,10 +46,14 @@ Google no longer allows third-party sites to embed user-created albums via API,
 so albums are connected by link:
 
 - **Album link** — in Google Photos, open the album → Share → Create link, and paste
-  it into the admin form. Each year card gets an "Open the album" button.
-- **Cover photo** — open a photo in the album, right-click → "Copy image address"
-  (an `lh3.googleusercontent.com` URL), and paste it as the cover URL. Years without
-  a cover get a styled placeholder.
+  it into the admin form (`photos.app.goo.gl/...`). Don't paste the URL from your
+  browser's address bar (`photos.google.com/album/...`) — that's your private library
+  URL and only works for you. Each year card gets an "Open the album" button.
+- **Cover photo** — open the album's *share link* (an incognito window is the safest
+  way), open a photo, right-click → "Copy image address", and paste it as the cover
+  URL. It must be an `lh3.googleusercontent.com` URL. URLs copied while browsing your
+  own library (`photos.fife.usercontent.google.com`) are session-bound and expire —
+  the admin form and API reject them. Years without a cover get a styled placeholder.
 
 ## API
 
